@@ -10,7 +10,7 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = ROOT_DIR / "airsift"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=True)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(ROOT_DIR / ".env"))
@@ -41,8 +41,14 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+POSTGRES_USER = env.str("POSTGRES_USER", default="postgres")
+POSTGRES_PASSWORD = env.str("POSTGRES_PASSWORD", default="postgres")
+POSTGRES_HOST = env.str("POSTGRES_HOST", default="localhost")
+POSTGRES_DB = env.str("POSTGRES_DB", default="postgres")
+POSTGRES_PORT = env.int("POSTGRES_PORT", default=5432)
+DATABASE_OBJ = env.db("DATABASE_URL", default=f"postgis://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres:///airsift")
+    "default": DATABASE_OBJ
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 

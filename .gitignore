@@ -67,7 +67,9 @@ target/
 # Environments
 .venv
 venv/
-ENV/
+env/
+python/
+.env
 
 # Rope project settings
 .ropeproject
