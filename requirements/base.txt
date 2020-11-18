@@ -6,6 +6,7 @@ whitenoise==5.2.0  # https://github.com/evansd/whitenoise
 redis==3.5.3  # https://github.com/andymccurdy/redis-py
 hiredis==1.1.0  # https://github.com/redis/hiredis-py
 wagtail==2.11.2  # https://github.com/wagtail/wagtail
+django-webpack-loader==0.7.0
 
 # Django
 # ------------------------------------------------------------------------------

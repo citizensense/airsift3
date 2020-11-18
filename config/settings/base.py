@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # airsift/
@@ -90,6 +91,7 @@ THIRD_PARTY_APPS = [
     'wagtail.core',
     'modelcluster',
     'taggit',
+    'webpack_loader',
 ]
 
 LOCAL_APPS = [
@@ -291,3 +293,15 @@ SOCIALACCOUNT_ADAPTER = "airsift.users.adapters.SocialAccountAdapter"
 # Your stuff...
 # ------------------------------------------------------------------------------
 WAGTAIL_SITE_NAME = "Airsift"
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'webpack_bundles/', # must end with slash
+        'STATS_FILE': os.path.join(STATICFILES_DIRS[0], 'webpack_bundles/webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+        'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
+    }
+}
