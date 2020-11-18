@@ -47,6 +47,10 @@ python manage.py createsuperuser
 python manage.py runserver 0.0.0.0:8000
 ```
 
+In a separate shell window, to hot reload CSS and JS assets, run `yarn watch`.
+
+Ensure you commit CSS and JS assets by running `yarn build` before pushing to origin.
+
 ### Deploy to server
 
 TODO:
