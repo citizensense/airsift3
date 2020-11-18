@@ -9,19 +9,22 @@ module.exports = {
   purge: [],
   theme: {
     colors: {
-      transparent: 'transparent',
-      realBlack: '#000000',
-      black: '#353637',
-      brandOrange: '#FE8E11',
-      brandRed: '#ED1B24',
-      darkGreen: '#174018',
-      darkGrey: '#6F7071',
-      grey: '#ECEDED',
-      lightGreen: '#F0F9DF',
-      lightGrey: '#F8F8F8',
-      mildGrey: '#C0C1C1',
-      pastel: '#FFEFE3',
-      white: '#FFFFFF',
+      "brand": "#33ccff",
+      "highlightGreen": "#39f986",
+      "darkBlue": "#2e03da",
+      "softBlack": "#343e3c",
+      "midDarker": "#585e5f",
+      "mid": "#8299a5",
+      "light": "#ecf1f6",
+      "white": "#fafafa",
+      "purple air": "#ac44a7",
+      "laqn": "#3f7d98",
+      "5-10": "#f0f27c",
+      "10-25": "#ffb48a",
+      "25-50": "#ff8695",
+      "50+": "#cf96c8",
+      "black": "#000000",
+      "error": "#ff2f61"
     },
     spacing: {
       '1': '5px',
@@ -38,41 +41,27 @@ module.exports = {
       'xl': '1280px',
     },
     fontSize: {
-      XXL: ["54.93px", {
-        lineHeight: "54.93px",
-        letterSpacing: "-0.02em"
+      L: ["40px", {
+        lineHeight: "40px",
       }],
-      XL: ["43.95px", {
-        lineHeight: "43.95px",
-        letterSpacing: "-0.02em"
+      M: ["28px", {
+        lineHeight: "32px",
       }],
-      L: ["35.16px", {
-        lineHeight: "38.68px",
-      }],
-      M: ["28.13px", {
-        lineHeight: "33.76px",
-      }],
-      S: ["22.5px", {
-        lineHeight: "29.25px",
-        letterSpacing: "-0.01em"
-      }],
-      Small: ["22.5px", {
-        lineHeight: "29.25px",
-        letterSpacing: "-0.01em"
+      S: ["20px", {
+        lineHeight: "26px",
       }],
       XS: ["18px", {
-        lineHeight: "23.4px",
+        lineHeight: "24px",
       }],
-      XXS: ["14.4px", {
-        lineHeight: "18.72px",
+      XXS: ["13px", {
+        lineHeight: "13px",
       }],
-      XXXS: ["11.52px", "13.82px"]
     },
     // Add to the default
     extend: {
       fontFamily: {
-        serif: "'Source Serif Pro', serif",
-        sans: "'Work Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+        default: "'SF Pro Text', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+        cousine: "Cousine, 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
       },
       fontWeight: {
         100: 100,
@@ -90,15 +79,12 @@ module.exports = {
       default: {
         css: {
           color: theme('colors.black'),
-          fontFamily: theme('fontFamily.serif'),
-          fontSize: "22.5px",
-          lineHeight: "29.25px",
-          letterSpacing: "-0.01em",
+          fontFamily: theme('fontFamily.default'),
+          fontSize: theme('XS'),
           img: {
             width: '100%'
           },
           strong: {
-            fontFamily: theme('fontFamily.sans'),
             fontWeight: '600'
           },
           '.standout': {
