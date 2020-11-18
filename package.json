@@ -1,9 +1,9 @@
 {
-  "name": "peace-insight-2020",
+  "name": "airsift3",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://gitlab.com/commonknowledge/peace-direct/peace-insight-2020.git",
-  "author": "Jan Baykara <janbaykara@gmail.com>",
+  "repository": "https://gitlab.com/commonknowledge/airsift3.git",
+  "author": "Common Knowledge Co-operative <hello@commonknowledge.coop>",
   "license": "MIT",
   "scripts": {
     "database": "docker-compose up",

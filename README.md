@@ -11,6 +11,14 @@ Version 3 of the airsift pollution data science platform hosted by citizensense.
 
 ### Local deployment and development
 
+Developing this app requires the following tools:
+
+- Git version control system
+- Yarn package manager
+- Docker (or your own Postgres server and configuration details in `.env`)
+- Python
+- Pip package manager
+
 First, copy `.env.template` to `.env` in the root.
 
 Then run the following commands:
@@ -20,8 +28,11 @@ Then run the following commands:
 python3.8 -m venv <virtual env path>
 source <virtual env path>/bin/activate
 
-# Install dependencies
+# Install python dependencies
 pip install -r requirements/local.txt
+
+# Install frontend dependencies
+yarn
 
 # Provision a postgres database for the app to work with
 docker-compose -f docker-compose.yml up

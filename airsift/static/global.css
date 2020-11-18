@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital@0;1&family=Work+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital@0;1&display=swap');
+
+html,
+body {
+  @apply text-black font-sans text-XS antialiased
+}
+
+:root {
+  --width-header: 838px;
+  --width-content: 728px;
+}
+
+.content-wrapper {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-wrapper {
+  @screen md {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+}
+
+.article-header {
+  width: 100%;
+
+  @screen md {
+    max-width: var(--width-header);
+  }
+}
+
+.article-body {
+  width: 100%;
+
+  @screen md {
+    max-width: var(--width-content);
+  }
+}
+
+.article-header-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @screen sm {
+    grid-template-columns: 10fr;
+  }
+
+  @screen md {
+    grid-template-columns: 2fr 8fr 2fr;
+  }
+}
+
+.article-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @screen sm {
+    grid-template-columns: 8fr 2fr;
+  }
+
+  @screen md {
+    grid-template-columns: 2fr 7fr 3fr;
+  }
+}
+
+.article-text p:first-child {
+  @apply text-M font-sans;
+}
+
+.nav-link-item + .nav-link-item {
+  padding-left: 1em;
+}
+
+.darkened-banner {
+  background: linear-gradient(to right, #0006, #00000045, #0000);
+  @screen md {
+    background: linear-gradient(to right, #0000004a, #00000047, #0000, #0000);
+  }
+}
+
+.gap {
+  display: block
+}
+.gap-pl-1 > * + * { @apply pl-1 }
+.gap-pl-2 > * + * { @apply pl-2 }
+.gap-pl-3 > * + * { @apply pl-3 }
+.gap-pl-4 > * + * { @apply pl-4 }
+.gap-pl-5 > * + * { @apply pl-5 }
+.gap-pl-6 > * + * { @apply pl-6 }
+.gap-pt-1 > * + * { @apply pt-1 }
+.gap-pt-2 > * + * { @apply pt-2 }
+.gap-pt-3 > * + * { @apply pt-3 }
+.gap-pt-4 > * + * { @apply pt-4 }
+.gap-pt-5 > * + * { @apply pt-5 }
+.gap-pt-6 > * + * { @apply pt-6 }
+
+.read-more-1 > *:nth-child(n+2) { display: none;}
+.read-more-2 > *:nth-child(n+3) { display: none;}
+.read-more-3 > *:nth-child(n+4) { display: none;}
