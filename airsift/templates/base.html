@@ -5,11 +5,26 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}airsift{% endblock title %}</title>
+    <title>{% block title %}Airsift{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Version 3 of the airsift pollution data science platform hosted by citizensense.co.uk ">
     <meta name="author" content="Common Knowledge Co-operative">
-
+    <meta name="description" content="Version 3 of the airsift pollution data science platform hosted by citizensense.co.uk ">
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:type" content="website" />
+    <!-- TODO: Make this reusable -->
+    <meta property="og:title" content="Citizen Sense" />
+    <meta property="og:url" content="https://citizensense.net/" />
+    <meta property="og:site_name" content="Citizen Sense" />
+    <meta property="og:image" content="https://i0.wp.com/citizensense.net/cs/wp-content/uploads/2017/11/Dustbox_Garden_sm.jpg?fit=794%2C676&#038;ssl=1" />
+    <meta property="og:image:width" content="794" />
+    <meta property="og:image:height" content="676" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@citizen_sense" />
+    <meta name="twitter:site" content="@citizen_sense" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://citizensense.net/cs/wp-content/uploads/fbrfg/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://citizensense.net/cs/wp-content/uploads/fbrfg/favicon-16x16.png" sizes="16x16">
+    <link rel="shortcut icon" href="https://citizensense.net/cs/wp-content/uploads/fbrfg/favicon.ico">
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -26,7 +41,7 @@
 
     {% include "global/header.html" %}
 
-    <div class="container">
+    <div class="flex-1 relative">
 
       {% if messages %}
           {% for message in messages %}
