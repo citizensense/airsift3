@@ -1,0 +1,54 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+
+services:
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: ghcr.io/commonknowledge/airsift3-app
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    command: /start
+
+  postgres:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: ghcr.io/commonknowledge/airsift3-postgres
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data:Z
+      - production_postgres_data_backups:/backups:z
+    env_file:
+      - ./.env
+
+  traefik:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: ghcr.io/commonknowledge/airsift3-traefik
+    depends_on:
+      - django
+    volumes:
+      - production_traefik:/etc/traefik/acme:z
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+
+  redis:
+    image: redis:5.0
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
