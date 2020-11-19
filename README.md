@@ -51,9 +51,65 @@ In a separate shell window, to hot reload CSS and JS assets, run `yarn watch`.
 
 Ensure you commit CSS and JS assets by running `yarn build` before pushing to origin.
 
+### Server admin
+
+If not already deployed to server, see below section.
+
+- To run python commands first enter the environment:
+
+```
+source python/bin/activate
+```
+
+- To pull in the latest code and migrate the app:
+
+```
+git pull origin main
+source python/bin/activate
+python manage.py migrate
+```
+
 ### Deploy to server
 
-TODO:
+#### Install docker if required
+
+See https://docs.docker.com/engine/install/ubuntu/.
+
+#### Install yarn if required
+ See https://classic.yarnpkg.com/en/docs/install/#debian-stable or https://www.hostinger.com/tutorials/how-to-install-yarn-on-ubuntu/.
+
+#### App setup
+
+Then... run the following commands to initiate the app on first try:
+
+```shell
+# Optional: prepare a python environment with the right packages
+python3.8 -m venv <virtual env path>
+source <virtual env path>/bin/activate
+
+# Install python dependencies
+pip install -r requirements/local.txt
+
+# Install frontend dependencies
+yarn
+
+# Configure the app's database
+docker-compose up
+python manage.py migrate
+
+# Create an admin user
+python manage.py createsuperuser
+
+# Start the app up
+python manage.py runserver 0.0.0.0:8000
+```
+
+#### Troubleshooting
+
+If you see errors relating to `GDAL` missing:
+
+- try `sudo apt-get install gdal-bin`
+- and also see `https://www.vultr.com/docs/install-the-postgis-extension-for-postgresql-on-ubuntu-linux` to configure postgres to use postGIS extensions.
 
 ### Settings
 
