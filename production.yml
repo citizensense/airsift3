@@ -35,6 +35,11 @@ services:
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
+    command:
+      - "--http.routers.web-router.rule=$WEB_HOST"
+      - "--http.routers.web-secure-router.rule=$WEB_HOST"
+    env_file:
+      - ./.env
 
   redis:
     image: redis:5.0
