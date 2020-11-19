@@ -87,8 +87,8 @@ Then... run the following commands to initiate the app on first try:
 python3.8 -m venv <virtual env path>
 source <virtual env path>/bin/activate
 
-# Install python dependencies
-pip install -r requirements/local.txt
+# Install PRODUCTION python dependencies
+pip install -r requirements/production.txt
 
 # Install frontend dependencies
 yarn
