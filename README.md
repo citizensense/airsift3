@@ -100,8 +100,11 @@ python manage.py migrate
 # Create an admin user
 python manage.py createsuperuser
 
-# Start the app up
-python manage.py runserver 0.0.0.0:8000
+# Pre-run
+python manage.py collectstatic
+
+# Production app up
+gunicorn config.wsgi:application --bind=136.244.105.217:8001 --bind=[::1]:8001
 ```
 
 #### Troubleshooting
