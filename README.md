@@ -16,7 +16,7 @@ Developing this app requires the following tools:
 - Git version control system
 - Yarn package manager
 - Docker (or your own Postgres server and configuration details in `.env`)
-- Python
+- Python 3.8 (recommended: install using pyenv)
 - Pip package manager
 
 First, copy `.env.template` to `.env` in the root.
@@ -25,14 +25,17 @@ Then run the following commands:
 
 ```shell
 # Optional: prepare a python environment with the right packages
-python3.8 -m venv <virtual env path>
-source <virtual env path>/bin/activate
+python3.8 -m venv .venv
+source .venv/bin/activate
 
 # Install python dependencies
 pip install -r requirements/local.txt
 
 # Install frontend dependencies
 yarn
+
+# Copy the .env template into place
+cp .env.template .env
 
 # Provision a postgres database for the app to work with
 docker-compose -f docker-compose.yml up
