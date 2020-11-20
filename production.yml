@@ -15,6 +15,8 @@ services:
     env_file:
       - ./.env
     command: /start
+    ports:
+      - "0.0.0.0:8181:5000"
 
   postgres:
     restart: always
@@ -22,22 +24,6 @@ services:
     volumes:
       - production_postgres_data:/var/lib/postgresql/data:Z
       - production_postgres_data_backups:/backups:z
-    env_file:
-      - ./.env
-
-  traefik:
-    restart: always
-    image: ghcr.io/commonknowledge/airsift3-traefik
-    depends_on:
-      - django
-    volumes:
-      - production_traefik:/etc/traefik/acme:z
-    ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
-    command:
-      - "--http.routers.web-router.rule=$WEB_HOST"
-      - "--http.routers.web-secure-router.rule=$WEB_HOST"
     env_file:
       - ./.env
 

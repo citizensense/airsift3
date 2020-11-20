@@ -44,16 +44,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/commonknowledge/airsift3-postgres:latest
-      -
-        name: Build and push (traefik)
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./compose/production/traefik/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ghcr.io/commonknowledge/airsift3-traefik:latest
       - name: Deploy to staging
         uses: appleboy/ssh-action@master
         with:
@@ -63,4 +53,6 @@ jobs:
           script: |
             cd /var/www/airsift
             git pull
-            docker-compose -f production.yml up -d --build --force-recreate
+            docker-compose -f production.yml pull
+            docker-compose -f production.yml up -d --force-recreate --remove-orphans
+            docker system prune
