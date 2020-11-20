@@ -1,3 +1,4 @@
+from airsift import dustboxes
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -10,8 +11,7 @@ from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/analysis.html")),
-    path("analysis/", TemplateView.as_view(template_name="pages/analysis.html")),
+    path('', include('dustboxes.urls')),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

@@ -7,3 +7,5 @@ if (process.env.NODE_ENV === 'development') {
   require("preact/debug");
 }
 import "preact/devtools";
+import dustboxMap from './dustboxMap'
+dustboxMap()

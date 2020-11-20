@@ -27,6 +27,7 @@
     "@react-hook/window-scroll": "^1.3.0",
     "@tailwindcss/typography": "^0.2.0",
     "@turf/bbox": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
     "@types/js-cookie": "^2.2.6",
     "@types/react-map-gl": "^5.2.7",
     "@urbica/react-map-gl": "^1.14.2",
