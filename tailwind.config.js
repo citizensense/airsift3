@@ -8,24 +8,6 @@ const typographyStyles = require('@tailwindcss/typography/src/styles')
 module.exports = {
   purge: [],
   theme: {
-    colors: {
-      "brand": "#33ccff",
-      "highlightGreen": "#39f986",
-      "darkBlue": "#2e03da",
-      "softBlack": "#343e3c",
-      "midDarker": "#585e5f",
-      "mid": "#8299a5",
-      "light": "#ecf1f6",
-      "white": "#fafafa",
-      "purple air": "#ac44a7",
-      "laqn": "#3f7d98",
-      "5-10": "#f0f27c",
-      "10-25": "#ffb48a",
-      "25-50": "#ff8695",
-      "50+": "#cf96c8",
-      "black": "#000000",
-      "error": "#ff2f61"
-    },
     spacing: {
       '1': '5px',
       '2': '10px',
@@ -59,6 +41,24 @@ module.exports = {
     },
     // Add to the default
     extend: {
+      colors: {
+        "brand": "#33ccff",
+        "highlightGreen": "#39f986",
+        "darkBlue": "#2e03da",
+        "softBlack": "#343e3c",
+        "midDarker": "#585e5f",
+        "mid": "#8299a5",
+        "light": "#ecf1f6",
+        "white": "#fafafa",
+        "purple air": "#ac44a7",
+        "laqn": "#3f7d98",
+        "5-10": "#f0f27c",
+        "10-25": "#ffb48a",
+        "25-50": "#ff8695",
+        "50+": "#cf96c8",
+        "black": "#000000",
+        "error": "#ff2f61"
+      },
       fontFamily: {
         default: "'SF Pro Text', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
         cousine: "Cousine, 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",

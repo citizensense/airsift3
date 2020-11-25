@@ -4,35 +4,7 @@ import requests
 from airsift.dustboxes.data import DustboxReadings
 
 def dustboxes(request):
-    data = DustboxReadings.load()
-
-    '''
-    Example item
-    {
-        "createdAt": 1605710659907,
-        "description": "test",
-        "deviceNumber": "test",
-        "entriesNumber": 0,
-        "id": "b786c4e9-6729-40fc-b0a0-70aec4cc8d40",
-        "lastEntryAt": {
-            "timestamp": "never",
-            "human": "Invalid Date"
-        },
-        "location": {
-            "longitude": "-0.6989764",
-            "latitude": "52.2552717"
-        },
-        "publicKey": "QORmT5sspdFUpuEO",
-        "slug": "test",
-        "tags": [],
-        "title": "test 2",
-        "updatedAt": 1605712216548
-    },
-    '''
-    return render(request, 'dustboxes/dustboxes.html', {
-        "dustboxes": data
-    })
-
+    return render(request, 'dustboxes/dustboxes.html')
 
 '''
 {
