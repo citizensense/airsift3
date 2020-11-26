@@ -147,6 +147,37 @@ function DustboxMap ({
   )
 }
 
+export const airQualityColour = (reading: number) => {
+  const colors = {
+    "mid": "#8299a5",
+    "highlightGreen": "#39f986",
+    "5-10": "#f0f27c",
+    "10-25": "#ffb48a",
+    "25-50": "#ff8695",
+    "50+": "#cf96c8",
+  }
+
+  if (reading <= 5) return colors['highlightGreen']
+  if (reading <= 10) return colors['5-10']
+  if (reading <= 25) return colors['10-25']
+  if (reading <= 50) return colors['25-50']
+  if (reading > 50) return colors['50+']
+  return colors['mid']
+}
+
+export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean }> = ({ reading, hideNumber = false }) => {
+  return (
+    <div class={`
+      text-black inline-flex justify-center items-center text-center
+      w-6 h-6
+    `} style={{
+      backgroundImage: `radial-gradient(${airQualityColour(reading)} 25%, transparent 55%)`
+    }}>
+      {!hideNumber && reading}
+    </div>
+  )
+}
+
 export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   const dustboxReading = useSWR<{
     status: number;
@@ -182,23 +213,33 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </div>
       </div>
-      <div class='mt-1 mb-2 font-cousine text-XXS font-bold uppercase flex w-full'>
-        <h1 class='text-black text-opacity-25'>{dustbox.id}</h1>
-      </div>
+      {process.env.NODE_ENV !== 'production' && (
+        <div class='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
+          <h1 class='text-black text-opacity-25'>{dustbox.id}</h1>
+        </div>
+      )}
       <div>
         {!dustboxReading.data ? (
           // <pre>{JSON.stringify(dustboxReading, null, 2)}</pre>
-          <div class='text-black text-XS text-opacity-50'>
+          <div class='text-black text-XS text-opacity-50 mt-2'>
             Loading data...
           </div>
         ) : (
-          <Fragment>
-            <span class='text-L font-bold'>{dustboxReading?.data?.data[0]["pm2.5"]}</span>
-            <span class='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
-            <div class='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-              Last reading at {new Date(dustboxReading?.data?.data[0]?.createdAt || 0).toLocaleString()}
+          <div class='flex w-full justify-between'>
+            <div class='pt-2'>
+              <span class='text-L font-bold'>{dustboxReading?.data?.data[0]["pm2.5"]}</span>
+              <span class='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
+              <div class='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
+                Last reading at {new Date(dustboxReading?.data?.data[0]?.createdAt || 0).toLocaleString()}
+              </div>
             </div>
-          </Fragment>
+            <div>
+              <AirQualityFuzzball
+                reading={parseInt(dustboxReading?.data?.data[0]["pm2.5"]) || 0}
+                hideNumber
+              />
+            </div>
+          </div>
         )}
       </div>
     </div>
