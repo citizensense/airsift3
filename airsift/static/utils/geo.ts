@@ -26,7 +26,7 @@ export const useCoordinateData = (lat: any | null, lon: any | null) => {
   }, async url => {
     const res = await fetch(url)
     return await res.json()
-  })
+  }, { revalidateOnFocus: false })
 }
 export interface OpenStreetMapReverseGeocodeResponse {
   place_id:     number;

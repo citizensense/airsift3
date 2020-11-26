@@ -77,7 +77,7 @@ function DustboxMap ({
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
     query: { limit: 'off' }
-  }))
+  }), undefined, { revalidateOnFocus: false })
 
   const addresses = useMemo(() => {
     return dustboxes.data?.data.reduce((addresses, item) => {
@@ -151,7 +151,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
     const res = await fetch(url)
     const data = await res.json()
     return data
-  })
+  }, { revalidateOnFocus: false })
 
   const coordinates = useCoordinateData(dustbox.location.latitude, dustbox.location.longitude)
 
