@@ -12,6 +12,7 @@ import { MapboxGeoJSONFeature } from 'mapbox-gl';
 import * as turf from '@turf/helpers'
 import Cluster from '@urbica/react-map-gl-cluster';
 import { useCoordinateData } from './utils/geo';
+import { firstOf } from './utils/array';
 
 const ROOT_ID = 'react-app-dustbox-map';
 
@@ -158,7 +159,10 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
     <div class='my-3'>
       <div class='mb-4 font-cousine flex w-full'>
         <h1 class='font-bold text-XXS uppercase'>{dustbox.title}</h1>
-        <div class='pl-3 font-bold text-opacity-50 text-black text-XXS uppercase'>{coordinates?.data?.admin_district}</div>
+        <div class='pl-3 font-bold text-opacity-50 text-black text-XXS uppercase'>
+          {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
+          {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
+        </div>
       </div>
       <div>
         <pre>{JSON.stringify(dustboxReading, null, 2)}</pre>

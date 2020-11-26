@@ -2,60 +2,113 @@ import useSWR from 'swr';
 import querystring from 'query-string';
 
 export const useCoordinateData = (lat: any | null, lon: any | null) => {
-  return useSWR<CoordinatesResult | null>(() => {
+  return useSWR<OpenStreetMapReverseGeocodeResponse | null>(() => {
     if (!lat || !lon) throw new Error("Missing lat/lng")
     return querystring.stringifyUrl({
-      url: "https://api.postcodes.io/postcodes",
-      query: { lon, lat }
+      url: "https://nominatim.openstreetmap.org/reverse",
+      query: {
+        lon, lat,
+        format: 'json',
+        /** https://nominatim.org/release-docs/develop/api/Reverse/#result-limitation
+          3 	country
+          5 	state
+          8 	county
+          10 	city
+          14 	suburb
+          16 	major streets
+          17 	major and minor streets
+          18 	building
+         */
+        zoom: 14,
+        email: 'https://citizensense.net/about/contact/'
+      }
     })
   }, async url => {
     const res = await fetch(url)
-    const data = await res.json() as CoordinatesResultPayload
-    return data?.result[0] || null
+    return await res.json()
   })
 }
-
-export interface CoordinatesResultPayload {
-  status: number;
-  result: CoordinatesResult[];
+export interface OpenStreetMapReverseGeocodeResponse {
+  place_id:     number;
+  licence:      string;
+  osm_type:     string;
+  osm_id:       number;
+  lat:          string;
+  lon:          string;
+  place_rank:   number;
+  category:     string;
+  type:         string;
+  importance:   number;
+  addresstype:  string;
+  name:         string;
+  display_name: string;
+  address:      Address;
+  boundingbox:  string[];
 }
 
-export interface CoordinatesResult {
-  postcode:                   string;
-  quality:                    number;
-  eastings:                   number;
-  northings:                  number;
-  country:                    string;
-  nhs_ha:                     string;
-  longitude:                  number;
-  latitude:                   number;
-  european_electoral_region:  string;
-  primary_care_trust:         string;
-  region:                     string;
-  lsoa:                       string;
-  msoa:                       string;
-  incode:                     string;
-  outcode:                    string;
-  parliamentary_constituency: string;
-  admin_district:             string;
-  parish:                     string;
-  admin_county:               string;
-  admin_ward:                 string;
-  ced:                        string;
-  ccg:                        string;
-  nuts:                       string;
-  codes:                      Codes;
-  distance:                   number;
-}
+export interface Address {
+  continent?: string
 
-export interface Codes {
-  admin_district:             string;
-  admin_county:               string;
-  admin_ward:                 string;
-  parish:                     string;
-  parliamentary_constituency: string;
-  ccg:                        string;
-  ccg_id:                     string;
-  ced:                        string;
-  nuts:                       string;
+  country?: string
+   country_code?: string
+
+  region?: string
+   state?: string
+   state_district?: string
+   county?: string
+
+  municipality?: string
+   city?: string
+   town?: string
+   village?: string
+
+  city_district?: string
+   district?: string
+   borough?: string
+   suburb?: string
+   subdivision?: string
+
+  hamlet?: string
+   croft?: string
+   isolated_dwelling?: string
+
+  neighbourhood?: string
+   allotments?: string
+   quarter?: string
+
+  city_block?: string
+   residental?: string
+   farm?: string
+   farmyard?: string
+   industrial?: string
+   commercial?: string
+   retail?: string
+
+  road?: string
+
+  house_number?: string
+   house_name?: string
+
+  emergency?: string
+   historic?: string
+   military?: string
+   natural?: string
+   landuse?: string
+   place?: string
+   railway?: string
+   man_made?: string
+   aerialway?: string
+   boundary?: string
+   amenity?: string
+   aeroway?: string
+   club?: string
+   craft?: string
+   leisure?: string
+   office?: string
+   mountain_pass?: string
+   shop?: string
+   tourism?: string
+   bridge?: string
+   tunnel?: string
+   waterway?: string
 }
