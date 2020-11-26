@@ -39,6 +39,8 @@ export interface Dustbox {
   updatedAt?:    number;
 }
 
+export type DustboxFeature = turf.Feature<turf.Point, Dustbox>
+
 export interface LastEntryAt {
   timestamp: number | string;
   human:     string;
@@ -72,7 +74,6 @@ function DustboxMap ({
     zoom: 2
   })
 
-
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
@@ -81,12 +82,12 @@ function DustboxMap ({
 
   const addresses = useMemo(() => {
     return dustboxes.data?.data.reduce((addresses, item) => {
-      const feature: turf.Feature<any>  = turf.feature({
+      const feature: DustboxFeature  = turf.feature({
         "type": "Point",
-        "coordinates": [item.location.longitude, item.location.latitude]
-      })
+        "coordinates": [item.location.longitude, item.location.latitude] as any
+      }, item)
       return [...addresses, feature]
-    }, [] as Array<turf.Feature<any>>)
+    }, [] as Array<DustboxFeature>)
   }, [dustboxes.data])
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -125,7 +126,7 @@ function DustboxMap ({
         {dustboxes.data?.data.map((dustbox, i) =>
           <Fragment>
             <DustboxCard dustbox={dustbox} key={dustbox.id} />
-            {(i < dustboxes.data.data.length) && (
+            {(i < (dustboxes?.data?.data?.length || 0)) && (
               <hr class='border-brand' />
             )}
           </Fragment>
@@ -178,8 +179,15 @@ export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolea
   )
 }
 
-export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
-  const dustboxReading = useSWR<{
+export const useDustboxReading = (dustboxId: string, query: {
+  createdAt?: any
+  limit?: any
+  page?: any
+  date?: any
+  dateFrom?: any
+  dateTo?: any
+}) => {
+  return useSWR<{
     status: number;
     data:   Array<{
       createdAt:   number;
@@ -192,17 +200,24 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
       temperature: string;
     }>
   }>(querystring.stringifyUrl({
-    url: `citizensense/collections/stream/${dustbox.id}`,
-    query: {
-      createdAt: dustbox.lastEntryAt.timestamp
-    }
+    url: `citizensense/collections/stream/${dustboxId}`,
+    query
   }), async url => {
     const res = await fetch(url)
     const data = await res.json()
     return data
   }, { revalidateOnFocus: false })
+}
 
-  const coordinates = useCoordinateData(dustbox.location.latitude, dustbox.location.longitude)
+export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
+  const dustboxReading = useDustboxReading(dustbox.id, {
+    createdAt: dustbox.lastEntryAt.timestamp
+  })
+
+  const coordinates = useCoordinateData(
+    dustbox.location.latitude,
+    dustbox.location.longitude
+  )
 
   return (
     <div class='my-4'>
@@ -220,7 +235,6 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
       )}
       <div>
         {!dustboxReading.data ? (
-          // <pre>{JSON.stringify(dustboxReading, null, 2)}</pre>
           <div class='text-black text-XS text-opacity-50 mt-2'>
             Loading data...
           </div>
@@ -246,24 +260,11 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   )
 }
 
-export const MapItems: React.FC<{ addresses: any[] }> = ({ addresses }) => {
+export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
   return (
     <Fragment>
       {addresses.map(address => (
-        <Marker
-          key={address.id}
-          longitude={address?.geometry?.coordinates[0]}
-          latitude={address?.geometry?.coordinates[1]}
-        >
-          <div
-            className='bg-brand text-white rounded-full overflow-hidden flex flex-row justify-center items-center w-2 h-2 border-2 border-solid border-white'
-            style={{
-              position: 'absolute',
-              transform: 'translate(-50%, -50%)',
-              cursor: 'default'
-            }}
-          />
-        </Marker>
+        <DustboxMapMarker key={address.properties.id} dustbox={address} />
       ))}
     </Fragment>
     // <Cluster radius={40} extent={512} nodeSize={64} component={ClusterMarker}>
@@ -284,6 +285,34 @@ export const MapItems: React.FC<{ addresses: any[] }> = ({ addresses }) => {
     //     </Marker>
     //   ))}
     // </Cluster>
+  )
+}
+
+export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
+  const dustboxReading = useDustboxReading(dustbox.properties.id, {
+    createdAt: dustbox.properties.lastEntryAt.timestamp
+  })
+
+  return (
+    <Marker
+      key={dustbox.properties.id}
+      longitude={dustbox?.geometry?.coordinates[0]}
+      latitude={dustbox?.geometry?.coordinates[1]}
+    >
+      <div
+        // className='bg-brand text-white rounded-full overflow-hidden flex flex-row justify-center items-center w-2 h-2 border-2 border-solid border-white'
+        style={{
+          position: 'absolute',
+          transform: 'translate(-50%, -50%)',
+          cursor: 'default'
+        }}
+      >
+        <AirQualityFuzzball
+          reading={parseInt(dustboxReading?.data?.data[0]["pm2.5"])}
+          hideNumber
+        />
+      </div>
+    </Marker>
   )
 }
 
