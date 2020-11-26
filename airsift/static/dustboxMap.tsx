@@ -145,7 +145,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   const dustboxReading = useSWR<{ data?: { ["pm2.5"]: number }[] }>(querystring.stringifyUrl({
     url: `citizensense/collections/stream/${dustbox.id}`,
     query: {
-      limit: 1
+      createdAt: dustbox.lastEntryAt.timestamp
     }
   }), async url => {
     const res = await fetch(url)
