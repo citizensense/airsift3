@@ -1,9 +1,7 @@
-import { h, Component, render, Fragment } from 'preact'
-// Preorganisations treeshaking
-console.log(h, Component, render)
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useMemo, useRef, useState, useEffect } from 'preact/hooks';
+import ReactDOM from 'react-dom';
+import React, { useMemo, useRef, useState, useEffect, Fragment } from 'react';
 import useSWR from 'swr'
 import querystring from 'query-string'
 import { WebMercatorViewport } from '@math.gl/web-mercator';
@@ -54,7 +52,7 @@ export interface Location {
 export default () => {
   const root = document.getElementById(ROOT_ID)
   if (root) {
-    render(<DustboxMap
+    ReactDOM.render(<DustboxMap
       mapboxApiAccessToken={'pk.eyJ1IjoicGVhY2VpbnNpZ2h0IiwiYSI6ImNqbm9nMHFvNjA1MnQzdm0xaWNxM3l5d3YifQ.pXF7u303bNopP7uyVBK8tA'}
       mapboxStyleConfig='mapbox://styles/peaceinsight/ckggfac010dzg19mo9v8odezw'
     />, root)
@@ -86,63 +84,76 @@ function DustboxMap ({
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
-    query: { limit: 4 }
+    query: { limit: 'off' }
   }), undefined, { revalidateOnFocus: false })
 
   const addresses = useMemo(() => {
-    return dustboxes.data?.data.reduce((addresses, item) => {
-      const feature: DustboxFeature  = turf.feature({
-        "type": "Point",
-        "coordinates": [item.location.longitude, item.location.latitude] as any
-      }, item)
-      return [...addresses, feature]
-    }, [] as Array<DustboxFeature>)
+    return dustboxes.data?.data
+      .filter(d => (
+        d.lastEntryAt.timestamp !== 'never'
+        && !!d.location.latitude
+        && !!d.location.longitude
+      )).reduce((addresses, item) => {
+        const feature: DustboxFeature  = turf.feature({
+          "type": "Point",
+          "coordinates": [item.location.longitude, item.location.latitude] as any
+        }, item)
+        return [...addresses, feature]
+      }, [] as Array<DustboxFeature>)
   }, [dustboxes.data])
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (addresses?.length) {
-      const parsedViewport = new WebMercatorViewport({
-        ...viewport,
-        width: mapContainerRef.current.clientWidth,
-        height: mapContainerRef.current.clientHeight
-      });
-      const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
-        return [[n[0], n[1]], [n[2], n[3]]]
-      }
-      const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
-      if (addressBounds.every(n => n !== Infinity)) {
-        const newViewport = parsedViewport.fitBounds(
-          bboxToBounds(addressBounds as any),
-          { padding: 150 }
-        );
-        setViewport({
-          ...newViewport,
-          zoom: Math.min(newViewport.zoom, 13)
-        })
+      try {
+        const parsedViewport = new WebMercatorViewport({
+          ...viewport,
+          width: mapContainerRef.current?.clientWidth || 0,
+          height: mapContainerRef.current?.clientHeight || 0
+        });
+        const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
+          return [[n[0], n[1]], [n[2], n[3]]]
+        }
+        const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
+        if (addressBounds.every(n => n !== Infinity)) {
+          const newViewport = parsedViewport.fitBounds(
+            bboxToBounds(addressBounds as any),
+            { padding: 150 }
+          );
+          setViewport({
+            ...newViewport,
+            zoom: Math.min(newViewport.zoom, 13)
+          })
+        }
+      } catch(e) {
+        console.error(e)
       }
     }
   }, [addresses])
 
   return (
-    <div class='grid overflow-hidden h-screen w-full -my-6' style={{
+    <div className='grid overflow-hidden h-screen w-full -my-6' style={{
       gridTemplateColumns: "500px 1fr"
     }}>
       {/* List */}
-      <div class='overflow-y-auto px-4 pt-6'>
-        <hr class='border-brand' />
-        {dustboxes.data?.data.map((dustbox, i) =>
-          <Fragment>
+      <div className='overflow-y-auto px-4 pt-6'>
+        <hr className='border-brand' />
+        {dustboxes.data?.data
+        .filter(d => d.lastEntryAt.timestamp !== 'never')
+        .slice()
+        .sort((a, b) => b.lastEntryAt.timestamp - a.lastEntryAt.timestamp)
+        .map((dustbox, i) =>
+          <Fragment key={dustbox.id}>
             <DustboxCard dustbox={dustbox} key={dustbox.id} />
             {(i < (dustboxes?.data?.data?.length || 0)) && (
-              <hr class='border-brand' />
+              <hr className='border-brand' />
             )}
           </Fragment>
         )}
       </div>
       {/* MAP */}
-      <div ref={mapContainerRef} class='relative'>
+      <div ref={mapContainerRef} className='relative'>
         <MapGL
           {...viewport}
           style={{ width: '100%', height: '100%' }}
@@ -152,13 +163,13 @@ function DustboxMap ({
         >
           <MapItems addresses={addresses || []} />
         </MapGL>
-        <div class='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
-          <div class='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
-          <div class='flex flex-row w-full'>
+        <div className='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
+          <div className='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
+          <div className='flex flex-row w-full'>
             {Object.entries(airQualityLegend).map(([meaning, background]) => (
-              <div class='flex-shrink-1 flex-grow-0 w-full'>
-                <div class='h-2' style={{ background }}></div>
-                <div class='mt-1 text-XXS font-bold text-black text-opacity-75'>{meaning}</div>
+              <div key={meaning} className='flex-shrink-1 flex-grow-0 w-full'>
+                <div className='h-2' style={{ background }}></div>
+                <div className='mt-1 text-XXS font-bold text-black text-opacity-75'>{meaning}</div>
               </div>
             ))}
           </div>
@@ -180,7 +191,7 @@ export const airQualityColour = (reading: number) => {
 
 export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean, size?: 'small' | 'large' }> = ({ reading, hideNumber = false, size = 'large' }) => {
   return (
-    <div class={`
+    <div className={`
       text-black inline-flex justify-center items-center text-center font-cousine
       ${size === 'small' ? 'w-5 h-5' : 'w-6 h-6'}
     `} style={{
@@ -191,6 +202,17 @@ export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolea
   )
 }
 
+type DustboxReading = {
+  createdAt:   number;
+  humidity:    string;
+  id:          string;
+  pm1:         string;
+  pm10:        string;
+  "pm2.5":     string;
+  streamId:    string;
+  temperature: string;
+}
+
 export const useDustboxReading = (dustboxId: string, query: {
   createdAt?: any
   limit?: any
@@ -199,31 +221,20 @@ export const useDustboxReading = (dustboxId: string, query: {
   dateFrom?: any
   dateTo?: any
 }) => {
-  return useSWR<{
-    status: number;
-    data:   Array<{
-      createdAt:   number;
-      humidity:    string;
-      id:          string;
-      pm1:         string;
-      pm10:        string;
-      "pm2.5":     string;
-      streamId:    string;
-      temperature: string;
-    }>
-  }>(querystring.stringifyUrl({
+  return useSWR<Array<DustboxReading>>(query.createdAt === 'never' ? null : querystring.stringifyUrl({
     url: `citizensense/collections/stream/${dustboxId}`,
     query
   }), async url => {
     const res = await fetch(url)
     const data = await res.json()
-    return data
+    return data?.data || []
   }, { revalidateOnFocus: false })
 }
 
 export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   const dustboxReading = useDustboxReading(dustbox.id, {
-    createdAt: dustbox.lastEntryAt.timestamp
+    // createdAt: dustbox.lastEntryAt.timestamp
+    limit: 1
   })
 
   const coordinates = useCoordinateData(
@@ -231,37 +242,44 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
     dustbox.location.longitude
   )
 
+  let latestReading
+  let latestReadingDate
+  if (dustboxReading?.data?.[0]) {
+    latestReading = parseFloat(dustboxReading?.data?.[0]?.["pm2.5"])
+    latestReadingDate = new Date(dustboxReading?.data?.[0]?.createdAt)
+  }
+
   return (
-    <div class='my-4'>
-      <div class='font-cousine text-XXS font-bold uppercase flex w-full'>
-        <h1 class=''>{dustbox.title}</h1>
-        <div class='pl-3 text-opacity-50 text-black'>
+    <div className='my-4'>
+      <div className='font-cousine text-XXS font-bold uppercase flex w-full'>
+        <h1 className=''>{dustbox.title}</h1>
+        <div className='pl-3 text-opacity-50 text-black'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </div>
       </div>
       {process.env.NODE_ENV !== 'production' && (
-        <div class='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
-          <h1 class='text-black text-opacity-25'>{dustbox.id}</h1>
+        <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
+          <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
         </div>
       )}
       <div>
-        {!dustboxReading.data ? (
-          <div class='text-black text-XS text-opacity-50 mt-2'>
+        {!latestReadingDate || latestReading === undefined ? (
+          <div className='text-black text-XS text-opacity-50 mt-2'>
             Loading data...
           </div>
         ) : (
-          <div class='flex w-full justify-between'>
-            <div class='pt-2'>
-              <span class='text-L font-bold'>{dustboxReading?.data?.data[0]["pm2.5"]}</span>
-              <span class='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
-              <div class='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-                Last reading at {new Date(dustboxReading?.data?.data[0]?.createdAt || 0).toLocaleString()}
+          <div className='flex w-full justify-between'>
+            <div className='pt-2'>
+              <span className='text-L font-bold'>{latestReading}</span>
+              <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
+              <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
+                Last reading at {latestReadingDate.toLocaleString()}
               </div>
             </div>
             <div>
               <AirQualityFuzzball
-                reading={parseInt(dustboxReading?.data?.data[0]["pm2.5"]) || 0}
+                reading={latestReading}
                 hideNumber
               />
             </div>
@@ -302,7 +320,8 @@ export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses 
 
 export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
   const dustboxReading = useDustboxReading(dustbox.properties.id, {
-    createdAt: dustbox.properties.lastEntryAt.timestamp
+    // createdAt: dustbox.properties.lastEntryAt.timestamp
+    limit: 1
   })
 
   return (
@@ -320,7 +339,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbo
         }}
       >
         <AirQualityFuzzball
-          reading={parseInt(dustboxReading?.data?.data[0]["pm2.5"])}
+          reading={parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")}
           size='small'
         />
       </div>

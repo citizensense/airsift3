@@ -14,13 +14,7 @@ module.exports = {
     filename: "[name]-[hash].js"
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json', '.css'],
-    alias: {
-      "react": "preact/compat",
-      "react-dom/test-utils": "preact/test-utils",
-      "react-dom": "preact/compat",
-    // Must be below test-utils
-    },
+    extensions: ['.ts', '.tsx', '.js', '.json', '.css']
   },
   plugins: [
     new CleanWebpackPlugin(),
