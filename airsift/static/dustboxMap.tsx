@@ -61,6 +61,15 @@ export default () => {
   }
 }
 
+const airQualityLegend = {
+  "N/A": "#8299a5",
+  "0-5": "#39f986",
+  "5-10": "#f0f27c",
+  "10-25": "#ffb48a",
+  "25-50": "#ff8695",
+  "50+": "#cf96c8",
+}
+
 function DustboxMap ({
   mapboxApiAccessToken,
   mapboxStyleConfig,
@@ -133,7 +142,7 @@ function DustboxMap ({
         )}
       </div>
       {/* MAP */}
-      <div ref={mapContainerRef}>
+      <div ref={mapContainerRef} class='relative'>
         <MapGL
           {...viewport}
           style={{ width: '100%', height: '100%' }}
@@ -143,27 +152,30 @@ function DustboxMap ({
         >
           <MapItems addresses={addresses || []} />
         </MapGL>
+        <div class='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
+          <div class='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
+          <div class='flex flex-row w-full'>
+            {Object.entries(airQualityLegend).map(([meaning, background]) => (
+              <div class='flex-shrink-1 flex-grow-0 w-full'>
+                <div class='h-2' style={{ background }}></div>
+                <div class='mt-1 text-XXS font-bold text-black text-opacity-75'>{meaning}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
 export const airQualityColour = (reading: number) => {
-  const colors = {
-    "mid": "#8299a5",
-    "highlightGreen": "#39f986",
-    "5-10": "#f0f27c",
-    "10-25": "#ffb48a",
-    "25-50": "#ff8695",
-    "50+": "#cf96c8",
-  }
-
-  if (reading <= 5) return colors['highlightGreen']
-  if (reading <= 10) return colors['5-10']
-  if (reading <= 25) return colors['10-25']
-  if (reading <= 50) return colors['25-50']
-  if (reading > 50) return colors['50+']
-  return colors['mid']
+  let key: keyof typeof airQualityLegend = 'N/A'
+  if (reading > 50) key = '50+'
+  if (reading <= 50) key = '25-50'
+  if (reading <= 25) key = '10-25'
+  if (reading <= 10) key = '5-10'
+  if (reading <= 5) key = '0-5'
+  return airQualityLegend[key]
 }
 
 export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean, size?: 'small' | 'large' }> = ({ reading, hideNumber = false, size = 'large' }) => {
