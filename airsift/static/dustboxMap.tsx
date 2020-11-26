@@ -76,7 +76,7 @@ function DustboxMap ({
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
-    query: { limit: 'off' }
+    query: { limit: 4 }
   }), undefined, { revalidateOnFocus: false })
 
   const addresses = useMemo(() => {
@@ -121,8 +121,14 @@ function DustboxMap ({
     }}>
       {/* List */}
       <div class='overflow-y-auto px-4 pt-6'>
-        {dustboxes.data?.data.map(dustbox =>
-          <DustboxCard dustbox={dustbox} key={dustbox.id} />
+        <hr class='border-brand' />
+        {dustboxes.data?.data.map((dustbox, i) =>
+          <Fragment>
+            <DustboxCard dustbox={dustbox} key={dustbox.id} />
+            {(i < dustboxes.data.data.length) && (
+              <hr class='border-brand' />
+            )}
+          </Fragment>
         )}
       </div>
       {/* MAP */}
@@ -142,7 +148,19 @@ function DustboxMap ({
 }
 
 export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
-  const dustboxReading = useSWR<{ data?: { ["pm2.5"]: number }[] }>(querystring.stringifyUrl({
+  const dustboxReading = useSWR<{
+    status: number;
+    data:   Array<{
+      createdAt:   number;
+      humidity:    string;
+      id:          string;
+      pm1:         string;
+      pm10:        string;
+      "pm2.5":     string;
+      streamId:    string;
+      temperature: string;
+    }>
+  }>(querystring.stringifyUrl({
     url: `citizensense/collections/stream/${dustbox.id}`,
     query: {
       createdAt: dustbox.lastEntryAt.timestamp
@@ -156,24 +174,32 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   const coordinates = useCoordinateData(dustbox.location.latitude, dustbox.location.longitude)
 
   return (
-    <div class='my-3'>
-      <div class='mb-4 font-cousine flex w-full'>
-        <h1 class='font-bold text-XXS uppercase'>{dustbox.title}</h1>
-        <div class='pl-3 font-bold text-opacity-50 text-black text-XXS uppercase'>
+    <div class='my-4'>
+      <div class='font-cousine text-XXS font-bold uppercase flex w-full'>
+        <h1 class=''>{dustbox.title}</h1>
+        <div class='pl-3 text-opacity-50 text-black'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </div>
       </div>
+      <div class='mt-1 mb-2 font-cousine text-XXS font-bold uppercase flex w-full'>
+        <h1 class='text-black text-opacity-25'>{dustbox.id}</h1>
+      </div>
       <div>
-        <pre>{JSON.stringify(dustboxReading, null, 2)}</pre>
-        {/* {!dustboxReading.data ? (
-          <span>Loading...</span>
+        {!dustboxReading.data ? (
+          // <pre>{JSON.stringify(dustboxReading, null, 2)}</pre>
+          <div class='text-black text-XS text-opacity-50'>
+            Loading data...
+          </div>
         ) : (
           <Fragment>
             <span class='text-L font-bold'>{dustboxReading?.data?.data[0]["pm2.5"]}</span>
-            <span class='text-S uppercase font-cousine'>PM 2.5 (MG/M3)</span>
+            <span class='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
+            <div class='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
+              Last reading at {new Date(dustboxReading?.data?.data[0]?.createdAt || 0).toLocaleString()}
+            </div>
           </Fragment>
-        )} */}
+        )}
       </div>
     </div>
   )
