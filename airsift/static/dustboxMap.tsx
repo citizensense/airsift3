@@ -166,15 +166,15 @@ export const airQualityColour = (reading: number) => {
   return colors['mid']
 }
 
-export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean }> = ({ reading, hideNumber = false }) => {
+export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean, size?: 'small' | 'large' }> = ({ reading, hideNumber = false, size = 'large' }) => {
   return (
     <div class={`
-      text-black inline-flex justify-center items-center text-center
-      w-6 h-6
+      text-black inline-flex justify-center items-center text-center font-cousine
+      ${size === 'small' ? 'w-5 h-5' : 'w-6 h-6'}
     `} style={{
-      backgroundImage: `radial-gradient(${airQualityColour(reading)} 25%, transparent 55%)`
+      backgroundImage: `radial-gradient(${airQualityColour(reading)} 25%, transparent 75%)`
     }}>
-      {!hideNumber && reading}
+      {!hideNumber && !Number.isNaN(reading) && reading}
     </div>
   )
 }
@@ -309,7 +309,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbo
       >
         <AirQualityFuzzball
           reading={parseInt(dustboxReading?.data?.data[0]["pm2.5"])}
-          hideNumber
+          size='small'
         />
       </div>
     </Marker>
