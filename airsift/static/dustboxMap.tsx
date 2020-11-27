@@ -191,15 +191,15 @@ function DustboxMap ({
 
   return (
     <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId, hoverSource, setHoverSource }}>
-      <div className='grid overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
+      <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
         {/* List */}
-        <div className='grid h-screen'>
-          <div className='px-4 mb-4 flex-shrink-0 pt-6'>
+        <div className='flex flex-col sm:h-screen'>
+          <div className='px-4 mb-4 pt-6'>
             <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
             <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
           </div>
           <hr className='border-brand mx-4' />
-          <div className='overflow-y-auto'>
+          <div className='sm:overflow-y-auto flex-grow'>
             {dustboxes.data?.data
             .slice()
             .sort((a, b) => {
@@ -220,7 +220,7 @@ function DustboxMap ({
             )}
           </div>
           <hr className='border-brand mx-4' />
-          <div className='flex-shrink-0 px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
+          <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
             <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
             <a href='https://citizensense.net/about/contact/'>Contact</a>
             <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
