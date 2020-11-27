@@ -92,11 +92,8 @@ function DustboxMap ({
 
   const addresses = useMemo(() => {
     return dustboxes.data?.data
-      .filter(d => (
-        d.lastEntryAt.timestamp !== 'never'
-        && !!d.location.latitude
-        && !!d.location.longitude
-      )).reduce((addresses, item) => {
+      .filter(d => !!d.location.latitude && !!d.location.longitude)
+      .reduce((addresses, item) => {
         const feature: DustboxFeature  = turf.feature({
           "type": "Point",
           "coordinates": [item.location.longitude, item.location.latitude] as any
@@ -110,10 +107,13 @@ function DustboxMap ({
   useEffect(() => {
     if (addresses?.length) {
       try {
-        const parsedViewport = new WebMercatorViewport({
-          ...viewport,
+        const mapContainerDimensions = {
           width: mapContainerRef.current?.clientWidth || 0,
           height: mapContainerRef.current?.clientHeight || 0
+        }
+        const parsedViewport = new WebMercatorViewport({
+          ...viewport,
+          ...mapContainerDimensions
         });
         const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
           return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
@@ -130,7 +130,7 @@ function DustboxMap ({
           })
         }
       } catch(e) {
-        console.error(e)
+        console.error("Failed to zoom in", e)
       }
     }
   }, [addresses])
@@ -143,7 +143,6 @@ function DustboxMap ({
       <div className='overflow-y-auto px-4 pt-6'>
         <hr className='border-brand' />
         {dustboxes.data?.data
-        .filter(d => d.lastEntryAt.timestamp !== 'never')
         .slice()
         .sort((a, b) => {
           if (!isValid(a.lastEntryAt.timestamp)) return 1
@@ -243,7 +242,6 @@ export const useDustboxReading = (dustboxId: string, query: {
 
 export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   const dustboxReading = useDustboxReading(dustbox.id, {
-    // createdAt: dustbox.lastEntryAt.timestamp
     limit: 1
   })
 
