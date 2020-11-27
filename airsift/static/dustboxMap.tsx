@@ -16,6 +16,7 @@ import { compareDesc, isValid } from 'date-fns'
 import { parseTimestamp } from './data/citizensense.net';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
+import { usePrevious } from './utils/state';
 
 const ROOT_ID = 'react-app-dustbox-map';
 
@@ -76,7 +77,13 @@ const airQualityLegend = {
 const DustboxFocusContext = createContext<{
   setDustboxId: (id: string | null) => void
   dustboxId: null | string
-}>({ setDustboxId: (s) => null, dustboxId: null })
+  hoverSource?: string
+  setHoverSource: (id?: string) => void
+}>({ setDustboxId: (s) => null, dustboxId: null, hoverSource: undefined, setHoverSource: (s) => null })
+
+const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
+  return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
+}
 
 function DustboxMap ({
   mapboxApiAccessToken,
@@ -86,6 +93,8 @@ function DustboxMap ({
   mapboxStyleConfig?: string
 }) {
   const [dustboxId, setDustboxId] = useState<string | null>(null)
+  const [hoverSource, setHoverSource] = useState<string>()
+  const previousDustboxId = usePrevious(dustboxId)
 
   const [viewport, setViewport] = useState({
     latitude: 0,
@@ -114,19 +123,17 @@ function DustboxMap ({
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (addresses?.length) {
-      try {
-        const mapContainerDimensions = {
-          width: mapContainerRef.current?.clientWidth || 0,
-          height: mapContainerRef.current?.clientHeight || 0
-        }
-        const parsedViewport = new WebMercatorViewport({
-          ...viewport,
-          ...mapContainerDimensions
-        });
-        const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
-          return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
-        }
+    try {
+      const mapContainerDimensions = {
+        width: mapContainerRef.current?.clientWidth || 0,
+        height: mapContainerRef.current?.clientHeight || 0
+      }
+      const parsedViewport = new WebMercatorViewport({
+        ...viewport,
+        ...mapContainerDimensions
+      });
+
+      if (addresses?.length) {
         const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
         if (addressBounds.every(n => n !== Infinity)) {
           const newViewport = parsedViewport.fitBounds(
@@ -138,14 +145,52 @@ function DustboxMap ({
             zoom: Math.min(newViewport.zoom, 13)
           })
         }
-      } catch(e) {
-        console.error("Failed to zoom in", e)
       }
+    } catch(e) {
+      console.error("Failed to zoom in")
+      console.error(e)
     }
   }, [addresses])
 
+  useEffect(() => {
+    try {
+      const mapContainerDimensions = {
+        width: mapContainerRef.current?.clientWidth || 0,
+        height: mapContainerRef.current?.clientHeight || 0
+      }
+      const parsedViewport = new WebMercatorViewport({
+        ...viewport,
+        ...mapContainerDimensions
+      });
+
+      const dustboxJustUnhovered = (previousDustboxId !== undefined && dustboxId === undefined)
+      if (dustboxId
+        && addresses?.length
+        && dustboxId !== previousDustboxId
+        && !dustboxJustUnhovered
+        && hoverSource !== 'map'
+      ) {
+        const dustboxAddress = addresses.find(d => d.properties.id === dustboxId)
+        const addressBounds = bbox({ type: "FeatureCollection", features: [dustboxAddress] || [] })
+        if (addressBounds.every(n => n !== Infinity)) {
+          const newViewport = parsedViewport.fitBounds(
+            bboxToBounds(addressBounds as any),
+            { padding: 150 }
+          );
+          setViewport({
+            ...newViewport,
+            zoom: viewport.zoom
+          })
+        }
+      }
+    } catch(e) {
+      console.error("Failed to zoom in")
+      console.error(e)
+    }
+  }, [addresses, dustboxId, previousDustboxId])
+
   return (
-    <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId }}>
+    <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId, hoverSource, setHoverSource }}>
       <div className='grid overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
         {/* List */}
         <div className='grid h-screen'>
@@ -189,6 +234,7 @@ function DustboxMap ({
             mapStyle={mapboxStyleConfig}
             accessToken={mapboxApiAccessToken}
             onViewportChange={setViewport}
+            viewportChangeMethod='flyTo'
           >
             <MapItems addresses={addresses || []} />
           </MapGL>
@@ -210,11 +256,11 @@ function DustboxMap ({
 }
 
 export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
-  const [isHovering, setIsHovering] = useDustboxFocusContext(dustbox.id)
+  const [isHovering, setIsHovering, hoverSource] = useDustboxFocusContext(dustbox.id)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!ref?.current?.parentElement?.querySelector(':hover')) {
+    if (hoverSource === 'map') {
       ref?.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -226,8 +272,8 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => 
     <div
       ref={ref}
       className={`py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
-      onMouseOver={() => setIsHovering(true)}
-      onMouseOut={() => setIsHovering(false)}
+      onMouseOver={() => setIsHovering(true, 'list')}
+      onMouseOut={() => setIsHovering(false, 'list')}
     >
       <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
     </div>
@@ -394,9 +440,17 @@ const useDustboxFocusContext = (dustboxId: string) => {
   const context = useContext(DustboxFocusContext)
   const hooks = [
     context.dustboxId === dustboxId,
-    (isHovering: boolean) => context.setDustboxId(isHovering ? dustboxId : null)
+    (isHovering: boolean, source: string) => {
+      context.setDustboxId(isHovering ? dustboxId : null)
+      context.setHoverSource(source)
+    },
+    context.hoverSource
   ]
-  return hooks as [boolean, (bool: boolean) => void]
+  return hooks as [
+    boolean,
+    (isHovering: boolean, source?: string) => void,
+    string
+  ]
 }
 
 export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
@@ -420,8 +474,8 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbo
             transform: 'translate(-50%, -50%)',
             cursor: 'default'
           }}
-          onMouseOver={() => setIsHovering(true)}
-          onMouseOut={() => setIsHovering(false)}
+          onMouseOver={() => setIsHovering(true, 'map')}
+          onMouseOut={() => setIsHovering(false, 'map')}
         >
           <AirQualityFuzzball
             reading={dustboxReadingValue}
