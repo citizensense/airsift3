@@ -275,7 +275,13 @@ export const useDustboxReading = (dustboxId: string, query: {
     const res = await fetch(url)
     const data = await res.json()
     return data?.data || []
-  }, { revalidateOnFocus: false })
+  }, {
+    revalidateOnMount: true,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 60 * 1000,
+    focusThrottleInterval: 60 * 1000
+  })
 }
 
 export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }> = ({ dustbox, withFuzzball }) => {
