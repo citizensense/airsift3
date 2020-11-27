@@ -14,6 +14,8 @@ import { firstOf } from './utils/array';
 import { Spinner } from './utils';
 import { compareDesc, isValid } from 'date-fns'
 import { parseTimestamp } from './data/citizensense.net';
+import { formatRelative } from 'date-fns/esm';
+import { enGB } from 'date-fns/esm/locale';
 
 const ROOT_ID = 'react-app-dustbox-map';
 
@@ -153,12 +155,14 @@ function DustboxMap ({
           )
         })
         .map((dustbox, i) =>
-          <Fragment key={dustbox.id}>
-            <DustboxCard dustbox={dustbox} key={dustbox.id} />
+          <div key={dustbox.id}>
+            <div className='my-4'>
+              <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
+            </div>
             {(i < (dustboxes?.data?.data?.length || 0)) && (
               <hr className='border-brand' />
             )}
-          </Fragment>
+          </div>
         )}
       </div>
       {/* MAP */}
@@ -198,7 +202,9 @@ export const airQualityColour = (reading: number) => {
   return airQualityLegend[key]
 }
 
-export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolean, size?: 'small' | 'large' }> = ({ reading, hideNumber = false, size = 'large' }) => {
+export const AirQualityFuzzball: React.FC<{ reading: number, withFuzzball?: boolean, withNumber?: boolean, size?: 'small' | 'large' }> = ({
+  reading, withNumber, size = 'large'
+}) => {
   return (
     <div className={`
       text-black inline-flex justify-center items-center text-center font-cousine
@@ -206,7 +212,7 @@ export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolea
     `} style={{
       backgroundImage: `radial-gradient(${airQualityColour(reading)} 30%, transparent 75%)`
     }}>
-      {!hideNumber && !Number.isNaN(reading) && reading}
+      {withNumber && !Number.isNaN(reading) && reading}
     </div>
   )
 }
@@ -240,7 +246,7 @@ export const useDustboxReading = (dustboxId: string, query: {
   }, { revalidateOnFocus: false })
 }
 
-export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
+export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }> = ({ dustbox, withFuzzball }) => {
   const dustboxReading = useDustboxReading(dustbox.id, {
     limit: 1
   })
@@ -257,27 +263,27 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
   }
 
   return (
-    <div className='my-4'>
+    <div className='overflow-hidden'>
       <div className='font-cousine text-XXS font-bold uppercase flex w-full'>
-        <h1 className=''>{dustbox.title}</h1>
-        <div className='pl-3 text-opacity-50 text-black'>
+        <h1 className='flex-shrink-0 truncate'>{dustbox.title}</h1>
+        <div className='flex-shrink-0 truncate pl-3 text-opacity-50 text-black'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </div>
       </div>
-      {process.env.NODE_ENV !== 'production' && (
+      {/* {process.env.NODE_ENV !== 'production' && (
         <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
           <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
         </div>
-      )}
+      )} */}
       <div>
         {!isValid(latestReadingDate) ? (
           <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold'>No readings yet</div>
         ) : (latestReading === undefined) ? (
           <div className='flex w-full justify-between items-end'>
-            <div className='pt-2'>
+            <div className='pt-1'>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-              Loading last reading at {latestReadingDate.toLocaleString()}
+              Loading last reading {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
               </div>
             </div>
             <div>
@@ -286,20 +292,19 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
           </div>
         ) : (
           <div className='flex w-full justify-between items-end'>
-            <div className='pt-2'>
+            <div className='pt-1'>
               <span className='text-L font-bold'>{latestReading}</span>
               <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-                Last reading at {latestReadingDate.toLocaleString()}
+                Last reading {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
               </div>
             </div>
-            <div>
+            {withFuzzball && <div>
               <AirQualityFuzzball
                 size='small'
                 reading={latestReading}
-                hideNumber
               />
-            </div>
+            </div>}
           </div>
         )}
       </div>
@@ -336,31 +341,55 @@ export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses 
 }
 
 export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
+  const [isHovering, setIsHovering] = useState(false)
   const dustboxReading = useDustboxReading(dustbox.properties.id, {
     // createdAt: dustbox.properties.lastEntryAt.timestamp
     limit: 1
   })
+  const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")
 
   return (
-    <Marker
-      key={dustbox.properties.id}
-      longitude={dustbox?.geometry?.coordinates[0]}
-      latitude={dustbox?.geometry?.coordinates[1]}
-    >
-      <div
-        // className='bg-brand text-white rounded-full overflow-hidden flex flex-row justify-center items-center w-2 h-2 border-2 border-solid border-white'
-        style={{
-          position: 'absolute',
-          transform: 'translate(-50%, -50%)',
-          cursor: 'default'
-        }}
+    <Fragment>
+      <Marker
+        longitude={dustbox?.geometry?.coordinates[0]}
+        latitude={dustbox?.geometry?.coordinates[1]}
       >
-        <AirQualityFuzzball
-          reading={parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")}
-          size='small'
-        />
-      </div>
-    </Marker>
+        <div
+          // className='bg-brand text-white rounded-full overflow-hidden flex flex-row justify-center items-center w-2 h-2 border-2 border-solid border-white'
+          style={{
+            position: 'absolute',
+            transform: 'translate(-50%, -50%)',
+            cursor: 'default'
+          }}
+          onMouseOver={() => setIsHovering(true)}
+          onMouseOut={() => setIsHovering(false)}
+        >
+          <AirQualityFuzzball
+            reading={dustboxReadingValue}
+            size='small'
+            withNumber
+          />
+        </div>
+      </Marker>
+      {isHovering && (
+        <Popup
+          className='dustbox-popup'
+          longitude={dustbox?.geometry?.coordinates[0]}
+          latitude={dustbox?.geometry?.coordinates[1]}
+          offset={20}
+          sx={{
+            background: 'none',
+            border: 'none',
+            boxShadow: 'none'
+          }}>
+            <div
+              className='p-2 rounded-lg'
+              style={{ background: airQualityColour(dustboxReadingValue) }}>
+              <DustboxCard dustbox={dustbox.properties} />
+            </div>
+        </Popup>
+      )}
+    </Fragment>
   )
 }
 

@@ -8,3 +8,26 @@
     @apply opacity-50;
   }
 }
+
+.dustbox-popup {
+  .mapboxgl-popup-close-button {
+    top: 15;
+    right: 15;
+  }
+
+  .mapboxgl-popup-content {
+    padding: 0;
+    background: none;
+    border: none;
+    boxShadow: none;
+    width: 300;
+  }
+
+  .mapboxgl-popup-close-button {
+    display: none;
+  }
+
+  .mapboxgl-popup-tip {
+    display: none;
+  }
+}
