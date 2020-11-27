@@ -11,6 +11,9 @@ import * as turf from '@turf/helpers'
 import Cluster from '@urbica/react-map-gl-cluster';
 import { useCoordinateData } from './utils/geo';
 import { firstOf } from './utils/array';
+import { Spinner } from './utils';
+import { compareDesc, isValid } from 'date-fns'
+import { parseTimestamp } from './data/citizensense.net';
 
 const ROOT_ID = 'react-app-dustbox-map';
 
@@ -202,7 +205,7 @@ export const AirQualityFuzzball: React.FC<{ reading: number, hideNumber?: boolea
       text-black inline-flex justify-center items-center text-center font-cousine
       ${size === 'small' ? 'w-5 h-5' : 'w-6 h-6'}
     `} style={{
-      backgroundImage: `radial-gradient(${airQualityColour(reading)} 25%, transparent 75%)`
+      backgroundImage: `radial-gradient(${airQualityColour(reading)} 30%, transparent 75%)`
     }}>
       {!hideNumber && !Number.isNaN(reading) && reading}
     </div>
@@ -249,11 +252,10 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
     dustbox.location.longitude
   )
 
+  const latestReadingDate = parseTimestamp(dustbox.lastEntryAt.timestamp)
   let latestReading
-  let latestReadingDate
   if (dustboxReading?.data?.[0]) {
     latestReading = parseFloat(dustboxReading?.data?.[0]?.["pm2.5"])
-    latestReadingDate = new Date(dustboxReading?.data?.[0]?.createdAt)
   }
 
   return (
@@ -271,12 +273,21 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
         </div>
       )}
       <div>
-        {!latestReadingDate || latestReading === undefined ? (
-          <div className='text-black text-XS text-opacity-50 mt-2'>
-            Loading data...
+        {!isValid(latestReadingDate) ? (
+          <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold'>No readings yet</div>
+        ) : (latestReading === undefined) ? (
+          <div className='flex w-full justify-between items-end'>
+            <div className='pt-2'>
+              <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
+              Loading last reading at {latestReadingDate.toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <Spinner size='small' />
+            </div>
           </div>
         ) : (
-          <div className='flex w-full justify-between'>
+          <div className='flex w-full justify-between items-end'>
             <div className='pt-2'>
               <span className='text-L font-bold'>{latestReading}</span>
               <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
@@ -286,6 +297,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
             </div>
             <div>
               <AirQualityFuzzball
+                size='small'
                 reading={latestReading}
                 hideNumber
               />
