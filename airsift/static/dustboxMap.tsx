@@ -379,7 +379,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
           <div className='flex w-full justify-between items-end'>
             <div className='pt-1'>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-              Loading last reading {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
+              Loading last reading
               </div>
             </div>
             <div>
@@ -392,7 +392,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
               <span className='text-L font-bold'>{latestReadingValue}</span>
               <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-                Last reading {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
+                {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
               </div>
             </div>
             {withFuzzball && <div>
