@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 <div id='react-app-dustbox-map'>
-  <div>Loading</div>
+  <div class='grid overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
+    <div class='flex flex-col h-screen'>
+      <div class='px-4 mb-4 pt-6'>
+        <h1 class='text-M font-bold mb-2'>Dustboxes</h1>
+        <p class='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
+      </div>
+      <hr class='border-brand mx-4' />
+      <div class='overflow-y-auto h-full flex-grow'>
+        <div>Loading dustboxes</div>
+      </div>
+      <hr class='border-brand mx-4' />
+      <div class='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
+        <img src='/static/images/citizenSenseLogo.png' class='mb-3' />
+        <a href='https://citizensense.net/about/contact/'>Contact</a>
+        <a class='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
+      </div>
+    </div>
+    <div class='relative hidden sm:block bg-gray-700'>
+    </div>
+  </div>
 </div>
 {% endblock %}
