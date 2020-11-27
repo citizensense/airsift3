@@ -294,10 +294,12 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
     dustbox.location.longitude
   )
 
-  const latestReadingDate = parseTimestamp(dustbox.lastEntryAt.timestamp)
-  let latestReading
-  if (dustboxReading?.data?.[0]) {
-    latestReading = parseFloat(dustboxReading?.data?.[0]?.["pm2.5"])
+  let latestReadingDate = parseTimestamp(dustbox.lastEntryAt.timestamp)
+  let latestReading = dustboxReading?.data?.[0]
+  let latestReadingValue
+  if (latestReading) {
+    latestReadingDate = parseTimestamp(latestReading.createdAt)
+    latestReadingValue = parseFloat(latestReading["pm2.5"])
   }
 
   return (
@@ -328,10 +330,10 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
               <Spinner size='small' />
             </div>
           </div>
-        ) : (
+        ) : latestReadingValue !== undefined ? (
           <div className='flex w-full justify-between items-end'>
             <div className='pt-1'>
-              <span className='text-L font-bold'>{latestReading}</span>
+              <span className='text-L font-bold'>{latestReadingValue}</span>
               <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
                 Last reading {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
@@ -340,11 +342,11 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
             {withFuzzball && <div>
               <AirQualityFuzzball
                 size='small'
-                reading={latestReading}
+                reading={latestReadingValue}
               />
             </div>}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )
