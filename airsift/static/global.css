@@ -9,6 +9,14 @@
   }
 }
 
+.grid-sidebar-map {
+  grid-template-columns: 1fr;
+
+  @screen sm {
+    grid-template-columns: min(50%, 500px) 1fr;
+  }
+}
+
 .dustbox-popup {
   .mapboxgl-popup-close-button {
     top: 15;

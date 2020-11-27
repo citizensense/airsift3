@@ -146,33 +146,43 @@ function DustboxMap ({
 
   return (
     <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId }}>
-      <div className='grid overflow-hidden h-screen w-full -my-6' style={{
-        gridTemplateColumns: "500px 1fr"
-      }}>
+      <div className='grid overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
         {/* List */}
-        <div className='overflow-y-auto pt-6'>
+        <div className='grid h-screen'>
+          <div className='px-4 mb-4 flex-shrink-0 pt-6'>
+            <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
+            <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
+          </div>
           <hr className='border-brand mx-4' />
-          {dustboxes.data?.data
-          .slice()
-          .sort((a, b) => {
-            if (!isValid(a.lastEntryAt.timestamp)) return 1
-            if (!isValid(b.lastEntryAt.timestamp)) return -1
-            return compareDesc(
-              parseTimestamp(a.lastEntryAt.timestamp),
-              parseTimestamp(b.lastEntryAt.timestamp)
-            )
-          })
-          .map((dustbox, i) =>
-            <Fragment key={dustbox.id}>
-              <DustboxListItem dustbox={dustbox} key={dustbox.id} />
-              {(i < (dustboxes?.data?.data?.length || 0)) && (
-                <hr className='border-brand mx-4' />
-              )}
-            </Fragment>
-          )}
+          <div className='overflow-y-auto'>
+            {dustboxes.data?.data
+            .slice()
+            .sort((a, b) => {
+              if (!isValid(a.lastEntryAt.timestamp)) return 1
+              if (!isValid(b.lastEntryAt.timestamp)) return -1
+              return compareDesc(
+                parseTimestamp(a.lastEntryAt.timestamp),
+                parseTimestamp(b.lastEntryAt.timestamp)
+              )
+            })
+            .map((dustbox, i) =>
+              <Fragment key={dustbox.id}>
+                <DustboxListItem dustbox={dustbox} key={dustbox.id} />
+                {(i + 1 < (dustboxes?.data?.data?.length || 0)) && (
+                  <hr className='border-brand mx-4' />
+                )}
+              </Fragment>
+            )}
+          </div>
+          <hr className='border-brand mx-4' />
+          <div className='flex-shrink-0 px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
+            <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
+            <a href='https://citizensense.net/about/contact/'>Contact</a>
+            <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
+          </div>
         </div>
         {/* MAP */}
-        <div ref={mapContainerRef} className='relative'>
+        <div ref={mapContainerRef} className='relative hidden sm:block'>
           <MapGL
             {...viewport}
             style={{ width: '100%', height: '100%' }}
