@@ -142,7 +142,14 @@ function DustboxMap ({
         {dustboxes.data?.data
         .filter(d => d.lastEntryAt.timestamp !== 'never')
         .slice()
-        .sort((a, b) => b.lastEntryAt.timestamp - a.lastEntryAt.timestamp)
+        .sort((a, b) => {
+          if (!isValid(a.lastEntryAt.timestamp)) return 1
+          if (!isValid(b.lastEntryAt.timestamp)) return -1
+          return compareDesc(
+            parseTimestamp(a.lastEntryAt.timestamp),
+            parseTimestamp(b.lastEntryAt.timestamp)
+          )
+        })
         .map((dustbox, i) =>
           <Fragment key={dustbox.id}>
             <DustboxCard dustbox={dustbox} key={dustbox.id} />
