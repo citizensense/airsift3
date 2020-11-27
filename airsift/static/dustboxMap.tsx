@@ -1,7 +1,7 @@
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import ReactDOM from 'react-dom';
-import React, { useMemo, useRef, useState, useEffect, Fragment } from 'react';
+import React, { useMemo, useRef, useState, useEffect, Fragment, useContext, createContext } from 'react';
 import useSWR from 'swr'
 import querystring from 'query-string'
 import { WebMercatorViewport } from '@math.gl/web-mercator';
@@ -73,6 +73,11 @@ const airQualityLegend = {
   "50+": "#cf96c8",
 }
 
+const DustboxFocusContext = createContext<{
+  setDustboxId: (id: string | null) => void
+  dustboxId: null | string
+}>({ setDustboxId: (s) => null, dustboxId: null })
+
 function DustboxMap ({
   mapboxApiAccessToken,
   mapboxStyleConfig,
@@ -80,6 +85,8 @@ function DustboxMap ({
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
 }) {
+  const [dustboxId, setDustboxId] = useState<string | null>(null)
+
   const [viewport, setViewport] = useState({
     latitude: 0,
     longitude: 0,
@@ -138,56 +145,81 @@ function DustboxMap ({
   }, [addresses])
 
   return (
-    <div className='grid overflow-hidden h-screen w-full -my-6' style={{
-      gridTemplateColumns: "500px 1fr"
-    }}>
-      {/* List */}
-      <div className='overflow-y-auto px-4 pt-6'>
-        <hr className='border-brand' />
-        {dustboxes.data?.data
-        .slice()
-        .sort((a, b) => {
-          if (!isValid(a.lastEntryAt.timestamp)) return 1
-          if (!isValid(b.lastEntryAt.timestamp)) return -1
-          return compareDesc(
-            parseTimestamp(a.lastEntryAt.timestamp),
-            parseTimestamp(b.lastEntryAt.timestamp)
-          )
-        })
-        .map((dustbox, i) =>
-          <div key={dustbox.id}>
-            <div className='my-4'>
-              <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
+    <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId }}>
+      <div className='grid overflow-hidden h-screen w-full -my-6' style={{
+        gridTemplateColumns: "500px 1fr"
+      }}>
+        {/* List */}
+        <div className='overflow-y-auto pt-6'>
+          <hr className='border-brand mx-4' />
+          {dustboxes.data?.data
+          .slice()
+          .sort((a, b) => {
+            if (!isValid(a.lastEntryAt.timestamp)) return 1
+            if (!isValid(b.lastEntryAt.timestamp)) return -1
+            return compareDesc(
+              parseTimestamp(a.lastEntryAt.timestamp),
+              parseTimestamp(b.lastEntryAt.timestamp)
+            )
+          })
+          .map((dustbox, i) =>
+            <Fragment key={dustbox.id}>
+              <DustboxListItem dustbox={dustbox} key={dustbox.id} />
+              {(i < (dustboxes?.data?.data?.length || 0)) && (
+                <hr className='border-brand mx-4' />
+              )}
+            </Fragment>
+          )}
+        </div>
+        {/* MAP */}
+        <div ref={mapContainerRef} className='relative'>
+          <MapGL
+            {...viewport}
+            style={{ width: '100%', height: '100%' }}
+            mapStyle={mapboxStyleConfig}
+            accessToken={mapboxApiAccessToken}
+            onViewportChange={setViewport}
+          >
+            <MapItems addresses={addresses || []} />
+          </MapGL>
+          <div className='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
+            <div className='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
+            <div className='flex flex-row w-full'>
+              {Object.entries(airQualityLegend).map(([meaning, background]) => (
+                <div key={meaning} className='flex-shrink-1 flex-grow-0 w-full'>
+                  <div className='h-2' style={{ background }}></div>
+                  <div className='mt-1 text-XXS font-bold text-black text-opacity-75'>{meaning}</div>
+                </div>
+              ))}
             </div>
-            {(i < (dustboxes?.data?.data?.length || 0)) && (
-              <hr className='border-brand' />
-            )}
-          </div>
-        )}
-      </div>
-      {/* MAP */}
-      <div ref={mapContainerRef} className='relative'>
-        <MapGL
-          {...viewport}
-          style={{ width: '100%', height: '100%' }}
-          mapStyle={mapboxStyleConfig}
-          accessToken={mapboxApiAccessToken}
-          onViewportChange={setViewport}
-        >
-          <MapItems addresses={addresses || []} />
-        </MapGL>
-        <div className='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
-          <div className='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
-          <div className='flex flex-row w-full'>
-            {Object.entries(airQualityLegend).map(([meaning, background]) => (
-              <div key={meaning} className='flex-shrink-1 flex-grow-0 w-full'>
-                <div className='h-2' style={{ background }}></div>
-                <div className='mt-1 text-XXS font-bold text-black text-opacity-75'>{meaning}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
+    </DustboxFocusContext.Provider>
+  )
+}
+
+export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
+  const [isHovering, setIsHovering] = useDustboxFocusContext(dustbox.id)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!ref?.current?.parentElement?.querySelector(':hover')) {
+      ref?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [isHovering, ref])
+
+  return (
+    <div
+      ref={ref}
+      className={`py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
+      onMouseOver={() => setIsHovering(true)}
+      onMouseOut={() => setIsHovering(false)}
+    >
+      <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
     </div>
   )
 }
@@ -340,8 +372,17 @@ export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses 
   )
 }
 
+const useDustboxFocusContext = (dustboxId: string) => {
+  const context = useContext(DustboxFocusContext)
+  const hooks = [
+    context.dustboxId === dustboxId,
+    (isHovering: boolean) => context.setDustboxId(isHovering ? dustboxId : null)
+  ]
+  return hooks as [boolean, (bool: boolean) => void]
+}
+
 export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
-  const [isHovering, setIsHovering] = useState(false)
+  const [isHovering, setIsHovering] = useDustboxFocusContext(dustbox.properties.id)
   const dustboxReading = useDustboxReading(dustbox.properties.id, {
     // createdAt: dustbox.properties.lastEntryAt.timestamp
     limit: 1
