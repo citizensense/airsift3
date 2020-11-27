@@ -113,7 +113,7 @@ function DustboxMap ({
           height: mapContainerRef.current?.clientHeight || 0
         });
         const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
-          return [[n[0], n[1]], [n[2], n[3]]]
+          return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
         }
         const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
         if (addressBounds.every(n => n !== Infinity)) {
