@@ -8,6 +8,7 @@ import { WebMercatorViewport } from '@math.gl/web-mercator';
 import bbox from '@turf/bbox';
 import { bboxToBounds } from '../utils/geo';
 import { usePrevious } from '../utils/state';
+import { useAtom } from 'jotai';
 
 export const Map: React.FC<{
   addresses: DustboxFeature[]
@@ -58,8 +59,8 @@ export const Map: React.FC<{
     }
   }, [addresses])
 
-  const [dustboxId] = dustboxIdAtom.use()
-  const [hoverSource] = hoverSourceAtom.use()
+  const [dustboxId] = useAtom(dustboxIdAtom)
+  const [hoverSource] = useAtom(hoverSourceAtom)
   const previousDustboxId = usePrevious(dustboxId)
 
   useEffect(() => {
