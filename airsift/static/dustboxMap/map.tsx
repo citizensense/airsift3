@@ -1,5 +1,5 @@
 import { DustboxFeature } from './types';
-import React, { Fragment, useState, useRef, useEffect, useContext } from 'react';
+import React, { Fragment, useState, useRef, useEffect, useContext, memo } from 'react';
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import { AirQualityFuzzball, DustboxCard } from './card';
@@ -14,7 +14,7 @@ export const Map: React.FC<{
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
   className?: string
-}> = ({
+}> = memo(({
   addresses,
   mapboxApiAccessToken,
   mapboxStyleConfig,
@@ -123,7 +123,7 @@ export const Map: React.FC<{
       </div>
     </div>
   )
-}
+})
 
 export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
   return (
@@ -135,7 +135,7 @@ export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses 
   )
 }
 
-export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbox }) => {
+export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ dustbox }) => {
   const [isHovering, setIsHovering] = useDustboxFocusContext(dustbox.properties.id)
   const dustboxReading = useDustboxReading(dustbox.properties.id, {
     // createdAt: dustbox.properties.lastEntryAt.timestamp
@@ -186,4 +186,4 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = ({ dustbo
       )}
     </Fragment>
   )
-}
+})

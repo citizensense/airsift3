@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useCoordinateData } from '../utils/geo';
 import { useDustboxReading, parseTimestamp, airQualityColour } from './data';
 import { Dustbox } from './types';
@@ -8,7 +8,7 @@ import { Spinner } from '../utils';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 
-export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }> = ({ dustbox, withFuzzball }) => {
+export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }> = memo(({ dustbox, withFuzzball }) => {
   const dustboxReading = useDustboxReading(dustbox.id, {
     limit: 1
   })
@@ -74,9 +74,9 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
       </div>
     </div>
   )
-}
+})
 
-export const AirQualityFuzzball: React.FC<{ reading: number, withFuzzball?: boolean, withNumber?: boolean, size?: 'small' | 'large' }> = ({
+export const AirQualityFuzzball: React.FC<{ reading: number, withFuzzball?: boolean, withNumber?: boolean, size?: 'small' | 'large' }> = memo(({
   reading, withNumber, size = 'large'
 }) => {
   return (
@@ -89,4 +89,4 @@ export const AirQualityFuzzball: React.FC<{ reading: number, withFuzzball?: bool
       {withNumber && !Number.isNaN(reading) && reading}
     </div>
   )
-}
+})

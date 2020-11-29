@@ -1,11 +1,11 @@
 import { Dustbox } from './types';
-import React, { useEffect, useRef, Fragment } from 'react';
+import React, { useEffect, useRef, Fragment, memo } from 'react';
 import { DustboxCard } from './card';
 import { isValid, compareDesc } from 'date-fns';
 import { parseTimestamp } from './data';
 import { useDustboxFocusContext } from './layout';
 
-export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = ({ dustboxes }) => {
+export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes }) => {
   return (
     <Fragment>
     {dustboxes
@@ -28,9 +28,9 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = ({ dustboxes }) =
       )
     }</Fragment>
   )
-}
+})
 
-export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => {
+export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }) => {
   const [isHovering, setIsHovering, hoverSource] = useDustboxFocusContext(dustbox.id)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -53,4 +53,4 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = ({ dustbox }) => 
       <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
     </div>
   )
-}
+})
