@@ -1,12 +1,13 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React, { useMemo, useState, useContext, createContext } from 'react';
+import React, { useMemo, useState, useContext, createContext, useEffect } from 'react';
 import useSWR from 'swr'
 import querystring from 'query-string'
 import * as turf from '@turf/helpers'
 import { DustboxFeature, Dustboxes } from './types';
 import { DustboxList } from './sidebar';
 import { Map } from './map';
-import { atom, Provider, useAtom } from 'jotai';
+import { createAtom as atom } from 'dawei';
+import memoise from 'fast-memoize';
 
 export function DustboxMap ({
   mapboxApiAccessToken,
@@ -34,56 +35,48 @@ export function DustboxMap ({
   }, [dustboxes.data])
 
   return (
-    <Provider>
-      <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
-        {/* List */}
-        <div className='flex flex-col sm:h-screen'>
-          <div className='px-4 mb-4 pt-6'>
-            <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
-            <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
-          </div>
-          <hr className='border-brand mx-4' />
-          <div className='sm:overflow-y-auto flex-grow'>
-            <DustboxList dustboxes={dustboxes.data?.data || []} />
-          </div>
-          <hr className='border-brand mx-4' />
-          <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
-            <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
-            <a href='https://citizensense.net/about/contact/'>Contact</a>
-            <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
-          </div>
+    <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
+      {/* List */}
+      <div className='flex flex-col sm:h-screen'>
+        <div className='px-4 mb-4 pt-6'>
+          <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
+          <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
         </div>
-        {/* MAP */}
-        <Map
-          addresses={addresses || []}
-          className='relative hidden sm:block'
-          mapboxApiAccessToken={mapboxApiAccessToken}
-          mapboxStyleConfig={mapboxStyleConfig}
-        />
+        <hr className='border-brand mx-4' />
+        <div className='sm:overflow-y-auto flex-grow'>
+          <DustboxList dustboxes={dustboxes.data?.data || []} />
+        </div>
+        <hr className='border-brand mx-4' />
+        <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
+          <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
+          <a href='https://citizensense.net/about/contact/'>Contact</a>
+          <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
+        </div>
       </div>
-    </Provider>
+      {/* MAP */}
+      <Map
+        addresses={addresses || []}
+        className='relative hidden sm:block'
+        mapboxApiAccessToken={mapboxApiAccessToken}
+        mapboxStyleConfig={mapboxStyleConfig}
+      />
+    </div>
   )
 }
 
-export const dustboxFocusData = atom<{ dustboxId?: string, hoverSource?: string }>({ dustboxId: undefined, hoverSource: undefined })
-
-export const useDustboxFocusDataContext = () => {
-  return useAtom(dustboxFocusData)
-}
+export const dustboxIdAtom = atom(undefined)
+export const hoverSourceAtom = atom('')
+export const isFocused = memoise((dustboxId: string) => atom(get => get(dustboxIdAtom) === dustboxId))
 
 export const useDustboxFocusContext = (dustboxId: string) => {
-  const [current, set] = useDustboxFocusDataContext()
-  const hooks = [
-    current.dustboxId === dustboxId,
-    (isHovering: boolean, hoverSource: string) => set({
-      dustboxId: isHovering ? dustboxId : undefined,
-      hoverSource
-    }),
-    current.hoverSource
-  ]
-  return hooks as [
-    boolean,
-    (isHovering: boolean, source?: string) => void,
-    string
-  ]
+  const [hoverSource] = hoverSourceAtom.use()
+  const [currentlyFocused] = isFocused(dustboxId).use()
+  return [
+    currentlyFocused as boolean,
+    (isHovering: boolean, nextHoverSource?: string) => {
+      hoverSourceAtom.set(nextHoverSource)
+      dustboxIdAtom.set(isHovering ? dustboxId : undefined)
+    },
+    hoverSource as string | undefined
+  ] as const
 }

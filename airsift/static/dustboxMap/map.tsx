@@ -3,7 +3,7 @@ import React, { Fragment, useState, useRef, useEffect, useContext, memo } from '
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import { AirQualityFuzzball, DustboxCard } from './card';
-import { useDustboxFocusContext, useDustboxFocusDataContext } from './layout';
+import { useDustboxFocusContext, dustboxIdAtom, hoverSourceAtom } from './layout';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
 import bbox from '@turf/bbox';
 import { bboxToBounds } from '../utils/geo';
@@ -27,9 +27,6 @@ export const Map: React.FC<{
   })
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
-
-  const [{ dustboxId, hoverSource }] = useDustboxFocusDataContext()
-  const previousDustboxId = usePrevious(dustboxId)
 
   useEffect(() => {
     try {
@@ -60,6 +57,10 @@ export const Map: React.FC<{
       console.error(e)
     }
   }, [addresses])
+
+  const [dustboxId] = dustboxIdAtom.use()
+  const [hoverSource] = hoverSourceAtom.use()
+  const previousDustboxId = usePrevious(dustboxId)
 
   useEffect(() => {
     try {
@@ -96,7 +97,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [addresses, dustboxId, previousDustboxId])
+  }, [addresses, dustboxId, hoverSource, previousDustboxId])
 
   return (
     <div ref={mapContainerRef} className={className}>
