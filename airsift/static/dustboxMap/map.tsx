@@ -3,7 +3,7 @@ import React, { Fragment, useState, useRef, useEffect, useContext } from 'react'
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import { AirQualityFuzzball, DustboxCard } from './card';
-import { useDustboxFocusContext, DustboxFocusContext } from './layout';
+import { useDustboxFocusContext, useDustboxFocusDataContext } from './layout';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
 import bbox from '@turf/bbox';
 import { bboxToBounds } from '../utils/geo';
@@ -28,7 +28,7 @@ export const Map: React.FC<{
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
-  const { dustboxId, hoverSource } = useContext(DustboxFocusContext)
+  const [{ dustboxId, hoverSource }] = useDustboxFocusDataContext()
   const previousDustboxId = usePrevious(dustboxId)
 
   useEffect(() => {

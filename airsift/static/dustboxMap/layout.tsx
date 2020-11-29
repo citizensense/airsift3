@@ -6,6 +6,7 @@ import * as turf from '@turf/helpers'
 import { DustboxFeature, Dustboxes } from './types';
 import { DustboxList } from './sidebar';
 import { Map } from './map';
+import { atom, Provider, useAtom } from 'jotai';
 
 export function DustboxMap ({
   mapboxApiAccessToken,
@@ -14,9 +15,6 @@ export function DustboxMap ({
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
 }) {
-  const [dustboxId, setDustboxId] = useState<string | null>(null)
-  const [hoverSource, setHoverSource] = useState<string>()
-
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
@@ -36,7 +34,7 @@ export function DustboxMap ({
   }, [dustboxes.data])
 
   return (
-    <DustboxFocusContext.Provider value={{ setDustboxId, dustboxId, hoverSource, setHoverSource }}>
+    <Provider>
       <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
         {/* List */}
         <div className='flex flex-col sm:h-screen'>
@@ -63,26 +61,25 @@ export function DustboxMap ({
           mapboxStyleConfig={mapboxStyleConfig}
         />
       </div>
-    </DustboxFocusContext.Provider>
+    </Provider>
   )
 }
 
-export const DustboxFocusContext = createContext<{
-  setDustboxId: (id: string | null) => void
-  dustboxId: null | string
-  hoverSource?: string
-  setHoverSource: (id?: string) => void
-}>({ setDustboxId: (s) => null, dustboxId: null, hoverSource: undefined, setHoverSource: (s) => null })
+export const dustboxFocusData = atom<{ dustboxId?: string, hoverSource?: string }>({ dustboxId: undefined, hoverSource: undefined })
+
+export const useDustboxFocusDataContext = () => {
+  return useAtom(dustboxFocusData)
+}
 
 export const useDustboxFocusContext = (dustboxId: string) => {
-  const context = useContext(DustboxFocusContext)
+  const [current, set] = useDustboxFocusDataContext()
   const hooks = [
-    context.dustboxId === dustboxId,
-    (isHovering: boolean, source: string) => {
-      context.setDustboxId(isHovering ? dustboxId : null)
-      context.setHoverSource(source)
-    },
-    context.hoverSource
+    current.dustboxId === dustboxId,
+    (isHovering: boolean, hoverSource: string) => set({
+      dustboxId: isHovering ? dustboxId : undefined,
+      hoverSource
+    }),
+    current.hoverSource
   ]
   return hooks as [
     boolean,
