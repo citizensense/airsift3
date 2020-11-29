@@ -1,6 +1,10 @@
 import useSWR from 'swr';
 import querystring from 'query-string';
 
+export const bboxToBounds = (n: [number, number, number, number]): [[number, number], [number, number]] => {
+  return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
+}
+
 export const useCoordinateData = (lat: any | null, lon: any | null) => {
   return useSWR<OpenStreetMapReverseGeocodeResponse | null>(() => {
     if (!lat || !lon) throw new Error("Missing lat/lng")
