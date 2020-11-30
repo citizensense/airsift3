@@ -72,6 +72,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    'django.contrib.gis',
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -92,12 +93,14 @@ THIRD_PARTY_APPS = [
     'modelcluster',
     'taggit',
     'webpack_loader',
+    'wagtailautocomplete',
 ]
 
 LOCAL_APPS = [
     "airsift.users.apps.UsersConfig",
+    "airsift.home.apps.HomeConfig",
     "airsift.dustboxes.apps.DustboxesConfig",
-    # Your stuff: custom apps go here
+    "airsift.observations.apps.ObservationsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

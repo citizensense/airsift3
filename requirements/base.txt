@@ -7,7 +7,7 @@ redis==3.5.3  # https://github.com/andymccurdy/redis-py
 hiredis==1.1.0  # https://github.com/redis/hiredis-py
 wagtail==2.11.2  # https://github.com/wagtail/wagtail
 django-webpack-loader==0.7.0
-pymongo==3.11.1  # https://github.com/mongodb/mongo-python-driver
+wagtail-autocomplete==0.6.
 
 # Django
 # ------------------------------------------------------------------------------

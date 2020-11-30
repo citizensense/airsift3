@@ -1,3 +1,4 @@
+from django.urls.conf import re_path
 from airsift import dustboxes
 from django.conf import settings
 from django.conf.urls.static import static
@@ -5,10 +6,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from django.shortcuts import redirect
 # wagtail
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
 urlpatterns = [
     path('', include('dustboxes.urls')),
@@ -18,9 +21,14 @@ urlpatterns = [
     path("users/", include("airsift.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
     path('pages/', include(wagtail_urls)),
+    path('', include('dustboxes.urls')),
+    path('', include('observations.urls')),
+    path('', lambda request: redirect('/dustboxes')),
+    path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
