@@ -29,8 +29,8 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
   return (
     <div className='overflow-hidden'>
       <div className='font-cousine text-XXS font-bold uppercase flex w-full'>
-        <h1 className='flex-shrink-0 truncate'>{dustbox.title}</h1>
-        <div className='flex-shrink-0 truncate pl-3 text-opacity-50 text-black'>
+        <h1 className='flex-shrink-0 truncate text-softBlack'>{dustbox.title}</h1>
+        <div className='flex-shrink-0 truncate pl-3 text-midDarker'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </div>
