@@ -6,7 +6,14 @@ const typographyStyles = require('@tailwindcss/typography/src/styles')
 
 /** @type {TailwindConfig} */
 module.exports = {
-  purge: [],
+  purge: [
+    './airsift/**/*.py',
+    './airsift/**/*.html',
+    './airsift/**/*.js',
+    './airsift/**/*.jsx',
+    './airsift/**/*.ts',
+    './airsift/**/*.tsx'
+  ],
   theme: {
     spacing: {
       '1': '5px',

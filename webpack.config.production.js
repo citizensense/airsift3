@@ -35,18 +35,7 @@ const config = mergeWithCustomize({
                   require('tailwindcss')(path.resolve(__dirname, './tailwind.config.js')),
                   require('postcss-nested')(),
                   require('postcss-preset-env'),
-                  require('cssnano')({ preset: 'default' }),
-                  require('@fullhuman/postcss-purgecss')({
-                    content: [
-                      './airsift/**/*.py',
-                      './airsift/**/*.html',
-                      './airsift/**/*.js',
-                      './airsift/**/*.jsx',
-                      './airsift/**/*.ts',
-                      './airsift/**/*.tsx'
-                    ],
-                    defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
-                  })
+                  require('cssnano')({ preset: 'default' })
                 ],
               },
             },
