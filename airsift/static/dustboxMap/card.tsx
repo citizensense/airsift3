@@ -47,7 +47,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
           <div className='flex w-full justify-between items-end'>
             <div className='pt-1'>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-              Loading last reading
+                Loading last reading
               </div>
             </div>
             <div>
@@ -55,26 +55,38 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
             </div>
           </div>
         ) : latestReadingValue !== undefined ? (
-          <div className='flex w-full justify-between items-end'>
-            <div className='pt-1'>
-              <span className='text-L font-bold'>{latestReadingValue}</span>
-              <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
-              <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-                {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
-              </div>
-            </div>
-            {withFuzzball && <div>
-              <AirQualityFuzzball
-                size='small'
-                reading={latestReadingValue}
-              />
-            </div>}
-          </div>
+          <AirQualityReading
+            reading={latestReadingValue}
+            date={latestReadingDate}
+            withFuzzball={withFuzzball}
+          />
         ) : null}
       </div>
     </div>
   )
 })
+
+export const AirQualityReading: React.FC<{ withFuzzball?: boolean, date: Date, reading: number }> = ({
+  reading, date, withFuzzball = true
+}) => {
+  return (
+    <div className='flex w-full justify-between items-center'>
+      <div className='pt-1'>
+        <span className='text-L font-bold'>{reading}</span>
+        <span className='pl-2 text-XS uppercase font-cousine'>PM&nbsp;2.5&nbsp;(MG/M3)</span>
+        <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
+          {formatRelative(date, new Date(), { locale: enGB })}
+        </div>
+      </div>
+      {withFuzzball && <div>
+        <AirQualityFuzzball
+          size='small'
+          reading={reading}
+        />
+      </div>}
+    </div>
+  )
+}
 
 export const AirQualityFuzzball: React.FC<{ reading: number, withFuzzball?: boolean, withNumber?: boolean, size?: 'small' | 'large' }> = memo(({
   reading, withNumber, size = 'large'

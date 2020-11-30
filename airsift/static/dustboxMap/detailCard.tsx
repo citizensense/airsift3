@@ -1,12 +1,12 @@
 import React from 'react'
 import useSWR from 'swr';
-import { DustboxDetail } from './types';
+import { DustboxDetail, DustboxReading } from './types';
 import querystring from 'query-string';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 import { isValid } from 'date-fns';
 import { Spinner } from '../utils';
-import { AirQualityFuzzball } from './card';
+import { AirQualityReading } from './card';
 import { parseTimestamp, useDustboxReading } from './data';
 import { A } from 'hookrouter';
 import { useCoordinateData } from '../utils/geo';
@@ -20,7 +20,8 @@ export function DustboxDetailCard ({ id }: { id: string }) {
 
   const dustbox = dustboxRes?.data?.data
   const dustboxReading = useDustboxReading(id, {
-    limit: 1
+    // Readings are 1 min apart
+    limit: 60 * 24
   })
 
   const coordinates = useCoordinateData(dustbox?.location.geometry.coordinates[1], dustbox?.location.geometry.coordinates[0])
@@ -47,16 +48,13 @@ export function DustboxDetailCard ({ id }: { id: string }) {
       {/* Readings go here */}
       <hr className='border-brand mx-4' />
       <div className='px-4 py-5 flex-grow'>
-        <div className='uppercase text-XS font-cousine font-bold mb-2 text-softBlack'>
-          Current Reading
-        </div>
         {!isValid(latestReadingDate) ? (
           <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold'>No readings yet</div>
         ) : (latestReading === undefined) ? (
           <div className='flex w-full justify-between items-center'>
             <div className='pt-1'>
               <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-              Loading last reading
+                Loading air quality data
               </div>
             </div>
             <div>
@@ -64,19 +62,16 @@ export function DustboxDetailCard ({ id }: { id: string }) {
             </div>
           </div>
         ) : latestReadingValue !== undefined ? (
-          <div className='flex w-full justify-between items-center'>
-            <div className='pt-1'>
-              <span className='text-L font-bold'>{latestReadingValue}</span>
-              <span className='pl-2 text-XS uppercase font-cousine'>PM 2.5 (MG/M3)</span>
-              <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
-                {formatRelative(latestReadingDate, new Date(), { locale: enGB })}
-              </div>
+          <div>
+            <div className='uppercase text-XS font-cousine font-bold mb-2 text-softBlack'>
+              Current Reading
             </div>
-            <div>
-              <AirQualityFuzzball
-                size='small'
-                reading={latestReadingValue}
-              />
+            <AirQualityReading withFuzzball date={latestReadingDate} reading={latestReadingValue} />
+            <div className='mt-5'>
+              <div className='uppercase text-XS font-cousine font-bold mb-2 text-softBlack'>
+                Last 24 hours
+              </div>
+              <Last24Hours data={dustboxReading.data || []} />
             </div>
           </div>
         ) : null}
@@ -88,6 +83,17 @@ export function DustboxDetailCard ({ id }: { id: string }) {
         <a href='https://citizensense.net/about/contact/'>Contact</a>
         <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
       </div>
+    </div>
+  )
+}
+
+export const Last24Hours: React.FC<{ data: DustboxReading[] }> = ({ data }) => {
+  const dateRanges = data.map(d => parseTimestamp(d.createdAt))
+  const newest = dateRanges[0]
+  const oldest = dateRanges[dateRanges.length - 1]
+  return (
+    <div>
+      Loaded data between {formatRelative(newest, new Date(), { locale: enGB })} and {formatRelative(oldest, new Date(), { locale: enGB })}.
     </div>
   )
 }
