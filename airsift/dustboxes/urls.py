@@ -6,6 +6,6 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('', lambda request: redirect('/dustboxes')),
     path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
-    path('dustboxes', views.dustboxes),
+    re_path(r'^dustboxes', views.dustboxes),
     re_path(r'^citizensense/(.*)', data.citizensense_data)
 ]

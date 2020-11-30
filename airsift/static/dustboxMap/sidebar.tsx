@@ -4,6 +4,7 @@ import { DustboxCard } from './card';
 import { isValid, compareDesc } from 'date-fns';
 import { parseTimestamp } from './data';
 import { useDustboxFocusContext } from './layout';
+import { A } from 'hookrouter';
 
 export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes }) => {
   return (
@@ -44,13 +45,15 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }
   }, [isHovering, ref])
 
   return (
-    <div
-      ref={ref}
-      className={`py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
-      onMouseOver={() => setIsHovering(true, 'list')}
-      onMouseOut={() => setIsHovering(false, 'list')}
-    >
-      <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
+    <div ref={ref}>
+      <A
+        href={`/dustboxes/stream/${dustbox.id}`}
+        className={`block py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
+        onMouseOver={() => setIsHovering(true, 'list')}
+        onMouseOut={() => setIsHovering(false, 'list')}
+      >
+        <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
+      </A>
     </div>
   )
 })

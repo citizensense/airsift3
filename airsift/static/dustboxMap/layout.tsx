@@ -3,11 +3,18 @@ import React, { useMemo, useState, useContext, createContext, useEffect } from '
 import useSWR from 'swr'
 import querystring from 'query-string'
 import * as turf from '@turf/helpers'
-import { DustboxFeature, Dustboxes } from './types';
+import { DustboxFeature, Dustboxes, DustboxDetail } from './types';
 import { DustboxList } from './sidebar';
 import { Map } from './map';
 import { createAtom as atom } from 'dawei';
 import memoise from 'fast-memoize';
+import { useRoutes } from 'hookrouter';
+import { DustboxDetailCard } from './detailCard';
+
+const routes = {
+  '/dustboxes/stream/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ dustboxIdURLParam }),
+  '/dustboxes*': () => ({ dustboxIdURLParam: undefined }),
+}
 
 export function DustboxMap ({
   mapboxApiAccessToken,
@@ -16,6 +23,14 @@ export function DustboxMap ({
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
 }) {
+  // @ts-ignore
+  const { dustboxIdURLParam } = useRoutes(routes)
+
+  useEffect(() => {
+    dustboxIdAtom.set(dustboxIdURLParam)
+    hoverSourceAtom.set('url')
+  }, [dustboxIdURLParam])
+
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
     url: '/citizensense/streams',
@@ -39,7 +54,11 @@ export function DustboxMap ({
       {/* List */}
       <div className='flex flex-col sm:h-screen'>
         <div className='px-4 mb-4 pt-6'>
-          <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
+          <h1 className='text-M font-bold mb-2'>
+            {dustboxIdURLParam
+              ? <DustboxDetailCard id={dustboxIdURLParam} />
+              : "Dustboxes"
+            }</h1>
           <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
         </div>
         <hr className='border-brand mx-4' />

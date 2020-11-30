@@ -14,11 +14,13 @@ export const Map: React.FC<{
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
   className?: string
+  defaultZoomLevel?: number
 }> = memo(({
   addresses,
   mapboxApiAccessToken,
   mapboxStyleConfig,
-  className
+  className,
+  defaultZoomLevel = 11
 }) => {
   const [viewport, setViewport] = useState({
     latitude: 0,
@@ -30,26 +32,28 @@ export const Map: React.FC<{
 
   useEffect(() => {
     try {
-      const mapContainerDimensions = {
-        width: mapContainerRef.current?.clientWidth || 0,
-        height: mapContainerRef.current?.clientHeight || 0
-      }
-      const parsedViewport = new WebMercatorViewport({
-        ...viewport,
-        ...mapContainerDimensions
-      });
+      if (!dustboxId) {
+        const mapContainerDimensions = {
+          width: mapContainerRef.current?.clientWidth || 0,
+          height: mapContainerRef.current?.clientHeight || 0
+        }
+        const parsedViewport = new WebMercatorViewport({
+          ...viewport,
+          ...mapContainerDimensions
+        });
 
-      if (addresses?.length) {
-        const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
-        if (addressBounds.every(n => n !== Infinity)) {
-          const newViewport = parsedViewport.fitBounds(
-            bboxToBounds(addressBounds as any),
-            { padding: 150 }
-          );
-          setViewport({
-            ...newViewport,
-            zoom: Math.min(newViewport.zoom, 13)
-          })
+        if (addresses?.length) {
+          const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
+          if (addressBounds.every(n => n !== Infinity)) {
+            const newViewport = parsedViewport.fitBounds(
+              bboxToBounds(addressBounds as any),
+              { padding: 150 }
+            );
+            setViewport({
+              ...newViewport,
+              zoom: Math.min(newViewport.zoom, defaultZoomLevel)
+            })
+          }
         }
       }
     } catch(e) {
@@ -64,22 +68,21 @@ export const Map: React.FC<{
 
   useEffect(() => {
     try {
-      const mapContainerDimensions = {
-        width: mapContainerRef.current?.clientWidth || 0,
-        height: mapContainerRef.current?.clientHeight || 0
-      }
-      const parsedViewport = new WebMercatorViewport({
-        ...viewport,
-        ...mapContainerDimensions
-      });
-
       const dustboxJustUnhovered = (previousDustboxId !== undefined && dustboxId === undefined)
       if (dustboxId
         && addresses?.length
-        && dustboxId !== previousDustboxId
         && !dustboxJustUnhovered
         && hoverSource !== 'map'
       ) {
+        const mapContainerDimensions = {
+          width: mapContainerRef.current?.clientWidth || 0,
+          height: mapContainerRef.current?.clientHeight || 0
+        }
+        const parsedViewport = new WebMercatorViewport({
+          ...viewport,
+          ...mapContainerDimensions
+        });
+
         const dustboxAddress = addresses.find(d => d.properties.id === dustboxId)
         const addressBounds = bbox({ type: "FeatureCollection", features: [dustboxAddress] || [] })
         if (addressBounds.every(n => n !== Infinity)) {
@@ -89,7 +92,7 @@ export const Map: React.FC<{
           );
           setViewport({
             ...newViewport,
-            zoom: viewport.zoom
+            zoom: Math.max(viewport.zoom, defaultZoomLevel)
           })
         }
       }
