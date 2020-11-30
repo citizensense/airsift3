@@ -11,7 +11,16 @@ from wagtail.snippets.models import register_snippet
 from wagtail.search import index
 from modelcluster.fields import ParentalKey
 from django.utils import timezone
+from wagtail.api import APIField
+from django.core.serializers import serialize
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
+class LocationSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = 'observations.Observation'
+        geo_field = "location"
+        id_field = False
+        fields = ('title', 'body', 'observation_type', 'datetime')
 class Observation(Page):
     body = RichTextField(blank=True, null=True)
     observation_type = ForeignKey('observations.ObservationType', on_delete=models.DO_NOTHING, related_name='+')
@@ -35,6 +44,14 @@ class Observation(Page):
         index.SearchField('body', partial_match=True),
     ]
 
+    api_fields = [
+        APIField('body'),
+        APIField('observation_type'),
+        APIField('datetime'),
+        APIField('location', serializer=LocationSerializer),
+        APIField('observation_images'),
+    ]
+
 class ObservationImage(Orderable):
     page = ParentalKey(Observation, related_name="observation_images")
     image = models.ForeignKey(
@@ -47,6 +64,10 @@ class ObservationImage(Orderable):
 
     panels = [
         ImageChooserPanel("image"),
+    ]
+
+    api_fields = [
+        APIField('image'),
     ]
 
 @register_snippet
@@ -70,3 +91,7 @@ class ObservationType(models.Model):
 
     def __str__(self):
         return self.title
+
+    api_fields = [
+        APIField('title'),
+    ]

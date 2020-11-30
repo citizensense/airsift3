@@ -12,19 +12,20 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
+from .api import api_router
 
 urlpatterns = [
-    path('', include('dustboxes.urls')),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("airsift.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
+    # Wagtail
     re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
+    path('api/v2/', api_router.urls),
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
-    path('pages/', include(wagtail_urls)),
+    # path('pages/', include(wagtail_urls)),
     path('', include('dustboxes.urls')),
     path('', include('observations.urls')),
     path('', lambda request: redirect('/dustboxes')),

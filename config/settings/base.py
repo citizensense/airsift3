@@ -94,6 +94,9 @@ THIRD_PARTY_APPS = [
     'taggit',
     'webpack_loader',
     'wagtailautocomplete',
+    'wagtail.api.v2',
+    'rest_framework',
+    'rest_framework_gis'
 ]
 
 LOCAL_APPS = [
@@ -102,6 +105,7 @@ LOCAL_APPS = [
     "airsift.dustboxes.apps.DustboxesConfig",
     "airsift.observations.apps.ObservationsConfig",
 ]
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -309,3 +313,5 @@ WEBPACK_LOADER = {
         'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
     }
 }
+
+WAGTAILAPI_LIMIT_MAX = None
