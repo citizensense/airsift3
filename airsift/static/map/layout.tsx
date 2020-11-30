@@ -50,17 +50,37 @@ export function DustboxMap ({
     query: { limit: 'off' }
   }), undefined, { revalidateOnFocus: false })
 
-  const addresses = useMemo(() => {
+  const dustboxAddresses = useMemo(() => {
     return dustboxes.data?.data
       .filter(d => !!d.location.latitude && !!d.location.longitude)
-      .reduce((addresses, item) => {
+      .reduce((dustboxAddresses, item) => {
         const feature: DustboxFeature  = turf.feature({
           "type": "Point",
           "coordinates": [item.location.longitude, item.location.latitude] as any
         }, item)
-        return [...addresses, feature]
+        return [...dustboxAddresses, feature]
       }, [] as Array<DustboxFeature>)
   }, [dustboxes.data])
+
+  const observations = useSWR<any[]>(querystring.stringifyUrl({
+    url: '/api/v2/pages/',
+    query: {
+      type: 'observations.Observation',
+      fields: 'location,observation_type(title),datetime'
+    }
+  }), undefined, { revalidateOnFocus: false })
+
+  const observationAddresses = useMemo(() => {
+    return observations.data?.items
+      .filter(d => d.location.type === 'Point')
+      .reduce((observationAddresses, item) => {
+        const feature: any  = turf.feature({
+          "type": "Point",
+          "coordinates": item.location.coordinates.slice().reverse()
+        }, item)
+        return [...observationAddresses, feature]
+      }, [] as Array<any>)
+  }, [observations.data])
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
@@ -100,7 +120,8 @@ export function DustboxMap ({
         ) : null}
       {/* MAP */}
       <Map
-        addresses={addresses || []}
+        dustboxAddresses={dustboxAddresses || []}
+        observationAddresses={observationAddresses || []}
         className='relative hidden sm:block'
         mapboxApiAccessToken={mapboxApiAccessToken}
         mapboxStyleConfig={mapboxStyleConfig}

@@ -11,13 +11,15 @@ import { usePrevious } from '../utils/state';
 import { A } from 'hookrouter';
 
 export const Map: React.FC<{
-  addresses: DustboxFeature[]
+  dustboxAddresses: DustboxFeature[]
+  observationAddresses: any[]
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
   className?: string
   defaultZoomLevel?: number
 }> = memo(({
-  addresses,
+  dustboxAddresses,
+  observationAddresses,
   mapboxApiAccessToken,
   mapboxStyleConfig,
   className,
@@ -43,8 +45,8 @@ export const Map: React.FC<{
           ...mapContainerDimensions
         });
 
-        if (addresses?.length) {
-          const addressBounds = bbox({ type: "FeatureCollection", features: addresses || [] })
+        if (dustboxAddresses?.length) {
+          const addressBounds = bbox({ type: "FeatureCollection", features: dustboxAddresses || [] })
           if (addressBounds.every(n => n !== Infinity)) {
             const newViewport = parsedViewport.fitBounds(
               bboxToBounds(addressBounds as any),
@@ -61,7 +63,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [addresses])
+  }, [dustboxAddresses])
 
   const [dustboxId] = dustboxIdAtom.use()
   const [hoverSource] = hoverSourceAtom.use()
@@ -71,7 +73,7 @@ export const Map: React.FC<{
     try {
       const dustboxJustUnhovered = (previousDustboxId !== undefined && dustboxId === undefined)
       if (dustboxId
-        && addresses?.length
+        && dustboxAddresses?.length
         && !dustboxJustUnhovered
         && hoverSource !== 'map'
       ) {
@@ -84,7 +86,7 @@ export const Map: React.FC<{
           ...mapContainerDimensions
         });
 
-        const dustboxAddress = addresses.find(d => d.properties.id === dustboxId)
+        const dustboxAddress = dustboxAddresses.find(d => d.properties.id === dustboxId)
         const addressBounds = bbox({ type: "FeatureCollection", features: [dustboxAddress] || [] })
         if (addressBounds.every(n => n !== Infinity)) {
           const newViewport = parsedViewport.fitBounds(
@@ -101,7 +103,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [addresses, dustboxId, hoverSource, previousDustboxId])
+  }, [dustboxAddresses, dustboxId, hoverSource, previousDustboxId])
 
   return (
     <div ref={mapContainerRef} className={className}>
@@ -113,7 +115,8 @@ export const Map: React.FC<{
         onViewportChange={setViewport}
         viewportChangeMethod='flyTo'
       >
-        <MapItems addresses={addresses || []} />
+        <DustboxItems addresses={dustboxAddresses || []} />
+        <ObservationItems addresses={observationAddresses || []} />
       </MapGL>
       <div className='font-cousine uppercase text-XS absolute bottom-0 right-0 mr-3 mb-5 p-4 bg-white opacity-75 border border-mid rounded-lg'>
         <div className='font-bold mb-2'>PM2.5 (MG/M3) Concentration</div>
@@ -130,7 +133,7 @@ export const Map: React.FC<{
   )
 })
 
-export const MapItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
+export const DustboxItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
   return (
     <Fragment>
       {addresses.map(address => (
@@ -183,6 +186,59 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
               className='p-2 rounded-lg'
               style={{ background: airQualityColour(dustboxReadingValue) }}>
               <DustboxCard dustbox={dustbox.properties} />
+            </div>
+        </Popup>
+      )}
+    </Fragment>
+  )
+})
+
+export const ObservationItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
+  return (
+    <Fragment>
+      {addresses.map(address => (
+        <ObservationMapMarker key={address.properties.id} observation={address} />
+      ))}
+    </Fragment>
+  )
+}
+
+export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ observation }) => {
+  const [isHovering, setIsHovering] = useState(false)
+  // const dustboxReading = useDustboxReading(dustbox.properties.id, {
+  //   // createdAt: dustbox.properties.lastEntryAt.timestamp
+  //   limit: 1
+  // })
+  // const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")
+
+  return (
+    <Fragment>
+      <Marker
+        longitude={observation?.geometry?.coordinates[0]}
+        latitude={observation?.geometry?.coordinates[1]}
+      >
+        <A
+          href={`/observations/inspect/${observation.properties.id}`}
+          className='block cursor-pointer absolute w-2 h-2 bg-darkBlue'
+          style={{ transform: 'translate(-50%, -50%)' }}
+          onMouseOver={() => setIsHovering(true)}
+          onMouseOut={() => setIsHovering(false)}
+        >
+        </A>
+      </Marker>
+      {isHovering && (
+        <Popup
+          className='observation-popup'
+          longitude={observation?.geometry?.coordinates[0]}
+          latitude={observation?.geometry?.coordinates[1]}
+          offset={20}
+          sx={{
+            background: 'none',
+            border: 'none',
+            boxShadow: 'none'
+          }}>
+            <div className='p-2 rounded-lg'>
+              {observation.title}
             </div>
         </Popup>
       )}
