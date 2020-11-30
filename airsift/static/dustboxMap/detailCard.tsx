@@ -11,6 +11,8 @@ import { parseTimestamp, useDustboxReading } from './data';
 import { A } from 'hookrouter';
 import { useCoordinateData } from '../utils/geo';
 import { firstOf } from '../utils/array';
+import { Dustbox24HourChart } from './graph';
+import { ParentSize } from '@visx/responsive'
 
 export function DustboxDetailCard ({ id }: { id: string }) {
   const dustboxRes = useSWR<DustboxDetail.Response>(querystring.stringifyUrl({
@@ -68,7 +70,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
             </div>
             <AirQualityReading withFuzzball date={latestReadingDate} reading={latestReadingValue} />
             <div className='mt-5'>
-              <div className='uppercase text-XS font-cousine font-bold mb-2 text-softBlack'>
+              <div className='uppercase text-XS font-cousine font-bold mb-1 text-softBlack'>
                 Last 24 hours
               </div>
               <Last24Hours data={dustboxReading.data || []} />
@@ -93,7 +95,10 @@ export const Last24Hours: React.FC<{ data: DustboxReading[] }> = ({ data }) => {
   const oldest = dateRanges[dateRanges.length - 1]
   return (
     <div>
-      Loaded data between {formatRelative(newest, new Date(), { locale: enGB })} and {formatRelative(oldest, new Date(), { locale: enGB })}.
+      <div className='font-cousine uppercase text-XXS text-midDarker pb-4'>Between {formatRelative(newest, new Date(), { locale: enGB })} and {formatRelative(oldest, new Date(), { locale: enGB })}</div>
+      <ParentSize>{({ width }) =>
+        <Dustbox24HourChart data={data} width={width} height={200} />
+      }</ParentSize>
     </div>
   )
 }
