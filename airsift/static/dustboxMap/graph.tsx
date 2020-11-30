@@ -29,19 +29,19 @@ export function Dustbox24HourChart ({
 }) {
   const charts = [
     {
-      name: "PM 1",
+      name: "PM1 MG/M3",
       getter: getPM1Value,
       background: '#FF8695'
     }, {
-      name: "PM 10",
+      name: "PM10 MG/M3",
       getter:getPM10Value,
       background: '#CF96C8'
     }, {
-      name: "PM 25",
+      name: "PM25 MG/M3",
       getter:getPM25Value,
       background: '#33CCFF'
     }, {
-      name: "Humidity",
+      name: "Humidity %",
       getter:getHumidityValue,
       background: '#2E03DA'
     }, {
@@ -50,7 +50,7 @@ export function Dustbox24HourChart ({
       background: '#39F986'
     }
   ]
-  const margin = { top: 0, right: 70, bottom: 0, left: 30 };
+  const margin = { top: 0, right: 90, bottom: 0, left: 30 };
 
   // bounds
   const innerWidth = width - margin.left - margin.right;

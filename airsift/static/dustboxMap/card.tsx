@@ -42,7 +42,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
       )} */}
       <div>
         {!isValid(latestReadingDate) ? (
-          <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold'>No readings yet</div>
+          <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold font-cousine'>No readings yet</div>
         ) : (latestReading === undefined) ? (
           <div className='flex w-full justify-between items-end'>
             <div className='pt-1'>
@@ -72,7 +72,7 @@ export const AirQualityReading: React.FC<{ withFuzzball?: boolean, date: Date, r
   return (
     <div className='flex w-full justify-between items-center'>
       <div className='pt-1'>
-        <span className='text-L font-bold'>{reading}</span>
+        <span className='font-default text-L font-bold'>{reading}</span>
         <span className='pl-2 text-XS uppercase font-cousine'>PM&nbsp;2.5&nbsp;(MG/M3)</span>
         <div className='font-cousine mt-1 text-opacity-25 text-black text-XXS uppercase'>
           {formatRelative(date, new Date(), { locale: enGB })}

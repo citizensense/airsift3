@@ -55,7 +55,7 @@ export function DustboxMap ({
       {dustboxIdURLParam
         ? <DustboxDetailCard id={dustboxIdURLParam} />
         : (
-          <div className='flex flex-col sm:h-screen'>
+          <div className='flex flex-col sm:h-screen overflow-x-hidden'>
             <div className='px-4 mb-4 pt-6'>
               <h1 className='text-M font-bold mb-2'>Dustboxes</h1>
               <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>

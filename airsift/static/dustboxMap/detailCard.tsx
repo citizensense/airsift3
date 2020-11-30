@@ -40,7 +40,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
   }
 
   return (
-    <div className='flex flex-col sm:h-screen'>
+    <div className='flex flex-col sm:h-screen overflow-x-hidden'>
       <div className='px-4 pt-6 pb-5'>
         <A href='/dustboxes' className='text-midDarker block font-bold font-cousine leading-none'>&larr; All Dustboxes</A>
         <div className='uppercase text-XS font-cousine font-bold mt-5 mb-4 text-softBlack leading-none'>{dustbox?.title || `Dustbox ${id}`}</div>
@@ -54,7 +54,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
       <hr className='border-brand mx-4' />
       <div className='px-4 py-5 flex-grow'>
         {dustbox?.lastEntryAt === 'never' ? (
-          <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold'>No readings yet</div>
+          <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold font-cousine'>No readings yet</div>
         ) : (latestReading === undefined) ? (
           <div className='flex w-full justify-between items-center'>
             <div className='pt-1'>
