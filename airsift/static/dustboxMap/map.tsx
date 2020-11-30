@@ -8,6 +8,7 @@ import { WebMercatorViewport } from '@math.gl/web-mercator';
 import bbox from '@turf/bbox';
 import { bboxToBounds } from '../utils/geo';
 import { usePrevious } from '../utils/state';
+import { A } from 'hookrouter';
 
 export const Map: React.FC<{
   addresses: DustboxFeature[]
@@ -153,13 +154,10 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
         longitude={dustbox?.geometry?.coordinates[0]}
         latitude={dustbox?.geometry?.coordinates[1]}
       >
-        <div
-          // className='bg-brand text-white rounded-full overflow-hidden flex flex-row justify-center items-center w-2 h-2 border-2 border-solid border-white'
-          style={{
-            position: 'absolute',
-            transform: 'translate(-50%, -50%)',
-            cursor: 'default'
-          }}
+        <A
+          href={`/dustboxes/stream/${dustbox.properties.id}`}
+          className='block cursor-pointer absolute'
+          style={{ transform: 'translate(-50%, -50%)' }}
           onMouseOver={() => setIsHovering(true, 'map')}
           onMouseOut={() => setIsHovering(false, 'map')}
         >
@@ -168,7 +166,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
             size='small'
             withNumber
           />
-        </div>
+        </A>
       </Marker>
       {isHovering && (
         <Popup
