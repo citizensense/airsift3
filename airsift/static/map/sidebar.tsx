@@ -47,7 +47,7 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }
   return (
     <div ref={ref}>
       <A
-        href={`/dustboxes/stream/${dustbox.id}`}
+        href={`/dustboxes/inspect/${dustbox.id}`}
         className={`block py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
         onMouseOver={() => setIsHovering(true, 'list')}
         onMouseOut={() => setIsHovering(false, 'list')}

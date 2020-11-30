@@ -155,7 +155,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
         latitude={dustbox?.geometry?.coordinates[1]}
       >
         <A
-          href={`/dustboxes/stream/${dustbox.properties.id}`}
+          href={`/dustboxes/inspect/${dustbox.properties.id}`}
           className='block cursor-pointer absolute'
           style={{ transform: 'translate(-50%, -50%)' }}
           onMouseOver={() => setIsHovering(true, 'map')}

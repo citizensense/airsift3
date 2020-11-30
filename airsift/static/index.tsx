@@ -7,5 +7,5 @@ import "./global.css"
 //   require("preact/debug");
 // }
 // import "preact/devtools";
-import dustboxMap from './dustboxMap'
-dustboxMap()
+import map from './map'
+map()

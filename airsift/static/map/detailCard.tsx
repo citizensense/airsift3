@@ -4,7 +4,6 @@ import { DustboxDetail, DustboxReading } from './types';
 import querystring from 'query-string';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
-import { isValid } from 'date-fns';
 import { Spinner } from '../utils';
 import { AirQualityReading } from './card';
 import { parseTimestamp, useDustboxReading } from './data';
