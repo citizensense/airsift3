@@ -1,6 +1,12 @@
 from .base import *  # noqa
 from .base import env
 
+# Allauth
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_REQUIRED = True
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key

@@ -29,6 +29,10 @@ CACHES = {
 EMAIL_BACKEND = env(
     "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
 )
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_REQUIRED = False
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 # WhiteNoise
 # ------------------------------------------------------------------------------
