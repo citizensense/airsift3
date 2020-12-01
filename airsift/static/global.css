@@ -7,11 +7,11 @@
   .blend-screen {
     mix-blend-mode: screen;
   }
-}
 
-.hoverable {
-  &:hover {
-    @apply opacity-50;
+  .hoverable {
+    &:hover {
+      @apply opacity-50;
+    }
   }
 }
 
