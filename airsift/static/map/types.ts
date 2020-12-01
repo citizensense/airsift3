@@ -120,7 +120,7 @@ export interface Item {
     meta:               ItemMeta;
     title:              string;
     observation_type:   ObservationType;
-    datetime:           Date;
+    datetime:           string;
     location:           Location;
     observation_images: ObservationImage[];
 }
@@ -176,6 +176,85 @@ export interface ObservationType {
 
 export interface ResponseMeta {
     total_count: number;
+}
+
+}
+
+export namespace Observation {
+  export interface Response {
+    id:                 number;
+    meta:               ResponseMeta;
+    title:              string;
+    body:               string;
+    observation_type:   ObservationType;
+    datetime:           string;
+    location:           Location;
+    observation_images: ObservationImage[];
+}
+
+export interface Location {
+    type:        string;
+    coordinates: number[];
+}
+
+export interface ResponseMeta {
+    type:               string;
+    detail_url:         string;
+    html_url:           null;
+    slug:               string;
+    show_in_menus:      boolean;
+    seo_title:          string;
+    search_description: string;
+    first_published_at: Date;
+    parent:             Parent;
+}
+
+export interface Parent {
+    id:    number;
+    meta:  ParentMeta;
+    title: string;
+}
+
+export interface ParentMeta {
+    type:       string;
+    detail_url: string;
+    html_url:   null;
+}
+
+export interface ObservationImage {
+    id:              number;
+    meta:            ObservationImageMeta;
+    image:           Image;
+    image_thumbnail: ImageThumbnail;
+}
+
+export interface Image {
+    id:    number;
+    meta:  ImageMeta;
+    title: string;
+}
+
+export interface ImageMeta {
+    type:         string;
+    detail_url:   string;
+    download_url: string;
+}
+
+export interface ImageThumbnail {
+    url:    string;
+    width:  number;
+    height: number;
+    alt:    string;
+}
+
+export interface ObservationImageMeta {
+    type: string;
+}
+
+export interface ObservationType {
+  id:    number;
+  meta:  ObservationImageMeta;
+  title: string;
 }
 
 }

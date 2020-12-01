@@ -1,4 +1,4 @@
-import { DustboxFeature, Observations, ObservationFeature } from './types';
+import { DustboxFeature, ObservationFeature } from './types';
 import React, { Fragment, useState, useRef, useEffect, useContext, memo } from 'react';
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
@@ -10,8 +10,7 @@ import { bboxToBounds } from '../utils/geo';
 import { usePrevious } from '../utils/state';
 import { useAtom } from 'jotai';
 import { A } from 'hookrouter';
-import * as turf from '@turf/helpers';
-import { ObservationCard } from './sidebar';
+import { ObservationCard } from './observation';
 
 export const Map: React.FC<{
   dustboxAddresses: DustboxFeature[]
@@ -106,7 +105,7 @@ export const Map: React.FC<{
           ...mapContainerDimensions
         });
 
-        const hoveredFeature = allMapItems.find(d => d.properties.id === hoverId)
+        const hoveredFeature = allMapItems.find(d => String(d.properties.id) === String(hoverId))
 
         const addressBounds = bbox({
           type: "FeatureCollection",
@@ -128,7 +127,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [dustboxAddresses, hoverId, hoverType, hoverSource, previousHoverId])
+  }, [observationAddresses, dustboxAddresses, hoverId, hoverType, hoverSource, previousHoverId])
 
   return (
     <div ref={mapContainerRef} className={className}>

@@ -11,6 +11,7 @@ import memoise from 'fast-memoize';
 import { useRoutes } from 'hookrouter';
 import { DustboxDetailCard } from './detailCard';
 import { Footer } from './scaffolding';
+import { ObservationDetailCard } from './observation';
 
 const routes = {
   '/dustboxes/inspect/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ dustboxIdURLParam }),
@@ -129,7 +130,7 @@ export function DustboxMap ({
           </div>
         )
         : observationIdURLParam
-        ? '<ObservationDetailCard id={observationIdURLParam} />'
+        ? <ObservationDetailCard id={observationIdURLParam} />
         : listObservationsURLParam ? (
           <div className='flex flex-col sm:h-screen overflow-x-hidden'>
             <div className='px-4 mb-4 pt-6'>
