@@ -1,6 +1,9 @@
 from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
-from wagtail.core.models import Page, Orderable
+from django.http.response import JsonResponse
+from rest_framework import generics
+from rest_framework.serializers import ModelSerializer
+from wagtail.core.models import Page, Orderable, PageRevision
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 from django.contrib.gis.db.models import PointField
@@ -12,9 +15,12 @@ from wagtail.search import index
 from modelcluster.fields import ParentalKey
 from django.utils import timezone
 from wagtail.api import APIField
-from django.core.serializers import serialize
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from wagtail.images.api.fields import ImageRenditionField
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+
+User = get_user_model()
 
 class LocationSerializer(GeoFeatureModelSerializer):
     class Meta:
@@ -22,6 +28,16 @@ class LocationSerializer(GeoFeatureModelSerializer):
         geo_field = "location"
         id_field = False
         fields = ('title', 'body', 'observation_type', 'datetime')
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username', 'id')
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 class Observation(Page):
     body = RichTextField(blank=True, null=True)
     observation_type = ForeignKey('observations.ObservationType', on_delete=models.DO_NOTHING, related_name='+')
@@ -45,12 +61,20 @@ class Observation(Page):
         index.SearchField('body', partial_match=True),
     ]
 
+    def contributors(self):
+        items = [
+            revision.user
+            for revision in PageRevision.objects.filter(page=self)
+        ]
+        return UserSerializer(items, many=True).data
+
     api_fields = [
         APIField('body'),
         APIField('observation_type'),
         APIField('datetime'),
         APIField('location', serializer=LocationSerializer),
         APIField('observation_images'),
+        APIField('contributors')
     ]
 
 class ObservationImage(Orderable):

@@ -46,6 +46,12 @@ export const ObservationCard: React.FC<{ observation: Observations.Item, withIco
   )
 })
 
+export const userName = ({ first_name, last_name, username }: Observation.User) =>
+  last_name ? `${first_name} ${last_name}` : username
+
+export const UserName = ({ user: { first_name, last_name, username } }: { user: Observation.User }) => {
+  return <span>{last_name ? `${first_name} ${last_name}` : username}</span>
+}
 
 export function ObservationDetailCard ({ id }: { id: any }) {
   const observationRes = useSWR<Observation.Response>(querystring.stringifyUrl({
@@ -80,15 +86,15 @@ export function ObservationDetailCard ({ id }: { id: any }) {
           </div>}
         </div>
         <div className='text-M font-semibold my-4 text-softBlack leading-none px-4'>
-          {observation?.title || `Observation ${id}`}
+          {observation?.title || `Loading Observation No. ${id}`}
         </div>
-        <div className='text-S text-softBlack my-2 px-4'>
-          Collaborators: ???
-        </div>
-        <div className='text-S text-softBlack my-2 px-4'>
+        {!!observation?.contributors.length && <div className='text-S text-softBlack my-2 px-4'>
+          Contributors: {observation?.contributors.map(userName).join(', ')}
+        </div>}
+        {coordinates.data && <div className='text-S text-softBlack my-2 px-4'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
-        </div>
+        </div>}
         <hr className='border-darkBlue mx-4 my-5' />
         {/* Rich text */}
         <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
