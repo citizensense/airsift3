@@ -3,11 +3,12 @@ import React, { Fragment, useState, useRef, useEffect, useContext, memo } from '
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
 import { AirQualityFuzzball, DustboxCard } from './card';
-import { useDustboxFocusContext, dustboxIdAtom, hoverSourceAtom } from './layout';
+import { useHoverContext, hoverIdAtom, hoverSourceAtom, hoverTypeAtom } from './layout';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
 import bbox from '@turf/bbox';
 import { bboxToBounds } from '../utils/geo';
 import { usePrevious } from '../utils/state';
+import { useAtom } from 'jotai';
 import { A } from 'hookrouter';
 
 export const Map: React.FC<{
@@ -33,30 +34,41 @@ export const Map: React.FC<{
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
+  const [hoverId] = useAtom(hoverIdAtom)
+  const [hoverType] = useAtom(hoverTypeAtom)
+  const [hoverSource] = useAtom(hoverSourceAtom)
+  const previousHoverId = usePrevious(hoverId)
+
   useEffect(() => {
     try {
-      if (!dustboxId) {
+      const allMapItems = (dustboxAddresses || []).concat(observationAddresses || [])
+
+      if (!hoverId && allMapItems?.length) {
         const mapContainerDimensions = {
           width: mapContainerRef.current?.clientWidth || 0,
           height: mapContainerRef.current?.clientHeight || 0
         }
+
         const parsedViewport = new WebMercatorViewport({
           ...viewport,
           ...mapContainerDimensions
         });
 
-        if (dustboxAddresses?.length) {
-          const addressBounds = bbox({ type: "FeatureCollection", features: dustboxAddresses || [] })
-          if (addressBounds.every(n => n !== Infinity)) {
-            const newViewport = parsedViewport.fitBounds(
-              bboxToBounds(addressBounds as any),
-              { padding: 150 }
-            );
-            setViewport({
-              ...newViewport,
-              zoom: Math.min(newViewport.zoom, defaultZoomLevel)
-            })
-          }
+        const addressBounds = bbox({
+          type: "FeatureCollection",
+          features: allMapItems
+        })
+
+        if (addressBounds.every(n => n !== Infinity)) {
+          const newViewport = parsedViewport.fitBounds(
+            bboxToBounds(addressBounds as any),
+            { padding: 150 }
+          );
+
+          setViewport({
+            ...newViewport,
+            zoom: Math.min(newViewport.zoom, defaultZoomLevel)
+          })
         }
       }
     } catch(e) {
@@ -65,15 +77,14 @@ export const Map: React.FC<{
     }
   }, [dustboxAddresses])
 
-  const [dustboxId] = dustboxIdAtom.use()
-  const [hoverSource] = hoverSourceAtom.use()
-  const previousDustboxId = usePrevious(dustboxId)
-
   useEffect(() => {
     try {
-      const dustboxJustUnhovered = (previousDustboxId !== undefined && dustboxId === undefined)
-      if (dustboxId
-        && dustboxAddresses?.length
+      const dustboxJustUnhovered = (previousHoverId !== undefined && hoverId === undefined)
+
+      const allMapItems = (dustboxAddresses || []).concat(observationAddresses || [])
+
+      if (hoverId
+        && allMapItems?.length
         && !dustboxJustUnhovered
         && hoverSource !== 'map'
       ) {
@@ -81,13 +92,19 @@ export const Map: React.FC<{
           width: mapContainerRef.current?.clientWidth || 0,
           height: mapContainerRef.current?.clientHeight || 0
         }
+
         const parsedViewport = new WebMercatorViewport({
           ...viewport,
           ...mapContainerDimensions
         });
 
-        const dustboxAddress = dustboxAddresses.find(d => d.properties.id === dustboxId)
-        const addressBounds = bbox({ type: "FeatureCollection", features: [dustboxAddress] || [] })
+        const hoveredFeature = allMapItems.find(d => d.properties.id === hoverId)
+
+        const addressBounds = bbox({
+          type: "FeatureCollection",
+          features: [hoveredFeature]
+        })
+
         if (addressBounds.every(n => n !== Infinity)) {
           const newViewport = parsedViewport.fitBounds(
             bboxToBounds(addressBounds as any),
@@ -103,7 +120,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [dustboxAddresses, dustboxId, hoverSource, previousDustboxId])
+  }, [dustboxAddresses, hoverId, hoverSource, previousHoverId])
 
   return (
     <div ref={mapContainerRef} className={className}>
@@ -144,7 +161,7 @@ export const DustboxItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addres
 }
 
 export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ dustbox }) => {
-  const [isHovering, setIsHovering] = useDustboxFocusContext(dustbox.properties.id)
+  const [isHovering, setIsHovering] = useHoverContext(dustbox.properties.id, 'dustbox')
   const dustboxReading = useDustboxReading(dustbox.properties.id, {
     // createdAt: dustbox.properties.lastEntryAt.timestamp
     limit: 1
@@ -204,12 +221,7 @@ export const ObservationItems: React.FC<{ addresses: DustboxFeature[] }> = ({ ad
 }
 
 export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ observation }) => {
-  const [isHovering, setIsHovering] = useState(false)
-  // const dustboxReading = useDustboxReading(dustbox.properties.id, {
-  //   // createdAt: dustbox.properties.lastEntryAt.timestamp
-  //   limit: 1
-  // })
-  // const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")
+  const [isHovering, setIsHovering] = useHoverContext(observation.properties.id, 'observation')
 
   return (
     <Fragment>
@@ -221,8 +233,8 @@ export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ obse
           href={`/observations/inspect/${observation.properties.id}`}
           className='block cursor-pointer absolute w-2 h-2 bg-darkBlue'
           style={{ transform: 'translate(-50%, -50%)' }}
-          onMouseOver={() => setIsHovering(true)}
-          onMouseOut={() => setIsHovering(false)}
+          onMouseOver={() => setIsHovering(true, 'map')}
+          onMouseOut={() => setIsHovering(false, 'map')}
         >
         </A>
       </Marker>

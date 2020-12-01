@@ -3,7 +3,7 @@ import React, { useEffect, useRef, Fragment, memo } from 'react';
 import { DustboxCard } from './card';
 import { isValid, compareDesc } from 'date-fns';
 import { parseTimestamp } from './data';
-import { useDustboxFocusContext } from './layout';
+import { useHoverContext } from './layout';
 import { A } from 'hookrouter';
 
 export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes }) => {
@@ -32,7 +32,7 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes
 })
 
 export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }) => {
-  const [isHovering, setIsHovering, hoverSource] = useDustboxFocusContext(dustbox.id)
+  const [isHovering, setIsHovering, hoverSource] = useHoverContext(dustbox.id, 'dustbox')
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

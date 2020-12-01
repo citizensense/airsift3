@@ -6,7 +6,7 @@ import * as turf from '@turf/helpers'
 import { DustboxFeature, Dustboxes, DustboxDetail } from './types';
 import { DustboxList } from './sidebar';
 import { Map } from './map';
-import { createAtom as atom } from 'dawei';
+import { atom, useAtom } from 'jotai';
 import memoise from 'fast-memoize';
 import { useRoutes } from 'hookrouter';
 import { DustboxDetailCard } from './detailCard';
@@ -39,10 +39,22 @@ export function DustboxMap ({
     listObservationsURLParam?: boolean
   }
 
+  const [, setHoverId] = useAtom(setHoverIdAtom)
+  const [, setHoverType] = useAtom(setHoverTypeAtom)
+  const [, setHoverSource] = useAtom(setHoverSourceAtom)
+
   useEffect(() => {
-    dustboxIdAtom.set(dustboxIdURLParam)
-    hoverSourceAtom.set('url')
-  }, [dustboxIdURLParam])
+    if (dustboxIdURLParam) {
+      setHoverId(dustboxIdURLParam)
+      setHoverType('dustbox')
+      setHoverSource('url')
+    } else
+    if (observationIdURLParam) {
+      setHoverId(observationIdURLParam)
+      setHoverType('observation')
+      setHoverSource('url')
+    }
+  }, [observationIdURLParam, dustboxIdURLParam, setHoverId])
 
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
@@ -130,19 +142,33 @@ export function DustboxMap ({
   )
 }
 
-export const dustboxIdAtom = atom(undefined)
-export const hoverSourceAtom = atom('')
-export const isFocused = memoise((dustboxId: string) => atom(get => get(dustboxIdAtom) === dustboxId))
+export const hoverIdAtom = atom<string | undefined>(undefined)
+const setHoverIdAtom = atom(null, (get, set, value: string | undefined) => set(hoverIdAtom, value))
 
-export const useDustboxFocusContext = (dustboxId: string) => {
-  const [hoverSource] = hoverSourceAtom.use()
-  const [currentlyFocused] = isFocused(dustboxId).use()
+type HoverType = 'dustbox' | 'observation'
+export const hoverTypeAtom = atom<HoverType | undefined>(undefined)
+const setHoverTypeAtom = atom(null, (get, set, value: HoverType | undefined) => set(hoverTypeAtom, value))
+
+type HoverSource = 'list' | 'map' | 'url'
+export const hoverSourceAtom = atom<HoverSource | undefined>(undefined)
+const setHoverSourceAtom = atom(null, (get, set, value: HoverSource | undefined) => set(hoverSourceAtom, value))
+
+export const isFocused = memoise((hoverId: string) => atom(
+  get => get(hoverIdAtom) === hoverId,
+  (get, set, hoverId: string | undefined) => set(hoverIdAtom, hoverId)
+))
+
+export const useHoverContext = (hoverId: string, type: HoverType) => {
+  const [hoverSource, setHoverSource] = useAtom(hoverSourceAtom)
+  const [, setHoverType] = useAtom(hoverTypeAtom)
+  const [thisIsFocused, setHoverId] = useAtom(isFocused(hoverId))
   return [
-    currentlyFocused as boolean,
-    (isHovering: boolean, nextHoverSource?: string) => {
-      hoverSourceAtom.set(nextHoverSource)
-      dustboxIdAtom.set(isHovering ? dustboxId : undefined)
+    thisIsFocused,
+    (isHovering: boolean, nextHoverSource: HoverSource) => {
+      setHoverSource(nextHoverSource)
+      setHoverType(type)
+      setHoverId(isHovering ? hoverId : undefined)
     },
-    hoverSource as string | undefined
+    hoverSource
   ] as const
 }
