@@ -13,11 +13,14 @@ from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 from .api import api_router
+from .views import capture_login, capture_logout
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
+    re_path(r'^cms/login/$', capture_login),
+    re_path(r'^cms/logout/$', capture_logout),
     path("users/", include("airsift.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Wagtail
