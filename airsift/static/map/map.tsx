@@ -11,6 +11,7 @@ import { usePrevious } from '../utils/state';
 import { useAtom } from 'jotai';
 import { A } from 'hookrouter';
 import * as turf from '@turf/helpers';
+import { ObservationCard } from './sidebar';
 
 export const Map: React.FC<{
   dustboxAddresses: DustboxFeature[]
@@ -197,7 +198,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
       </Marker>
       {isHovering && (
         <Popup
-          className='mapbox-invisible'
+          className='mapbox-invisible-popup max-w-2xl'
           longitude={dustbox?.geometry?.coordinates[0]}
           latitude={dustbox?.geometry?.coordinates[1]}
           offset={20}
@@ -247,18 +248,14 @@ export const ObservationMapMarker: React.FC<{ observation: ObservationFeature }>
       </Marker>
       {isHovering && (
         <Popup
-          className='mapbox-invisible'
+          className='mapbox-invisible-popup max-w-2xl'
           longitude={observation?.geometry?.coordinates[0]}
           latitude={observation?.geometry?.coordinates[1]}
           offset={20}
-          sx={{
-            background: 'none',
-            border: 'none',
-            boxShadow: 'none'
-          }}>
-            <div className='p-2 rounded-lg'>
-              {observation.properties.title}
-            </div>
+        >
+          <div className='p-2 rounded-lg bg-white'>
+            <ObservationCard observation={observation.properties} />
+          </div>
         </Popup>
       )}
     </Fragment>

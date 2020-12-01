@@ -3,6 +3,12 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap');
 
+@layer utilities {
+  .blend-screen {
+    mix-blend-mode: screen;
+  }
+}
+
 .hoverable {
   &:hover {
     @apply opacity-50;
@@ -18,6 +24,10 @@
 }
 
 .mapbox-invisible-popup {
+  max-width: none !important;
+  background: none;
+  border: none;
+
   .mapboxgl-popup-close-button {
     top: 15;
     right: 15;

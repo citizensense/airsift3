@@ -78,7 +78,12 @@ export function DustboxMap ({
     url: '/api/v2/pages/',
     query: {
       type: 'observations.Observation',
-      fields: 'location,observation_type(title),datetime'
+      fields: [
+        'location',
+        'observation_type(title)',
+        'datetime',
+        'observation_images(image_thumbnail)'
+      ].join(',')
     }
   }), undefined, { revalidateOnFocus: false })
 

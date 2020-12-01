@@ -111,43 +111,71 @@ export type ObservationFeature = turf.Feature<turf.Point, Observations.Item>
 
 export namespace Observations {
   export interface Response {
-    meta:  ObservationListResponseMeta;
+    meta:  ResponseMeta;
     items: Item[];
-  }
+}
 
-  export interface Item {
-    id:               number;
-    meta:             ItemMeta;
-    title:            string;
-    observation_type: ObservationType;
-    datetime:         Date;
-    location:         Location;
-  }
+export interface Item {
+    id:                 number;
+    meta:               ItemMeta;
+    title:              string;
+    observation_type:   ObservationType;
+    datetime:           Date;
+    location:           Location;
+    observation_images: ObservationImage[];
+}
 
-  export interface Location {
+export interface Location {
     type:        string;
     coordinates: number[];
-  }
+}
 
-  export interface ItemMeta {
+export interface ItemMeta {
     type:               string;
     detail_url:         string;
     html_url:           null;
     slug:               string;
     first_published_at: Date;
-  }
+}
 
-  export interface ObservationType {
+export interface ObservationImage {
+    id:              number;
+    meta:            ObservationImageMeta;
+    image:           Image;
+    image_thumbnail: ImageThumbnail;
+}
+
+export interface Image {
     id:    number;
-    meta:  ObservationTypeMeta;
+    meta:  ImageMeta;
     title: string;
-  }
+}
 
-  export interface ObservationTypeMeta {
+export interface ImageMeta {
+    type:         string;
+    detail_url:   string;
+    download_url: string;
+}
+
+export interface ImageThumbnail {
+    url:    string;
+    width:  number;
+    height: number;
+    alt:    string;
+}
+
+export interface ObservationImageMeta {
     type: string;
-  }
+}
 
-  export interface ObservationListResponseMeta {
+export interface ObservationType {
+    id:    number;
+    meta:  ObservationImageMeta;
+    title: string;
+}
+
+export interface ResponseMeta {
     total_count: number;
-  }
+}
+
 }

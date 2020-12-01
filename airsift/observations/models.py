@@ -14,6 +14,7 @@ from django.utils import timezone
 from wagtail.api import APIField
 from django.core.serializers import serialize
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from wagtail.images.api.fields import ImageRenditionField
 
 class LocationSerializer(GeoFeatureModelSerializer):
     class Meta:
@@ -68,6 +69,7 @@ class ObservationImage(Orderable):
 
     api_fields = [
         APIField('image'),
+        APIField('image_thumbnail', serializer=ImageRenditionField('fill-80x80', source='image'))
     ]
 
 @register_snippet
