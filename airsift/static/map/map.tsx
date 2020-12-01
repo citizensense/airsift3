@@ -1,4 +1,4 @@
-import { DustboxFeature } from './types';
+import { DustboxFeature, Observations, ObservationFeature } from './types';
 import React, { Fragment, useState, useRef, useEffect, useContext, memo } from 'react';
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
 import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
@@ -10,10 +10,11 @@ import { bboxToBounds } from '../utils/geo';
 import { usePrevious } from '../utils/state';
 import { useAtom } from 'jotai';
 import { A } from 'hookrouter';
+import * as turf from '@turf/helpers';
 
 export const Map: React.FC<{
   dustboxAddresses: DustboxFeature[]
-  observationAddresses: any[]
+  observationAddresses: ObservationFeature[]
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
   className?: string
@@ -41,7 +42,10 @@ export const Map: React.FC<{
 
   useEffect(() => {
     try {
-      const allMapItems = (dustboxAddresses || []).concat(observationAddresses || [])
+      const allMapItems = [
+        ...(dustboxAddresses || []),
+        ...(observationAddresses || [])
+      ]
 
       if (!hoverId && allMapItems?.length) {
         const mapContainerDimensions = {
@@ -75,17 +79,20 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [dustboxAddresses])
+  }, [dustboxAddresses, observationAddresses])
 
   useEffect(() => {
     try {
-      const dustboxJustUnhovered = (previousHoverId !== undefined && hoverId === undefined)
+      const justUnhovered = (previousHoverId !== undefined && hoverId === undefined)
 
-      const allMapItems = (dustboxAddresses || []).concat(observationAddresses || [])
+      const allMapItems = [
+        ...(dustboxAddresses || []),
+        ...(observationAddresses || [])
+      ]
 
       if (hoverId
         && allMapItems?.length
-        && !dustboxJustUnhovered
+        && !justUnhovered
         && hoverSource !== 'map'
       ) {
         const mapContainerDimensions = {
@@ -120,7 +127,7 @@ export const Map: React.FC<{
       console.error("Failed to zoom in")
       console.error(e)
     }
-  }, [dustboxAddresses, hoverId, hoverSource, previousHoverId])
+  }, [dustboxAddresses, hoverId, hoverType, hoverSource, previousHoverId])
 
   return (
     <div ref={mapContainerRef} className={className}>
@@ -190,7 +197,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
       </Marker>
       {isHovering && (
         <Popup
-          className='dustbox-popup'
+          className='mapbox-invisible'
           longitude={dustbox?.geometry?.coordinates[0]}
           latitude={dustbox?.geometry?.coordinates[1]}
           offset={20}
@@ -210,7 +217,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
   )
 })
 
-export const ObservationItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
+export const ObservationItems: React.FC<{ addresses: ObservationFeature[] }> = ({ addresses }) => {
   return (
     <Fragment>
       {addresses.map(address => (
@@ -220,7 +227,7 @@ export const ObservationItems: React.FC<{ addresses: DustboxFeature[] }> = ({ ad
   )
 }
 
-export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ observation }) => {
+export const ObservationMapMarker: React.FC<{ observation: ObservationFeature }> = memo(({ observation }) => {
   const [isHovering, setIsHovering] = useHoverContext(observation.properties.id, 'observation')
 
   return (
@@ -240,7 +247,7 @@ export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ obse
       </Marker>
       {isHovering && (
         <Popup
-          className='observation-popup'
+          className='mapbox-invisible'
           longitude={observation?.geometry?.coordinates[0]}
           latitude={observation?.geometry?.coordinates[1]}
           offset={20}
@@ -250,7 +257,7 @@ export const ObservationMapMarker: React.FC<{ observation: any }> = memo(({ obse
             boxShadow: 'none'
           }}>
             <div className='p-2 rounded-lg'>
-              {observation.title}
+              {observation.properties.title}
             </div>
         </Popup>
       )}

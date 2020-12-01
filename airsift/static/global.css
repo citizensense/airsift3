@@ -17,7 +17,7 @@
   }
 }
 
-.dustbox-popup {
+.mapbox-invisible-popup {
   .mapboxgl-popup-close-button {
     top: 15;
     right: 15;
