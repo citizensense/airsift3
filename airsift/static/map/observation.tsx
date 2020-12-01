@@ -91,7 +91,21 @@ export function ObservationDetailCard ({ id }: { id: any }) {
         </div>
         <hr className='border-darkBlue mx-4 my-5' />
         {/* Rich text */}
+        <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
+          Description
+        </div>
+        <div className='prose px-4' dangerouslySetInnerHTML={{ __html: observation?.body }} />
         {/* Images */}
+        <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
+          Media
+        </div>
+        <div className='mx-4'>
+          {observation?.observation_images.map(image => {
+            return (
+              <img key={image.id} src={image.image.meta.download_url} className='w-full my-2' />
+            )
+          })}
+        </div>
       </div>
       {/* Footer */}
       <hr className='border-brand mx-4' />
