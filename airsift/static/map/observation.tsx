@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, Fragment } from 'react'
 import { Observation, Observations } from './types'
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
@@ -97,21 +97,29 @@ export function ObservationDetailCard ({ id }: { id: any }) {
         </div>}
         <hr className='border-darkBlue mx-4 my-5' />
         {/* Rich text */}
-        <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
-          Description
-        </div>
-        <div className='prose px-4' dangerouslySetInnerHTML={{ __html: observation?.body }} />
+        {!!observation?.body && (
+          <Fragment>
+            <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
+              Description
+            </div>
+            <div className='prose px-4' dangerouslySetInnerHTML={{ __html: observation?.body }} />
+          </Fragment>
+        )}
         {/* Images */}
-        <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
-          Media
-        </div>
-        <div className='mx-4'>
-          {observation?.observation_images.map(image => {
-            return (
-              <img key={image.id} src={image.image.meta.download_url} className='w-full my-2' />
-            )
-          })}
-        </div>
+        {!!observation?.observation_images?.length && (
+          <Fragment>
+            <div className='px-4 mt-4 mb-2 text-softBlack block font-bold font-cousine leading-none uppercase'>
+              Media
+            </div>
+            <div className='mx-4'>
+              {observation?.observation_images.map(image => {
+                return (
+                  <img key={image.id} src={image.image.meta.download_url} className='w-full my-2' />
+                )
+              })}
+            </div>
+          </Fragment>
+        )}
       </div>
       {/* Footer */}
       <hr className='border-brand mx-4' />
