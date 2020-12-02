@@ -34,10 +34,7 @@ class UserCreationForm(admin_forms.UserCreationForm):
 
 
 from allauth.account.forms import SignupForm
-from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
-
-editors_group = Group.objects.get(name='Editors')
 
 class CustomSignupForm(SignupForm):
     name = fields.CharField(required=True, max_length=150, label='Display Name', help_text="This is the name displayed publicly with your contributions. User your real name and others in your community can get in touch.")
@@ -57,6 +54,4 @@ class CustomSignupForm(SignupForm):
         user.password2 = user.password
         user.name = cleaned_data.get('name')
         user.save()
-        # Allow the user access to the Wagtail CMS
-        editors_group.user_set.add(user)
         return user

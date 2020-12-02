@@ -14,3 +14,5 @@ def make_publish_default_action(menu_items, request, context):
                 break
     except:
         pass
+
+# TODO: when the user clicks on "Move" to move one page somewhere else, she can still see the other pages
