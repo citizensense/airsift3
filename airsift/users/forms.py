@@ -40,7 +40,7 @@ from django.utils.safestring import mark_safe
 editors_group = Group.objects.get(name='Editors')
 
 class CustomSignupForm(SignupForm):
-    name = fields.CharField(max_length=100, label='Display Name', help_text="This is the name displayed publicly with your contributions.")
+    name = fields.CharField(required=True, max_length=150, label='Display Name', help_text="This is the name displayed publicly with your contributions. User your real name and others in your community can get in touch.")
     terms = fields.BooleanField(label=mark_safe('I agree to the <a href="https://citizensense.net/about/terms/" class="border-b border-brand">Terms and Conditions</a>'), required=True)
 
     def __init__(self, *args, **kwargs):
@@ -52,9 +52,10 @@ class CustomSignupForm(SignupForm):
             return forms.ValidationError("You must accept the terms and conditions")
 
     def save(self, request):
+        cleaned_data = super().clean()
         user = super(CustomSignupForm, self).save(request)
         user.password2 = user.password
-        user.checkbox = None
+        user.name = cleaned_data.get('name')
         user.save()
         # Allow the user access to the Wagtail CMS
         editors_group.user_set.add(user)

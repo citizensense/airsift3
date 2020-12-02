@@ -8,7 +8,7 @@ class User(AbstractUser):
     """Default user for airsift."""
 
     #: First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
+    name = CharField(_("Display Name"), blank=True, max_length=255)
 
     def get_absolute_url(self):
         """Get url for user's detail view.
