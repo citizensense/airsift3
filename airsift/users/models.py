@@ -61,9 +61,8 @@ def create_user_group_and_pages(sender, **kwargs):
     new_group.permissions.add(access_admin)
 
     # Now start creating page access
-
     # Create unique UserIndexPage for the user
-    person_index_page = UserIndexPage(title=user.username)
+    person_index_page = UserIndexPage(title=f"{user.name}'s contributions")
 
     # Add UserIndexPage to homepage as a child
     home = HomePage.objects.child_of(Page.get_first_root_node()).first()
@@ -73,15 +72,23 @@ def create_user_group_and_pages(sender, **kwargs):
     person_index_page.save_revision()
 
     # Create new add GroupPagePermission
-    GroupPagePermission.objects.create(
-        group=new_group,
-        page=person_index_page,
-        permission_type='add'
-    )
+    for permission in [
+        # Allow page creation
+        'add',
+        # Allow edits
+        'edit',
+        # Allow users to publish their pages straight away
+        'publish'
+    ]:
+        GroupPagePermission.objects.create(
+            group=new_group,
+            page=person_index_page,
+            permission_type=permission
+        )
 
     # Create a collection that this user can put images in
     root_collection = Collection.get_first_root_node()
-    image_collection = Collection(name=f"{user.username}'s images")
+    image_collection = Collection(name=f"{user.name}'s images")
     root_collection.add_child(instance=image_collection)
 
     # Create new GroupCollectionPermission for Profile Images collection
