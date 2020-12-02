@@ -9,6 +9,7 @@ wagtail==2.11.2  # https://github.com/wagtail/wagtail
 django-webpack-loader==0.7.0
 wagtail-autocomplete==0.6
 djangorestframework-gis==0.16
+crispy-tailwind==0.2.0
 
 # Django
 # ------------------------------------------------------------------------------
