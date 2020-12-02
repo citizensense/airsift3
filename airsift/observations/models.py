@@ -39,6 +39,8 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
 class Observation(Page):
+    subpage_types = []
+
     body = RichTextField(blank=True, null=True)
     observation_type = ForeignKey('observations.ObservationType', on_delete=models.DO_NOTHING, related_name='+')
     datetime = DateTimeField(blank=True, null=False, default=timezone.now)
