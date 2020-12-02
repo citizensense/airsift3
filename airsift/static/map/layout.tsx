@@ -90,7 +90,7 @@ export function DustboxMap ({
 
   const observationAddresses = useMemo(() => {
     return observations.data?.items
-      .filter(d => d.location.type === 'Point')
+      .filter(d => d.location?.type === 'Point')
       .reduce((observationAddresses, item) => {
         const feature: ObservationFeature = turf.feature({
           "type": "Point",
