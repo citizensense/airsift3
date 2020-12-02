@@ -1,8 +1,6 @@
+from airsift.observations.serializers import LocationSerializer, UserSerializer
 from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
-from django.http.response import JsonResponse
-from rest_framework import generics
-from rest_framework.serializers import ModelSerializer
 from wagtail.core.models import Page, Orderable, PageRevision
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
@@ -15,28 +13,7 @@ from wagtail.search import index
 from modelcluster.fields import ParentalKey
 from django.utils import timezone
 from wagtail.api import APIField
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from wagtail.images.api.fields import ImageRenditionField
-from django.contrib.auth import get_user_model
-from rest_framework.response import Response
-
-User = get_user_model()
-
-class LocationSerializer(GeoFeatureModelSerializer):
-    class Meta:
-        model = 'observations.Observation'
-        geo_field = "location"
-        id_field = False
-        fields = ('title', 'body', 'observation_type', 'datetime')
-
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('name', 'username', 'id')
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 class Observation(Page):
     subpage_types = []
