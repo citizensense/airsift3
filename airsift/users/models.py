@@ -23,6 +23,30 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
+    def get_user_action_urls(self):
+        contributor_groups = Group.objects.filter(name=scoped_contributions_group_name(self))
+
+        if len(contributor_groups):
+            page_permissions = GroupPagePermission.objects.filter(group=contributor_groups[0])
+            page = page_permissions[0].page
+        else:
+            if self.is_superuser:
+                page = HomePage.get_active()
+            else:
+                editors = Group.objects.get(name='Editors')
+                moderators = Group.objects.get(name='Moderators')
+                if editors.user_set.includes(self) or moderators.user_set.includes(self):
+                    page = HomePage.get_active()
+
+        if page is None:
+            raise Exception('User has no root page to contribute to')
+
+        return {
+            "view_root_page": f'/cms/pages/{page.id}/',
+            "create_observation": f'/cms/pages/add/observations/observation/{page.id}/',
+            "create_datastory": f'/cms/pages/add/datastories/datastory/{page.id}/',
+        }
+
 class UserIndexPage(Page):
     '''
     This is a user's root directory.
@@ -31,9 +55,12 @@ class UserIndexPage(Page):
 
     subpage_types = [
         'observations.Observation',
-        # 'datastories.DataStory',
+        'datastories.DataStory',
     ]
     pass
+
+def scoped_contributions_group_name(user):
+    return f'scoped_contributions_for_{user.username}'
 
 @receiver(user_signed_up)
 def create_user_group_and_pages(sender, **kwargs):
@@ -46,7 +73,7 @@ def create_user_group_and_pages(sender, **kwargs):
     user = kwargs['user']
 
     # Create a group object that matches their username
-    new_group, created = Group.objects.get_or_create(name=user.username)
+    new_group, created = Group.objects.get_or_create(name=scoped_contributions_group_name(user))
 
     # Add the new group to the database
     user.groups.add(new_group)
@@ -65,7 +92,7 @@ def create_user_group_and_pages(sender, **kwargs):
     person_index_page = UserIndexPage(title=f"{user.name}'s contributions")
 
     # Add UserIndexPage to homepage as a child
-    home = HomePage.objects.child_of(Page.get_first_root_node()).first()
+    home = HomePage.get_active()
     home.add_child(instance=person_index_page)
 
     # Save new page as first revision

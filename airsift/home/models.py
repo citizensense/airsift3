@@ -6,7 +6,8 @@ from django.db import models
 from wagtail.images.edit_handlers import ImageChooserPanel
 
 class HomePage(Page):
-    pass
+    def get_active():
+        return HomePage.objects.child_of(Page.get_first_root_node()).first()
 
 class InfoPage(Page):
     feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+')

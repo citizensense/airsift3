@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
+from django.shortcuts import redirect
+from django.views.generic.base import View
 
 User = get_user_model()
 
@@ -48,3 +50,14 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+class UserActionRedirectView(LoginRequiredMixin, View):
+    def get(self, request, object_type):
+        urls = request.user.get_user_action_urls()
+        url = urls.get(object_type)
+        if url:
+            return redirect(url)
+        else:
+            return redirect(urls.get('view_root_page'))
+
+user_action_redirect = UserActionRedirectView.as_view()
