@@ -52,7 +52,7 @@ DATABASES = {
     "default": DATABASE_OBJ
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-
+DATABASES["default"]["ENGINE"] = 'django.contrib.gis.db.backends.postgis'
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
