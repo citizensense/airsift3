@@ -46,11 +46,11 @@ export const ObservationCard: React.FC<{ observation: Observations.Item, withIco
   )
 })
 
-export const userName = ({ first_name, last_name, username }: Observation.User) =>
-  last_name ? `${first_name} ${last_name}` : username
+export const userName = ({ name, username }: Observation.User) =>
+  name ? name : username
 
-export const UserName = ({ user: { first_name, last_name, username } }: { user: Observation.User }) => {
-  return <span>{last_name ? `${first_name} ${last_name}` : username}</span>
+export const UserName = ({ user }: { user: Observation.User }) => {
+  return <span>{userName(user)}</span>
 }
 
 export function ObservationDetailCard ({ id }: { id: any }) {

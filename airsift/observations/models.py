@@ -32,7 +32,7 @@ class LocationSerializer(GeoFeatureModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'username', 'id')
+        fields = ('name', 'username', 'id')
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -62,10 +62,10 @@ class Observation(Page):
     ]
 
     def contributors(self):
-        items = [
+        items = list(set([
             revision.user
             for revision in PageRevision.objects.filter(page=self)
-        ]
+        ]))
         return UserSerializer(items, many=True).data
 
     api_fields = [

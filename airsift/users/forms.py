@@ -37,8 +37,7 @@ from django.contrib.auth.models import Group
 editors_group = Group.objects.get(name='Editors')
 
 class CustomSignupForm(SignupForm):
-    first_name = fields.CharField(max_length=100, label='First name')
-    last_name = fields.CharField(max_length=100, label='Last name')
+    name = fields.CharField(max_length=100, label='Real Name')
 
     def __init__(self, *args, **kwargs):
         super(CustomSignupForm, self).__init__(*args, **kwargs)
