@@ -16,9 +16,22 @@
 }
 
 @layer components {
-  .button-grey {
+  .button-grey,
+  .btn.btn-primary {
     @apply inline-block text-midDarker bg-light border border-mid rounded-lg py-2 px-3
 text-S font-semibold hoverable;
+  }
+}
+
+.allauth-root {
+  h1 {
+    @apply text-M font-semibold my-2;
+  }
+  p {
+    @apply text-S text-midDarker;
+  }
+  form {
+    @apply my-4;
   }
 }
 
