@@ -296,6 +296,8 @@ ACCOUNT_ADAPTER = "airsift.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "airsift.users.adapters.SocialAccountAdapter"
 
+ACCOUNT_FORMS = {'signup': 'airsift.users.forms.CustomSignupForm'}
+
 
 # Your stuff...
 # ------------------------------------------------------------------------------

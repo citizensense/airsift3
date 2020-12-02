@@ -1,5 +1,6 @@
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
+from django.forms import fields
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -29,3 +30,20 @@ class UserCreationForm(admin_forms.UserCreationForm):
             return username
 
         raise ValidationError(self.error_messages["duplicate_username"])
+
+
+from allauth.account.forms import SignupForm
+
+class CustomSignupForm(SignupForm):
+    first_name = fields.CharField(max_length=100, label='First name')
+    last_name = fields.CharField(max_length=100, label='Last name')
+
+    def __init__(self, *args, **kwargs):
+        super(CustomSignupForm, self).__init__(*args, **kwargs)
+        self.fields.pop('password2')
+
+    def save(self, request):
+        user = super(CustomSignupForm, self).save(request)
+        user.password2 = user.password
+        user.save()
+        return user
