@@ -17,6 +17,8 @@ from .views import capture_login, capture_logout
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
+    re_path(r'^admin/login/$', capture_login),
+    re_path(r'^admin/logout/$', capture_logout),
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     re_path(r'^cms/login/$', capture_login),
