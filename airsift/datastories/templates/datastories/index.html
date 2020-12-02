@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+{% block content %}
+  <div>
+    <div class='px-4 mb-4 md:w-1/2'>
+      <h1 class='text-M font-bold mb-2'>Data Stories</h1>
+      <p class='text-S'>
+        Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in an area.
+      </p>
+      <p class='text-S'>
+        They group together multiple forms of evidence that might include citizen data, regulatory data, weather data, local observations and other kinds of visual and auditory media.
+      </p>
+      <!-- TODO: -->
+      <a href="/user_action_redirect/create_datastory" class='button-grey my-4'>
+        + Add a Data Story
+      </a>
+    </div>
+    <div class='px-4 my-5 lg:my-6 grid gap-4 md:grid-cols-2'>
+      {% for story in datastories %}
+        <a href="{{story.url}}" title="{{story.title}}">
+          <div class='text-XXS uppercase font-bold'>
+            {% if story.location_name %}
+              <span class='text-softBlack pr-3'>{story.location_name}</span>
+            {% endif %}
+            <span class='text-midDarker'>{story.first_published_at|date:"F Y" }</span>
+          </div>
+          {% image page.feature_image fill-690x300 class='md:rounded-md text-center mx-auto md:mt-4' %}
+          <h2 class='text-S font-semibold my-2'>{story.title}</h2>
+          <p>{{story.body|truncatewords_html:22|striptags}}</p>
+          <span class='button-grey mt-4'>Read the Story</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

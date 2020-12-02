@@ -31,11 +31,12 @@ urlpatterns = [
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
     path('pages/', include(wagtail_urls)),
+    path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
     path('', include('users.urls')),
     path('', include('dustboxes.urls')),
     path('', include('observations.urls')),
+    path('', include('datastories.urls')),
     path('', lambda request: redirect('/dustboxes')),
-    path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -105,6 +105,7 @@ LOCAL_APPS = [
     "airsift.home.apps.HomeConfig",
     "airsift.dustboxes.apps.DustboxesConfig",
     "airsift.observations.apps.ObservationsConfig",
+    "airsift.datastories.apps.DatastoriesConfig",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
