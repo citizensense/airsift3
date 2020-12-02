@@ -23,6 +23,14 @@ text-S font-semibold hoverable;
   }
 }
 
+.prose {
+  @apply text-S text-softBlack;
+
+  p:first-child {
+    @apply text-M text-black;
+  }
+}
+
 .allauth-root {
   h1 {
     @apply text-M font-semibold my-2;

@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/v2/', api_router.urls),
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
-    # path('pages/', include(wagtail_urls)),
+    path('pages/', include(wagtail_urls)),
     path('', include('dustboxes.urls')),
     path('', include('observations.urls')),
     path('', lambda request: redirect('/dustboxes')),
