@@ -40,7 +40,7 @@ from django.utils.safestring import mark_safe
 editors_group = Group.objects.get(name='Editors')
 
 class CustomSignupForm(SignupForm):
-    name = fields.CharField(max_length=100, label='Real Name')
+    name = fields.CharField(max_length=100, label='Display Name', help_text="This is the name displayed publicly with your contributions.")
     terms = fields.BooleanField(label=mark_safe('I agree to the <a href="https://citizensense.net/about/terms/" class="border-b border-brand">Terms and Conditions</a>'), required=True)
 
     def __init__(self, *args, **kwargs):
