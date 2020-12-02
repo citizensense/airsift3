@@ -86,10 +86,6 @@ class ObservationType(models.Model):
 
     title = CharField(max_length=256)
 
-    @classmethod
-    def autocomplete_create(kls: type, value: str):
-        return kls.objects.create(title=value)
-
     search_fields = [
         index.SearchField('title', partial_match=True),
     ]
