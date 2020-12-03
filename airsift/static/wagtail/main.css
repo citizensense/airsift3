@@ -1,15 +1,19 @@
-.breadcrumb,
-.tab-nav.merged,
-.button,
-.dropdown .dropdown-toggle,
-header {
-    background: rgb(51,204,255) !important;
+/* .nav-wrapper, .nav-wrapper .inner,
+.nav-wrapper, .nav-wrapper .inner * {
+    background: white !important;
+    color: black !important
+}
+
+main header,
+main header * {
+  color: black !important;
+  background: white !important;
 }
 
 .tab-nav a {
   background: white !important;
   color: black;
-}
+} */
 
 .nav-search {
   display: none;
