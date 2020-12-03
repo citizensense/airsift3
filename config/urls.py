@@ -1,3 +1,4 @@
+from airsift.dustboxes import views
 from django.urls.conf import re_path
 from airsift import dustboxes
 from django.conf import settings
@@ -16,27 +17,30 @@ from .api import api_router
 from .views import capture_login, capture_logout
 
 urlpatterns = [
-    # Django Admin, use {% url 'admin:index' %}
-    re_path(r'^admin/login/$', capture_login),
-    re_path(r'^admin/logout/$', capture_logout),
-    path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    re_path(r'^cms/login/$', capture_login),
-    re_path(r'^cms/logout/$', capture_logout),
-    path("users/", include("airsift.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    # Wagtail
-    re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
+    # API urls
     path('api/v2/', api_router.urls),
-    path('cms/', include(wagtailadmin_urls)),
-    path('documents/', include(wagtaildocs_urls)),
-    path('pages/', include(wagtail_urls)),
+    # Feature URLS
     path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
-    path('', include('users.urls')),
     path('', include('dustboxes.urls')),
     path('', include('observations.urls')),
     path('', include('datastories.urls')),
-    path('', lambda request: redirect('/dustboxes')),
+    path('', views.dustboxes),
+    # Content serve URLS
+    path('documents/', include(wagtaildocs_urls)),
+    path('', include(wagtail_urls)),
+    # Django admin
+    re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
+    re_path(r'^admin/login/$', capture_login),
+    re_path(r'^admin/logout/$', capture_logout),
+    path(settings.ADMIN_URL, admin.site.urls),
+    # Content management URLS
+    re_path(r'^cms/login/$', capture_login),
+    re_path(r'^cms/logout/$', capture_logout),
+    path('cms/', include(wagtailadmin_urls)),
+    # User management URLs
+    path('', include('users.urls')),
+    path("users/", include("airsift.users.urls", namespace="users")),
+    path("accounts/", include("allauth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

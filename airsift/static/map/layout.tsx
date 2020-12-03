@@ -8,12 +8,13 @@ import { DustboxList, ObservationList } from './sidebar';
 import { Map } from './map';
 import { atom, useAtom } from 'jotai';
 import memoise from 'fast-memoize';
-import { useRoutes } from 'hookrouter';
+import { useRoutes, A } from 'hookrouter';
 import { DustboxDetailCard } from './detailCard';
 import { Footer } from './scaffolding';
 import { ObservationDetailCard } from './observation';
 
 const routes = {
+  '/': () => ({ homePageURLParam: true }),
   '/dustboxes/inspect/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ dustboxIdURLParam }),
   '/dustboxes*': () => ({ listDusboxesURLParam: true }),
   '/observations/inspect/:observationIdURLParam': ({ observationIdURLParam }: { observationIdURLParam: string }) => ({ observationIdURLParam }),
@@ -29,11 +30,13 @@ export function DustboxMap ({
 }) {
   // @ts-ignore
   const {
+    homePageURLParam,
     dustboxIdURLParam,
     listDusboxesURLParam,
     observationIdURLParam,
     listObservationsURLParam,
   } = useRoutes(routes as any) as {
+    homePageURLParam?: boolean
     dustboxIdURLParam?: string
     listDusboxesURLParam?: boolean
     observationIdURLParam?: string
@@ -102,7 +105,64 @@ export function DustboxMap ({
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
-      { dustboxIdURLParam
+      { homePageURLParam
+        ? (
+          <div className='flex flex-col sm:h-screen overflow-x-hidden'>
+            <div className='px-4 mb-4 pt-6'>
+              <p className='text-S my-2'>Air pollution is a planetary health emergency. Air quality monitors are not always located where air pollution is occurring, and citizens might have many reasons to gather data to document and analyze air quality</p>
+              <p className='text-S'><b>Airsift</b> brings together information for you to set up a citizen-led monitoring project to keep track of air quality in your area.</p>
+            </div>
+            <hr className='border-brand mx-4' />
+            <div className='sm:overflow-y-auto flex-grow'>
+              {[
+                {
+                  url: '/dustboxes',
+                  name: "Dustboxes",
+                  description: 'Particulate matter sensors designed by Citizen Sense to measure and compare air quality.',
+                  imageURL: "/static/images/Sidebar/Home/dustboxes.png"
+                },
+                {
+                  url: '/observations',
+                  name: "Observations",
+                  description: 'Gather and browse evidence that might indicate pollution or other activity is occuring.',
+                  imageURL: "/static/images/Sidebar/Home/observations.png"
+                },
+                {
+                  url: '/analysis',
+                  name: "Analysis",
+                  description: 'Explore Dustbox data, create plots and identify air pollution problems.',
+                  imageURL: "/static/images/Sidebar/Home/analysis.png"
+                },
+                {
+                  url: '/datastories',
+                  name: "Stories",
+                  description: 'Draw together different kinds of evidence to narrate the impact that air pollution is having in an area. ',
+                  imageURL: "/static/images/Sidebar/Home/datastories.png"
+                }
+              ].map(item => (
+                <Fragment>
+                  <A href={item.url} key={item.url} className='flex flex-row justify-between w-full px-4 my-4'>
+                    <div>
+                      <div className='font-cousine text-XS font-bold uppercase flex w-full'>
+                        <h2 className='flex-shrink-0 truncat'>
+                          {item.name}
+                        </h2>
+                      </div>
+                      <p className='text-S'>
+                        {item.description}
+                      </p>
+                    </div>
+                    <div className='ml-3 flex-shrink-0 relative w-6 h-6 bg-cover bg-center' style={{
+                      backgroundImage: `url("${item.imageURL}")`
+                    }} />
+                  </A>
+                  <hr className='border-brand mx-4' />
+                </Fragment>
+              ))}
+            </div>
+            <Footer />
+          </div>
+        ) : dustboxIdURLParam
         ? <DustboxDetailCard id={dustboxIdURLParam} />
         : listDusboxesURLParam
         ? (
