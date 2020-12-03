@@ -52,7 +52,7 @@ class UserIndexPage(Page):
     This is a user's root directory.
     They have control over everything beneath here... at least, to a certain extent.
     '''
-
+    show_in_menus_default = True
     subpage_types = [
         'observations.Observation',
         'datastories.DataStory',

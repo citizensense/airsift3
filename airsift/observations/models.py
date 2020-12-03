@@ -16,6 +16,7 @@ from wagtail.api import APIField
 from wagtail.images.api.fields import ImageRenditionField
 
 class Observation(Page):
+    show_in_menus_default = True
     subpage_types = []
 
     body = RichTextField(blank=True, null=True)

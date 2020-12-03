@@ -17,6 +17,7 @@ from wagtail.images.api.fields import ImageRenditionField
 
 # Create your models here.
 class DataStory(Page):
+    show_in_menus_default = True
     feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+')
     body = RichTextField(blank=False, null=False)
     # TODO: location_name
