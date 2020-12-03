@@ -1,0 +1,12 @@
+.breadcrumb,
+.tab-nav.merged,
+.button,
+.dropdown .dropdown-toggle,
+header {
+    background: rgb(51,204,255) !important;
+}
+
+.tab-nav a {
+  background: white !important;
+  color: black;
+}
