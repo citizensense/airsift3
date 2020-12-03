@@ -141,7 +141,7 @@ export function DustboxMap ({
                 }
               ].map(item => (
                 <Fragment>
-                  <A href={item.url} key={item.url} className='flex flex-row justify-between w-full px-4 my-4'>
+                  <a href={item.url} key={item.url} className='flex flex-row justify-between w-full px-4 my-4'>
                     <div>
                       <div className='font-cousine text-XS font-bold uppercase flex w-full'>
                         <h2 className='flex-shrink-0 truncat'>
@@ -155,7 +155,7 @@ export function DustboxMap ({
                     <div className='ml-3 flex-shrink-0 relative w-6 h-6 bg-cover bg-center' style={{
                       backgroundImage: `url("${item.imageURL}")`
                     }} />
-                  </A>
+                  </a>
                   <hr className='border-brand mx-4' />
                 </Fragment>
               ))}
