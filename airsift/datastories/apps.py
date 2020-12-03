@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
-
 class DatastoriesConfig(AppConfig):
-    name = 'datastories'
+    name = 'airsift.datastories'
+    verbose_name = 'Dustboxes'

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group, Permission
 from django.dispatch import receiver
 from allauth.account.signals import user_signed_up
-from wagtail.core.models import Page, GroupPagePermission, GroupCollectionPermission, Collection
+from wagtail.core.models import PAGE_PERMISSION_TYPES, Page, GroupPagePermission, GroupCollectionPermission, Collection
 from airsift.home.models import HomePage
 
 class User(AbstractUser):
@@ -23,29 +23,74 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
-    def get_user_action_urls(self):
-        contributor_groups = Group.objects.filter(name=scoped_contributions_group_name(self))
+    def scoped_contributions_group_name(user):
+        return f'scoped_contributions_for_{user.username}'
 
-        if len(contributor_groups):
-            page_permissions = GroupPagePermission.objects.filter(group=contributor_groups[0])
-            page = page_permissions[0].page
+    def contributor_group_name(self):
+        print('contributor_group_name')
+        name = self.scoped_contributions_group_name()
+        print(name)
+        return name
+
+    def contributor_group(self):
+        print('contributor_group')
+        group = Group.objects.filter(name=self.scoped_contributions_group_name()).first()
+        print(group)
+        return group
+
+    def contributor_page_permissions(self):
+        print('contributor_page_permissions')
+        page_permission = GroupPagePermission.objects.filter(group=self.contributor_group()).first()
+        print(page_permission)
+        return page_permission
+
+    def contributor_page_permissions_page(self):
+        print('contributor_page_permissions_page')
+        page_permission = self.contributor_page_permissions()
+        page = page_permission.page
+        print(page)
+        # TODO: Create if doesn't exist?
+        return page
+
+    def is_staff_editor(self):
+        print('is_staff_editor')
+        if (
+            self.is_superuser
+            or self in Group.objects.filter(name='Editors').get().user_set.all()
+            or self in Group.objects.filter(name='Moderators').get().user_set.all()
+        ):
+            return True
         else:
-            if self.is_superuser:
-                page = HomePage.get_active()
-            else:
-                editors = Group.objects.get(name='Editors')
-                moderators = Group.objects.get(name='Moderators')
-                if editors.user_set.includes(self) or moderators.user_set.includes(self):
-                    page = HomePage.get_active()
+            return False
+
+    def root_page(self):
+        print('root_page')
+        if self.is_staff_editor():
+            return HomePage.get_active()
+        else:
+            return self.contributor_page_permissions_page()
+
+    def has_contributor_group(self):
+        print(self.contributor_group_name())
+        print(self.contributor_group())
+        return self.contributor_group() is not None
+
+    def get_user_action_urls(self):
+        page = self.root_page()
 
         if page is None:
-            raise Exception('User has no root page to contribute to')
-
-        return {
-            "view_root_page": f'/cms/pages/{page.id}/',
-            "create_observation": f'/cms/pages/add/observations/observation/{page.id}/',
-            "create_datastory": f'/cms/pages/add/datastories/datastory/{page.id}/',
-        }
+            # Trigger login to figure out what to do
+            return {
+                "view_root_page": f'/cms/pages/',
+                "create_observation": f'/user_action_redirect/create_observation/',
+                "create_datastory": f'/user_action_redirect/create_datastory/',
+            }
+        else:
+            return {
+                "view_root_page": f'/cms/pages/{page.id}/',
+                "create_observation": f'/cms/pages/add/observations/observation/{page.id}/',
+                "create_datastory": f'/cms/pages/add/datastories/datastory/{page.id}/',
+            }
 
 class UserIndexPage(Page):
     '''
@@ -59,9 +104,6 @@ class UserIndexPage(Page):
     ]
     pass
 
-def scoped_contributions_group_name(user):
-    return f'scoped_contributions_for_{user.username}'
-
 @receiver(user_signed_up)
 def create_user_group_and_pages(sender, **kwargs):
     """
@@ -73,7 +115,7 @@ def create_user_group_and_pages(sender, **kwargs):
     user = kwargs['user']
 
     # Create a group object that matches their username
-    new_group, created = Group.objects.get_or_create(name=scoped_contributions_group_name(user))
+    new_group, created = Group.objects.get_or_create(name=user.scoped_contributions_group_name())
 
     # Add the new group to the database
     user.groups.add(new_group)
@@ -101,11 +143,11 @@ def create_user_group_and_pages(sender, **kwargs):
     # Create new add GroupPagePermission
     for permission in [
         # Allow page creation
-        'add',
+        PAGE_PERMISSION_TYPES[0],
         # Allow edits
-        'edit',
+        PAGE_PERMISSION_TYPES[1],
         # Allow users to publish their pages straight away
-        'publish'
+        PAGE_PERMISSION_TYPES[2],
     ]:
         GroupPagePermission.objects.create(
             group=new_group,

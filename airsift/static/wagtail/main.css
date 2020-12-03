@@ -10,3 +10,10 @@ header {
   background: white !important;
   color: black;
 }
+
+.nav-search {
+  display: none;
+}
+.nav-main ul li:first-child {
+  display: none;
+}
