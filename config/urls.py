@@ -19,6 +19,12 @@ from .views import capture_login, capture_logout
 urlpatterns = [
     # API urls
     path('api/v2/', api_router.urls),
+    # Content management URLS
+    re_path(r'^cms/login/$', capture_login),
+    re_path(r'^cms/logout/$', capture_logout),
+    path('cms/', include(wagtailadmin_urls)),
+    path('', include('users.urls')),
+    path("accounts/", include("allauth.urls")),
     # Feature URLS
     path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
     path('', include('dustboxes.urls')),
@@ -33,14 +39,8 @@ urlpatterns = [
     re_path(r'^admin/login/$', capture_login),
     re_path(r'^admin/logout/$', capture_logout),
     path(settings.ADMIN_URL, admin.site.urls),
-    # Content management URLS
-    re_path(r'^cms/login/$', capture_login),
-    re_path(r'^cms/logout/$', capture_logout),
-    path('cms/', include(wagtailadmin_urls)),
     # User management URLs
-    path('', include('users.urls')),
     path("users/", include("airsift.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
