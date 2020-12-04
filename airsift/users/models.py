@@ -27,33 +27,24 @@ class User(AbstractUser):
         return f'scoped_contributions_for_{user.username}'
 
     def contributor_group_name(self):
-        print('contributor_group_name')
         name = self.scoped_contributions_group_name()
-        print(name)
         return name
 
     def contributor_group(self):
-        print('contributor_group')
         group = Group.objects.filter(name=self.scoped_contributions_group_name()).first()
-        print(group)
         return group
 
     def contributor_page_permissions(self):
-        print('contributor_page_permissions')
         page_permission = GroupPagePermission.objects.filter(group=self.contributor_group()).first()
-        print(page_permission)
         return page_permission
 
     def contributor_page_permissions_page(self):
-        print('contributor_page_permissions_page')
         page_permission = self.contributor_page_permissions()
         page = page_permission.page
-        print(page)
         # TODO: Create if doesn't exist?
         return page
 
     def is_staff_editor(self):
-        print('is_staff_editor')
         if (
             self.is_superuser
             or self in Group.objects.filter(name='Editors').get().user_set.all()
@@ -64,7 +55,6 @@ class User(AbstractUser):
             return False
 
     def root_page(self):
-        print('root_page')
         if self.is_staff_editor():
             return HomePage.get_active()
         else:

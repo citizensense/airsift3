@@ -57,6 +57,12 @@ class Observation(Page):
         APIField('contributors')
     ]
 
+    def __str__(self):
+        return f'[{self.observation_type}] {self.title}'
+
+    def autocomplete_label(self):
+        return self.__str__()
+
 class ObservationImage(Orderable):
     page = ParentalKey(Observation, related_name="observation_images")
     image = models.ForeignKey(

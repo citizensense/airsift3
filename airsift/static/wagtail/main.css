@@ -34,3 +34,19 @@ main header * {
 .primary-sections .title-wrapper {
   background: #B5EDFF !important;
 }
+.field.simple_array_field.checkbox_select_multiple li {
+  margin: 10px 0;
+}
+.field.simple_array_field.checkbox_select_multiple label,
+/* .fields .field-col, */
+.fields .field-content {
+  float: none;
+}
+.fields .field label {
+  width: 100% !important;
+}
+.help-compact,
+.help-compact fieldset {
+  margin: 0 !important;
+  padding: 0 !important;
+}

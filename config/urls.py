@@ -22,6 +22,7 @@ urlpatterns = [
     # Content management URLS
     re_path(r'^cms/login/$', capture_login),
     re_path(r'^cms/logout/$', capture_logout),
+    re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
     path('cms/', include(wagtailadmin_urls)),
     path('', include('users.urls')),
     path("accounts/", include("allauth.urls")),
@@ -35,7 +36,6 @@ urlpatterns = [
     path('documents/', include(wagtaildocs_urls)),
     path('', include(wagtail_urls)),
     # Django admin
-    re_path(r'^admin/autocomplete/', include(autocomplete_admin_urls)),
     re_path(r'^admin/login/$', capture_login),
     re_path(r'^admin/logout/$', capture_logout),
     path(settings.ADMIN_URL, admin.site.urls),
