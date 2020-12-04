@@ -28,7 +28,7 @@
         <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
         <span id='hamburger-toggle'>Menu</span>
       </div>
-      <div id='hamburger-menu' class='hidden fixed top-0 left-0 h-full w-full bg-white flex flex-col'>
+      <div id='hamburger-menu' class='hidden fixed top-0 left-0 h-full w-full bg-white flex flex-col overflow-y-auto'>
         <div
         class='fixed top-0 left-0 w-full h-full z-10'
         style="background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));"></div>
@@ -36,7 +36,7 @@
           <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
           <span class='cursor-pointer font-cousine uppercase inline-block' id='close-hamburger'>Close</span>
         </div>
-        <nav class='px-4 text-S sm:text-S font-500 flex flex-col gap-pt-2 z-50'>
+        <nav class='px-4 text-S sm:text-S font-500 flex flex-col gap-pt-2 z-50 pb-5'>
           <a href='/dustboxes' class='my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Dustboxes</a>
           <a href='/observations' class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Observations</a>
           <a href='/analysis' class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Analysis</a>
@@ -47,15 +47,6 @@
           {% else %}
             <a class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase' href="/accounts/login?next=/cms/">Sign in</a>
           {% endif %}
-        </nav>
-        <nav
-          class='mt-auto z-50'
-        >
-          <div class='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
-            <img src='/static/images/citizenSenseLogo.png' class='mb-3' />
-            <a href='https://citizensense.net/about/contact/'>Contact</a>
-            <a class='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
-          </div>
         </nav>
       </div>
     </div>
