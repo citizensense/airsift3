@@ -10,7 +10,7 @@
   <a href='/datastories' class='ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Stories</a>
   <a class='ml-4 uppercase' href="/about">About</a>
   {% if user.is_authenticated %}
-    <a class='ml-4 uppercase' href="/accounts/logout/?next=/">Logout</a>
+    <a class='ml-4 uppercase' href="/cms/pages/">Manage</a>
   {% else %}
     <a class='ml-4 uppercase' href="/accounts/login?next=/cms/">Sign in</a>
   {% endif %}
