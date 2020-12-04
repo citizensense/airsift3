@@ -204,7 +204,7 @@ class DataStory(Page):
     '''
     evidenceofproblem_copy = RichTextField(
         blank=True, null=True,
-        # features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        features=['h4', 'h5', 'bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='Write page section'
     )
 
@@ -213,7 +213,7 @@ class DataStory(Page):
     '''
     characterofproblem_copy = RichTextField(
         blank=True, null=True,
-        # features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        features=['h4', 'h5', 'bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='Write page section'
     )
 
@@ -222,7 +222,7 @@ class DataStory(Page):
     '''
     evidencesummary_copy = RichTextField(
         blank=True, null=True,
-        # features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        features=['h4', 'h5', 'bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='Write page section'
     )
 
@@ -231,7 +231,7 @@ class DataStory(Page):
     '''
     actions_copy = RichTextField(
         blank=True, null=True,
-        # features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        features=['h4', 'h5', 'bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='Write page section'
     )
 
@@ -240,7 +240,7 @@ class DataStory(Page):
     '''
     acknowledgements_copy = RichTextField(
         blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        features=['h4', 'h5', 'bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='Write page section'
     )
 
