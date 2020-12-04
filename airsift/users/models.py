@@ -121,11 +121,14 @@ def create_user_group_and_pages(sender, **kwargs):
 
     # Now start creating page access
     # Create unique UserIndexPage for the user
-    person_index_page = UserIndexPage(title=f"{user.name}'s contributions")
+    person_index_page = UserIndexPage(
+        title=f"{user.name}'s contributions",
+        slug=user.username
+    )
 
-    # Add UserIndexPage to homepage as a child
-    home = HomePage.get_active()
-    home.add_child(instance=person_index_page)
+    # Add UserIndexPage for user
+    contributions = Page.objects.get(slug='posts')
+    contributions.add_child(instance=person_index_page)
 
     # Save new page as first revision
     person_index_page.save_revision()
