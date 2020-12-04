@@ -17,7 +17,7 @@ class DataStory(Page):
         verbose_name_plural = 'Data Stories'
 
     show_in_menus_default = True
-    feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+')
+    feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+', blank=True, null=True)
     location_name = CharField(max_length=500, blank=True, null=True, verbose_name='The general location or area this report covers')
     date_from = DateField(blank=True, null=True, verbose_name='Beginning of report timespan')
     date_to = DateField(blank=True, null=True, verbose_name='End of report timespan')
@@ -266,7 +266,6 @@ Writing a Data Story is a detailed and collaborative process that will likely re
                 HelpPanel(markdown('''
 At the start of the data story, it is useful to give a summary of the key findings and the data used in your Data Story. This section should be short at around 1–2 paragraphs.
                 '''), classname='markdown help-compact'),
-                FieldPanel('title'),
                 ImageChooserPanel('feature_image'),
                 FieldRowPanel([
                     FieldPanel('date_from'),
