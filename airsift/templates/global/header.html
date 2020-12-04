@@ -1,17 +1,79 @@
+
 {% load static i18n %}
-<nav
-  class='font-cousine p-4 flex flex-row items-end items-center z-50'
-  style="background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));"
->
-  <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
-  <a href='/dustboxes' class='text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Dustboxes</a>
-  <a href='/observations' class='ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Observations</a>
-  <a href='/analysis' class='ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Analysis</a>
-  <a href='/datastories' class='ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Stories</a>
-  <a class='ml-4 uppercase' href="/about">About</a>
-  {% if user.is_authenticated %}
-    <a class='ml-4 uppercase' href="/cms/pages/">Manage</a>
-  {% else %}
-    <a class='ml-4 uppercase' href="/accounts/login?next=/cms/">Sign in</a>
-  {% endif %}
-</nav>
+<header class='hidden md:block'>
+  <nav
+    class='font-cousine p-4 flex flex-row items-end items-center z-50'
+    style="background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));"
+  >
+    <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
+    <a href='/dustboxes' class='text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Dustboxes</a>
+    <a href='/observations' class='md:ml-3 lg:ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Observations</a>
+    <a href='/analysis' class='md:ml-3 lg:ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Analysis</a>
+    <a href='/datastories' class='md:ml-3 lg:ml-4 text-XS uppercase p-1 px-2 rounded-lg border border-black hoverable'>Stories</a>
+    <a class='md:ml-3 lg:ml-4 uppercase' href="/about">About</a>
+    {% if user.is_authenticated %}
+      <a class='md:ml-3 lg:ml-4 uppercase' href="/cms/pages/">Manage</a>
+    {% else %}
+      <a class='md:ml-3 lg:ml-4 uppercase' href="/accounts/login?next=/cms/">Sign in</a>
+    {% endif %}
+  </nav>
+</header>
+<header id='mobile-header' class='md:hidden z-50 relative'>
+  <nav
+    class='font-cousine flex flex-row items-end items-center z-50'
+    style="background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));"
+  >
+    <div class='content-wrapper w-full'>
+      <div class='p-4 flex flex-row justify-between items-center uppercase font-cousine w-full'>
+        <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
+        <span id='hamburger-toggle'>Menu</span>
+      </div>
+      <div id='hamburger-menu' class='hidden fixed top-0 left-0 h-full w-full bg-white flex flex-col'>
+        <div
+        class='fixed top-0 left-0 w-full h-full z-10'
+        style="background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));"></div>
+        <div class='p-4 flex flex-row justify-between items-center z-50'>
+          <a href='/' class='text-XS font-600 uppercase mr-auto'>Airsift</a>
+          <span class='cursor-pointer font-cousine uppercase inline-block' id='close-hamburger'>Close</span>
+        </div>
+        <nav class='px-4 text-S sm:text-S font-500 flex flex-col gap-pt-2 z-50'>
+          <a href='/dustboxes' class='my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Dustboxes</a>
+          <a href='/observations' class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Observations</a>
+          <a href='/analysis' class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Analysis</a>
+          <a href='/datastories' class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase md:p-1 md:px-2 rounded-lg block md:inline-block md:border border-black hoverable'>Stories</a>
+          <a class='md:ml-4 uppercase my-1 md:my-0 text-M md:text-XS' href="/about">About</a>
+          {% if user.is_authenticated %}
+            <a class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase' href="/cms/pages/">Manage</a>
+          {% else %}
+            <a class='md:ml-4 my-1 md:my-0 text-M md:text-XS uppercase' href="/accounts/login?next=/cms/">Sign in</a>
+          {% endif %}
+        </nav>
+        <nav
+          class='mt-auto z-50'
+        >
+          <div class='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
+            <img src='/static/images/citizenSenseLogo.png' class='mb-3' />
+            <a href='https://citizensense.net/about/contact/'>Contact</a>
+            <a class='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  (function() {
+    var hamburgerToggleButton = document.getElementById("hamburger-toggle");
+    var closeHamburgerButton = document.getElementById("close-hamburger");
+    var hamburgerMenu = document.getElementById("hamburger-menu");
+    closeHamburgerButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      hamburgerMenu.classList.add("hidden");
+    });
+    hamburgerToggleButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      hamburgerMenu.classList.remove("hidden");
+    });
+  })();
+</script>
