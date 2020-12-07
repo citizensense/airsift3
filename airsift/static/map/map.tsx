@@ -90,6 +90,7 @@ export const Map: React.FC<{
         ...(observationAddresses || [])
       ]
 
+      console.log({ mapContainerRef })
       if (hoverId
         && allMapItems?.length
         && !justUnhovered
@@ -173,7 +174,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
     // createdAt: dustbox.properties.lastEntryAt.timestamp
     limit: 1
   })
-  const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.["pm2.5"] || "NaN")
+  const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.pm25 || "NaN")
 
   return (
     <Fragment>

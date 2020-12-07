@@ -19,6 +19,7 @@ from .views import capture_login, capture_logout
 urlpatterns = [
     # API urls
     path('api/v2/', api_router.urls),
+    path('api/v2/', include('data.urls')),
     # Content management URLS
     re_path(r'^cms/login/$', capture_login),
     re_path(r'^cms/logout/$', capture_logout),

@@ -11,6 +11,8 @@ wagtail-autocomplete==0.6
 djangorestframework-gis==0.16
 crispy-tailwind==0.2.0
 markdown==3.3.3
+drf-nested-routers==0.92.5
+djangorestframework-camel-case=1.2.0
 
 # Django
 # ------------------------------------------------------------------------------

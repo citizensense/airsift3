@@ -302,6 +302,23 @@ SOCIALACCOUNT_ADAPTER = "airsift.users.adapters.SocialAccountAdapter"
 ACCOUNT_FORMS = {'signup': 'airsift.users.forms.CustomSignupForm'}
 
 
+# rest-framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        # If you use MultiPartFormParser or FormParser, we also have a camel case version
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        # Any other parsers
+    ),
+}
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 WAGTAIL_SITE_NAME = "Airsift"

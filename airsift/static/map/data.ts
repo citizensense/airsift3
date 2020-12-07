@@ -11,12 +11,12 @@ export const useDustboxReading = (dustboxId: string, query: {
   dateTo?: any
 }) => {
   return useSWR<Array<DustboxReading>>(query.createdAt === 'never' ? null : querystring.stringifyUrl({
-    url: `/citizensense/collections/stream/${dustboxId}`,
+    url: `/api/v2/dustboxes/${dustboxId}/readings`,
     query
   }), async url => {
     const res = await fetch(url)
     const data = await res.json()
-    return data?.data || []
+    return data || []
   }, {
     revalidateOnMount: true,
     revalidateOnFocus: false,
@@ -45,9 +45,6 @@ export const airQualityColour = (reading: number) => {
   return airQualityLegend[key]
 }
 
-export const parseTimestamp = (timestamp: number | string) => {
-  if (timestamp === 'never') {
-    return new Date('never')
-  }
-  return new Date(parseInt(String(timestamp)))
+export const parseTimestamp = (timestamp?: string | null) => {
+  return timestamp ? new Date(timestamp) : undefined
 }

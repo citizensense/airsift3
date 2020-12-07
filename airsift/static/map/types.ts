@@ -1,31 +1,21 @@
 import * as turf from '@turf/helpers';
 
-export interface Dustboxes {
-  status: number;
-  data:   Dustbox[];
-}
-
 export interface Dustbox {
   createdAt:     number;
   description:   string;
   deviceNumber:  null | string;
   entriesNumber: number;
   id:            string;
-  lastEntryAt:   LastEntryAt;
+  lastEntryAt:   null | string;
   location:      Location;
   publicKey:     string;
   slug:          string;
   tags:          any[];
   title:         string;
-  updatedAt?:    number;
+  updatedAt?:    null | string;
 }
 
 export type DustboxFeature = turf.Feature<turf.Point, Dustbox>
-
-export interface LastEntryAt {
-  timestamp: number | string;
-  human:     string;
-}
 
 export interface Location {
   longitude?: string;
@@ -33,35 +23,30 @@ export interface Location {
 }
 
 export interface DustboxReading {
-  createdAt:   number;
+  createdAt:   null | string;
   humidity:    string;
   id:          string;
   pm1:         string;
   pm10:        string;
-  "pm2.5":     string;
+  pm25:        string;
   streamId:    string;
   temperature: string;
 }
 
 export namespace DustboxDetail {
-  export interface Response {
-    status: number;
-    data:   Data;
-  }
-
   export interface Data {
-    createdAt:     number;
+    createdAt:     null | string;
     description:   string;
     deviceNumber:  string;
     entriesNumber: number;
     id:            string;
-    lastEntryAt:   string;
+    lastEntryAt:   null | string;
     location:      Location;
     publicKey:     string;
     slug:          string;
     tags:          any[];
     title:         string;
-    updatedAt:     number;
+    updatedAt:     null | string;
   }
 
   export interface Location {

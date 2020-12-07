@@ -21,5 +21,5 @@ class DustboxReading(models.Model):
     pm1 = models.FloatField(null=True)
     pm2_5 = models.FloatField(null=True)
     pm10 = models.FloatField(null=True)
-    stream = models.ForeignKey(Dustbox, on_delete=models.CASCADE)
+    dustbox = models.ForeignKey(Dustbox, on_delete=models.CASCADE)
     temperature = models.FloatField(null=True)

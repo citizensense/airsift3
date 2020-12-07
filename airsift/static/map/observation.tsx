@@ -3,10 +3,10 @@ import { Observation, Observations } from './types'
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 import { A } from 'hookrouter';
-import { useCoordinateData } from '../../../staticfiles/utils/geo';
+import { useCoordinateData } from '../utils/geo';
 import querystring from 'query-string';
 import useSWR from 'swr';
-import { firstOf } from '../../../staticfiles/utils/array';
+import { firstOf } from '../utils/array';
 
 export const ObservationCard: React.FC<{ observation: Observations.Item, withIcon?: boolean }> = memo(({ observation, withIcon }) => {
   // const coordinates = useCoordinateData(

@@ -3,7 +3,7 @@ import React, { useMemo, useState, useContext, createContext, useEffect, Fragmen
 import useSWR from 'swr'
 import querystring from 'query-string'
 import * as turf from '@turf/helpers'
-import { DustboxFeature, Dustboxes, DustboxDetail, Observations, ObservationFeature } from './types';
+import { DustboxFeature, Dustboxes, DustboxDetail, Observations, ObservationFeature, Dustbox } from './types';
 import { DustboxList, ObservationList } from './sidebar';
 import { Map } from './map';
 import { atom, useAtom } from 'jotai';
@@ -61,19 +61,16 @@ export function DustboxMap ({
   }, [observationIdURLParam, dustboxIdURLParam, setHoverId])
 
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
-  const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
-    url: '/citizensense/streams',
+  const dustboxes = useSWR<Dustbox[]>(querystring.stringifyUrl({
+    url: '/api/v2/dustboxes/',
     query: { limit: 'off' }
   }), undefined, { revalidateOnFocus: false })
 
   const dustboxAddresses = useMemo(() => {
-    return dustboxes.data?.data
-      .filter(d => !!d.location.latitude && !!d.location.longitude)
+    return (dustboxes.data ?? [])
+      .filter(d => !!d.location)
       .reduce((dustboxAddresses, item) => {
-        const feature: DustboxFeature  = turf.feature({
-          "type": "Point",
-          "coordinates": [item.location.longitude, item.location.latitude] as any
-        }, item)
+        const feature: DustboxFeature  = turf.feature(item.location, item)
         return [...dustboxAddresses, feature]
       }, [] as Array<DustboxFeature>)
   }, [dustboxes.data])

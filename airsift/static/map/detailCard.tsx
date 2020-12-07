@@ -14,12 +14,12 @@ import { Dustbox24HourChart } from './graph';
 import { ParentSize } from '@visx/responsive'
 
 export function DustboxDetailCard ({ id }: { id: string }) {
-  const dustboxRes = useSWR<DustboxDetail.Response>(querystring.stringifyUrl({
-    url: `/citizensense/streams/id/${id}`,
+  const dustboxRes = useSWR<DustboxDetail.Data>(querystring.stringifyUrl({
+    url: `/api/v2/dustboxes/${id}`,
     query: { limit: 1, streamId: id }
   }), undefined, { revalidateOnFocus: false })
 
-  const dustbox = dustboxRes?.data?.data
+  const dustbox = dustboxRes?.data
   const dustboxReading = useDustboxReading(id, {
     // Readings are 1 min apart
     limit: 60 * 24
@@ -35,7 +35,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
   let latestReadingValue
   if (latestReading) {
     latestReadingDate = parseTimestamp(latestReading.createdAt)
-    latestReadingValue = parseFloat(latestReading["pm2.5"])
+    latestReadingValue = parseFloat(latestReading.pm25)
   }
 
   return (
@@ -47,7 +47,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
         </h1>
-        {dustbox && <div className='text-S text-midDarker'>Launch date: {formatRelative(parseTimestamp(dustbox?.createdAt), new Date(), { locale: enGB })}</div>}
+        {dustbox?.createdAt && <div className='text-S text-midDarker'>Launch date: {formatRelative(new Date(dustbox.createdAt), new Date(), { locale: enGB })}</div>}
       </div>
       {/* Readings go here */}
       <hr className='border-brand mx-4' />

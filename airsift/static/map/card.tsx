@@ -18,12 +18,12 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
     dustbox?.location?.longitude
   )
 
-  let latestReadingDate = parseTimestamp(dustbox.lastEntryAt.timestamp)
+  let latestReadingDate = parseTimestamp(dustbox.lastEntryAt)
   let latestReading = dustboxReading?.data?.[0]
   let latestReadingValue
   if (latestReading) {
     latestReadingDate = parseTimestamp(latestReading.createdAt)
-    latestReadingValue = parseFloat(latestReading["pm2.5"])
+    latestReadingValue = parseFloat(latestReading.pm25)
   }
 
   return (
