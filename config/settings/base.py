@@ -101,6 +101,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "airsift.data",
     "airsift.users.apps.UsersConfig",
     "airsift.home.apps.HomeConfig",
     "airsift.dustboxes.apps.DustboxesConfig",
@@ -317,3 +318,5 @@ WEBPACK_LOADER = {
 }
 
 WAGTAILAPI_LIMIT_MAX = None
+
+CITIZENSENSE_DATA_API = 'https://citizensense.co.uk:7000'

@@ -62,7 +62,7 @@ export function DustboxMap ({
 
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustboxes>(querystring.stringifyUrl({
-    url: '/citizensense/streams',
+    url: '/api/dustboxes/',
     query: { limit: 'off' }
   }), undefined, { revalidateOnFocus: false })
 

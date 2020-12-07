@@ -15,7 +15,7 @@ import { ParentSize } from '@visx/responsive'
 
 export function DustboxDetailCard ({ id }: { id: string }) {
   const dustboxRes = useSWR<DustboxDetail.Response>(querystring.stringifyUrl({
-    url: `/citizensense/streams/id/${id}`,
+    url: `/api/dustboxes/${id}`,
     query: { limit: 1, streamId: id }
   }), undefined, { revalidateOnFocus: false })
 

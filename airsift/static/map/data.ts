@@ -11,7 +11,7 @@ export const useDustboxReading = (dustboxId: string, query: {
   dateTo?: any
 }) => {
   return useSWR<Array<DustboxReading>>(query.createdAt === 'never' ? null : querystring.stringifyUrl({
-    url: `/citizensense/collections/stream/${dustboxId}`,
+    url: `/api/dustboxes/${dustboxId}/readings`,
     query
   }), async url => {
     const res = await fetch(url)

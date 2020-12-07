@@ -10,6 +10,7 @@ django-webpack-loader==0.7.0
 wagtail-autocomplete==0.6
 djangorestframework-gis==0.16
 crispy-tailwind==0.2.0
+drf-nested-routers==0.92.5
 
 # Django
 # ------------------------------------------------------------------------------

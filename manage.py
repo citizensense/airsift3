@@ -18,7 +18,7 @@ if READ_DOT_ENV_FILE:
     env.read_env(str(ROOT_DIR / ".env"))
 
 if __name__ == "__main__":
-    os.environ.setdefault(env.str("DJANGO_SETTINGS_MODULE", default="config.settings.local"), "config.settings.local")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
     try:
         from django.core.management import execute_from_command_line
