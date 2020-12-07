@@ -61,7 +61,7 @@ jobs:
           username: root
           password: ${{ secrets.SSH_PASS }}
           script: |
-            cd /var/www/airsift
+            cd /var/www/airsift3
             git pull
             docker-compose -f production.yml pull
             docker-compose -f production.yml up -d --force-recreate --remove-orphans
