@@ -135,7 +135,7 @@ class Command(BaseCommand):
                     model.pm1 = convert_float(data.get('pm1'))
                     model.pm2_5 = convert_float(data.get('pm2.5'))
                     model.pm10 = convert_float(data.get('pm10'))
-                    model.stream_id = data.get('streamId')
+                    model.dustbox_id = data.get('streamId')
                     model.temperature = convert_float(data.get('temperature'))
 
                     model.save()
