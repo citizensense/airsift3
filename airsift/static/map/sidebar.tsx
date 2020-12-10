@@ -17,11 +17,11 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes
     {dustboxes
       .slice()
       .sort((a, b) => {
-        if (!isValid(a.lastEntryAt.timestamp)) return 1
-        if (!isValid(b.lastEntryAt.timestamp)) return -1
+        if (!isValid(a.lastEntryAt?.timestamp)) return 1
+        if (!isValid(b.lastEntryAt?.timestamp)) return -1
         return compareDesc(
-          parseTimestamp(a.lastEntryAt.timestamp),
-          parseTimestamp(b.lastEntryAt.timestamp)
+          parseTimestamp(a.lastEntryAt?.timestamp),
+          parseTimestamp(b.lastEntryAt?.timestamp)
         )
       })
       .map((dustbox, i) =>

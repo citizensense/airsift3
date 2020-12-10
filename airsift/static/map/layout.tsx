@@ -70,14 +70,14 @@ export function DustboxMap ({
   // var/www/data-platform-realtime/axios-vanilla/backend/src/modules/stream/controllers/read/streams.js
   const dustboxes = useSWR<Dustbox[]>(querystring.stringifyUrl({
     url: '/api/v2/dustboxes/',
-    query: { limit: 'off' }
+    query: {}
   }), undefined, { revalidateOnFocus: false })
 
   const dustboxAddresses = useMemo(() => {
     return (dustboxes.data ?? [])
-      .filter(d => !!d.location)
       .reduce((dustboxAddresses, item) => {
-        const feature: DustboxFeature  = turf.feature(item.location, item)
+        if (!item.location) return dustboxAddresses
+        const feature: DustboxFeature = turf.feature(item.location, item)
         return [...dustboxAddresses, feature]
       }, [] as Array<DustboxFeature>)
   }, [dustboxes.data])
@@ -177,7 +177,7 @@ export function DustboxMap ({
             </div>
             <hr className='border-brand mx-4' />
             <div className='sm:overflow-y-auto flex-grow'>
-              <DustboxList dustboxes={dustboxes.data?.data || []} />
+              <DustboxList dustboxes={dustboxes.data || []} />
             </div>
             <hr className='border-brand mx-4' />
             <Footer />

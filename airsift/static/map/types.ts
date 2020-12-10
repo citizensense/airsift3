@@ -1,26 +1,24 @@
 import * as turf from '@turf/helpers';
 
 export interface Dustbox {
-  createdAt:     number;
-  description:   string;
-  deviceNumber:  null | string;
-  entriesNumber: number;
-  id:            string;
-  lastEntryAt:   null | string;
-  location:      Location;
-  publicKey:     string;
-  slug:          string;
-  tags:          any[];
-  title:         string;
-  updatedAt?:    null | string;
+    id:            string;
+    createdAt:     Date;
+    description:   string;
+    deviceNumber:  null | string;
+    entriesNumber: number;
+    lastEntryAt:   Date | null;
+    location:      Location | null;
+    publicKey:     string;
+    slug:          string;
+    title:         string;
+    updatedAt:     Date | null;
+}
+export interface Location {
+    type:        'Point';
+    coordinates: [number, number];
 }
 
 export type DustboxFeature = turf.Feature<turf.Point, Dustbox>
-
-export interface Location {
-  longitude?: string;
-  latitude?:  string;
-}
 
 export interface DustboxReading {
   createdAt:   null | string;
