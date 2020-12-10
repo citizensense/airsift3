@@ -1,4 +1,5 @@
 import datetime
+import math
 
 import requests
 from django.core.management.base import BaseCommand
@@ -15,13 +16,16 @@ class Command(BaseCommand):
     sync_all = False
     bail_on_error = False
     verbose = False
-    start = {}
+    max = None
+    pagesize = 50
+    numpages = 1
+    ids_to_sync = ()
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--all',
             action='store_true',
-            help='Delete poll instead of closing it',
+            help='Fetch all readings',
         )
         parser.add_argument(
             '--bail',
@@ -29,21 +33,31 @@ class Command(BaseCommand):
             help='Bail when an error occurs',
         )
         parser.add_argument(
-            '--page',
+            '--max',
             nargs="?",
-            help='Offset to start scraping pages at',
+            type=int,
+            help='Max number of readings per dustbox to read',
         )
+        parser.add_argument(
+            '--pagesize',
+            default=50,
+            type=int,
+            help='Size of pages to fetch',
+        )
+        parser.add_argument('ids', nargs='*', type=str)
 
     def handle(self, *args, **options):
         self.sync_all = options.get('all', False)
         self.bail_on_error = options.get('bail', False)
-        start_opt = options.get('page', None)
+        self.pagesize = options.get('pagesize', None)
+        self.max = options.get('max', None)
+        self.ids_to_sync = options.get('ids', ())
 
-        if start_opt is not None:
-            key, val = start_opt.split('=')
-            self.start = {
-                key: int(val)
-            }
+        if self.max is not None:
+            self.numpages = self.max / self.pagesize
+        else:
+            self.numpages = math.inf
+
 
         self.sync_boxes()
         self.sync_readings()
@@ -86,68 +100,95 @@ class Command(BaseCommand):
                 self.handle_exception()
 
     def sync_readings(self):
-        for stream in Dustbox.objects.all():
-            self.sync_stream_reading(stream)
+        if len(self.ids_to_sync) == 0:
+            for stream in Dustbox.objects.all():
+                self.sync_stream_reading(stream)
+        else:
+            for stream in Dustbox.objects.filter(id__in=self.ids_to_sync):
+                self.sync_stream_reading(stream)
 
     def sync_stream_reading(self, stream):
-        page = self.start.get(str(stream.id), 0)
-        visited = set()
+        if self.sync_all:
+            self.sync_all_stream_readings(stream)
 
-        while True:
-            print(f'Sync readings for {stream.id} (page {page})...')
+        else:
+            page = 0
+            visited = set()
 
-            readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
-                'page': page
-            }).json().get('data', [])
+            while page < self.numpages and self.sync_stream_reading_page(stream, page=page, visited=visited):
+                page += 1
 
-            # Finish syncing, at latest, when we reach the end of the data
-            if len(readings_data) == 0:
-                print(f'Synced all readings for stream {stream.id}')
-                return
+    def sync_stream_reading_page(self, stream, page, visited):
+        print(f'Sync readings for {stream.id} (page {page})...')
 
-            for data in readings_data:
-                self.log_v(data)
+        readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
+            'page': page,
+            'limit': self.pagesize,
+        }).json().get('data', [])
 
-                # Handle pagination alignment errors
-                if data['id'] in visited:
-                    continue
+        # Finish syncing, at latest, when we reach the end of the data
+        if len(readings_data) == 0:
+            print(f'Synced all readings for stream {stream.id}')
+            return False
 
-                try:
-                    model = DustboxReading.objects.filter(id=data['id']).first()
+        return self.sync_stream_readings(stream, readings_data, visited=visited)
 
-                    # Finish syncing this stream if we've got this reading in the database
-                    #
-                    # This assumes that the API repsonse is ordered by date of reading so that
-                    # having a reading implies also having all earlier readings.
-                    #
-                    # (and that our script never bailed. the --all switch can be used to backfill
-                    # manually if that happens)
-                    if model is not None and not self.sync_all:
-                        print(f'Dustbox {stream.id} is up to date')
-                        return
+    def sync_all_stream_readings(self, stream):
+        print(f'Sync readings for {stream.id} (all)')
 
-                    if model is None:
-                        model = DustboxReading()
-                        model.id = data['id']
+        readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
+            'limit': 'off'
+        }).json().get('data', [])
 
-                    model.created_at = convert_timestamp(data.get('createdAt'))
-                    model.humidity = convert_float(data.get('humidity'))
-                    model.pm1 = convert_float(data.get('pm1'))
-                    model.pm2_5 = convert_float(data.get('pm2.5'))
-                    model.pm10 = convert_float(data.get('pm10'))
-                    model.dustbox_id = data.get('streamId')
-                    model.temperature = convert_float(data.get('temperature'))
+        return self.sync_stream_readings(stream, readings_data)
 
-                    model.save()
-                    visited.add(model.id)
+    def sync_stream_readings(self, stream, readings_data, visited=None):
+        for data in readings_data:
+            self.log_v(data)
 
-                except Exception as ex:
-                    print(f'Failed to sync data for stream reading {data["id"]}')
-                    print(ex)
+            if visited is None:
+                visited = set()
 
-                    self.handle_exception()
+            # Handle pagination alignment errors
+            if data['id'] in visited:
+                continue
 
-            page += 1
+            try:
+                model = DustboxReading.objects.filter(id=data['id']).first()
+
+                # Finish syncing this stream if we've got this reading in the database
+                #
+                # This assumes that the API repsonse is ordered by date of reading so that
+                # having a reading implies also having all earlier readings.
+                #
+                # (and that our script never bailed. the --all switch can be used to backfill
+                # manually if that happens)
+                if model is not None and not self.sync_all:
+                    print(f'Dustbox {stream.id} is up to date')
+                    return False
+
+                if model is None:
+                    model = DustboxReading()
+                    model.id = data['id']
+
+                model.created_at = convert_timestamp(data.get('createdAt'))
+                model.humidity = convert_float(data.get('humidity'))
+                model.pm1 = convert_float(data.get('pm1'))
+                model.pm2_5 = convert_float(data.get('pm2.5'))
+                model.pm10 = convert_float(data.get('pm10'))
+                model.dustbox_id = data.get('streamId')
+                model.temperature = convert_float(data.get('temperature'))
+
+                model.save()
+                visited.add(model.id)
+
+            except Exception as ex:
+                print(f'Failed to sync data for stream reading {data["id"]}')
+                print(ex)
+
+                self.handle_exception()
+
+        return True
 
     def handle_exception(self):
         if self.bail_on_error:
