@@ -90,7 +90,6 @@ export const Map: React.FC<{
         ...(observationAddresses || [])
       ]
 
-      console.log({ mapContainerRef })
       if (hoverId
         && allMapItems?.length
         && !justUnhovered

@@ -12,21 +12,42 @@ import { useRoutes, A } from 'hookrouter';
 import { DustboxDetailCard } from './detailCard';
 import { Footer } from './scaffolding';
 import { ObservationDetailCard } from './observation';
+import { AnalysisView } from './analysis';
 
 const routes = {
-  '/': () => ({ homePageURLParam: true }),
-  '/dustboxes/inspect/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ dustboxIdURLParam }),
-  '/dustboxes*': () => ({ listDusboxesURLParam: true }),
-  '/observations/inspect/:observationIdURLParam': ({ observationIdURLParam }: { observationIdURLParam: string }) => ({ observationIdURLParam }),
-  '/observations*': () => ({ listObservationsURLParam: true }),
+  '/analysis*': () => ({ root: AnalysisView }),
+  '/': () => ({ root: MapLayout, homePageURLParam: true }),
+  '/dustboxes/inspect/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ root: MapLayout, dustboxIdURLParam }),
+  '/dustboxes*': () => ({ root: MapLayout, listDusboxesURLParam: true }),
+  '/observations/inspect/:observationIdURLParam': ({ observationIdURLParam }: { observationIdURLParam: string }) => ({ root: MapLayout, observationIdURLParam }),
+  '/observations*': () => ({ root: MapLayout, listObservationsURLParam: true }),
+  '*': () => ({ root: MapLayout, homePageURLParam: true }),
 }
 
-export function DustboxMap ({
+export function Root ({
   userId,
+  ...rootProps
+}: {
+  userId: string | null
+  mapboxApiAccessToken: string
+  mapboxStyleConfig?: string
+}) {
+  // Set up context
+  const [, setUserId] = useAtom(userIdAtom)
+  useEffect(() => {
+    setUserId(userId)
+  }, [userId])
+
+  // // Routing
+  const { root: Root, ...props } = useRoutes(routes as any)
+
+  return <Root {...rootProps} {...props} />
+}
+
+export function MapLayout ({
   mapboxApiAccessToken,
   mapboxStyleConfig,
 }: {
-  userId: string | null
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
 }) {
@@ -44,12 +65,6 @@ export function DustboxMap ({
     observationIdURLParam?: string
     listObservationsURLParam?: boolean
   }
-
-  const [, setUserId] = useAtom(userIdAtom)
-  useEffect(() => {
-    setUserId(userId)
-  }, [userId])
-
   const [, setHoverId] = useAtom(setHoverIdAtom)
   const [, setHoverType] = useAtom(setHoverTypeAtom)
   const [, setHoverSource] = useAtom(setHoverSourceAtom)

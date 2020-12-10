@@ -28,7 +28,7 @@ urlpatterns = [
     path('', include('users.urls')),
     path("accounts/", include("allauth.urls")),
     # Feature URLS
-    path('analysis', TemplateView.as_view(template_name='dustboxes/analysis.html')),
+    re_path(r'^analysis', views.dustboxes),
     path('', include('dustboxes.urls')),
     path('', include('observations.urls')),
     path('', include('datastories.urls')),

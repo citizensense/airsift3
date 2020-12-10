@@ -11,7 +11,7 @@ import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 import { ObservationCard } from './observation';
 
-export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes }) => {
+export const DustboxList: React.FC<{ dustboxes: Dustbox[], renderDetail?: (d: Dustbox) => any }> = memo(({ dustboxes, renderDetail }) => {
   return (
     <Fragment>
     {dustboxes
@@ -26,7 +26,7 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes
       })
       .map((dustbox, i) =>
         <Fragment key={dustbox.id}>
-          <DustboxListItem dustbox={dustbox} key={dustbox.id} />
+          <DustboxListItem dustbox={dustbox} key={dustbox.id} renderDetail={renderDetail} />
           {(i + 1 < (dustboxes.length || 0)) && (
             <hr className='border-brand mx-4' />
           )}
@@ -36,7 +36,7 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[] }> = memo(({ dustboxes
   )
 })
 
-export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }) => {
+export const DustboxListItem: React.FC<{ dustbox: Dustbox, renderDetail?: (d: Dustbox) => any }> = memo(({ dustbox, renderDetail }) => {
   const [isHovering, setIsHovering, hoverSource] = useHoverContext(dustbox.id, 'dustbox')
   const ref = useRef<HTMLDivElement>(null)
 
@@ -57,7 +57,7 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox }> = memo(({ dustbox }
         onMouseOver={() => setIsHovering(true, 'list')}
         onMouseOut={() => setIsHovering(false, 'list')}
       >
-        <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball />
+        <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball renderDetail={renderDetail} />
       </A>
     </div>
   )

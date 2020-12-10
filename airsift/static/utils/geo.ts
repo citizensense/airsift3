@@ -5,6 +5,23 @@ export const bboxToBounds = (n: [number, number, number, number]): [[number, num
   return [[Number(n[0]), Number(n[1])], [Number(n[2]), Number(n[3])]]
 }
 
+export const useLocationNameCoordinates = (
+  locationName: string
+) => {
+  return useSWR(() => {
+      if (!locationName || locationName.length < 3) throw new Error("Bad location name, won't search.")
+      const encodedLocation = encodeURIComponent(locationName)
+      return `https://nominatim.openstreetmap.com/search?q=${encodedLocation}&format=geojson&limit=1&email=jennifer@citizensense.net`
+    },
+    async (url) => {
+      const res = await fetch(url)
+      const data = await res.json()
+      return data?.features?.[0]?.geometry?.coordinates as [number, number] | undefined
+    },
+    { revalidateOnReconnect: false, revalidateOnFocus: false }
+  )
+}
+
 export const useCoordinateData = (lat: any | null, lon: any | null) => {
   return useSWR<OpenStreetMapReverseGeocodeResponse | null>(() => {
     if (!lat || !lon) throw new Error("Missing lat/lng")

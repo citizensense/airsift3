@@ -8,7 +8,7 @@ import { Spinner } from '../utils';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 
-export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }> = memo(({ dustbox, withFuzzball }) => {
+export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean, renderDetail?: (d: Dustbox) => any }> = memo(({ dustbox, withFuzzball, renderDetail }) => {
   const dustboxReading = useDustboxReading(dustbox.id, {
     limit: 1
   })
@@ -61,6 +61,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
             withFuzzball={withFuzzball}
           />
         ) : null}
+        {renderDetail ? renderDetail(dustbox) : null}
       </div>
     </div>
   )
