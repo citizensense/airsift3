@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  production_uploads: {}
+  production_media: {}
   production_postgres_data: {}
   production_postgres_data_backups: {}
   production_traefik: {}
