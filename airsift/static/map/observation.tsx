@@ -9,6 +9,7 @@ import useSWR from 'swr';
 import { firstOf } from '../utils/array';
 import { useAtom } from 'jotai';
 import { userIdAtom } from './layout';
+import { DustboxList } from './sidebar';
 
 export const ObservationCard: React.FC<{ observation: Observations.Item, withIcon?: boolean }> = memo(({ observation, withIcon }) => {
   // const coordinates = useCoordinateData(
@@ -60,7 +61,8 @@ export function ObservationDetailCard ({ id }: { id: any }) {
     url: `/api/v2/pages/${id}`,
     query: {
       fields: [
-        'observation_type(title)'
+        'observation_type(title)',
+        'related_dustboxes(title)'
       ].join()
     }
   }), undefined, { revalidateOnFocus: false })
@@ -126,6 +128,16 @@ export function ObservationDetailCard ({ id }: { id: any }) {
               })}
             </div>
           </Fragment>
+        )}
+        {/* Related obs */}
+        {!!observation?.related_dustboxes?.length && (
+          <div className='mt-5 mb-4'>
+            <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
+              Related Dustboxes
+            </div>
+            <hr className='border-brand mx-4' />
+            <DustboxList dustboxes={observation.related_dustboxes || []} />
+          </div>
         )}
       </div>
       {/* Footer */}

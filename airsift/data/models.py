@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.gis.db.models import PointField
+from wagtail.api import APIField
 
 class Dustbox(models.Model):
     id = models.UUIDField(primary_key=True)
@@ -13,6 +14,20 @@ class Dustbox(models.Model):
     slug = models.SlugField()
     title = models.CharField(max_length=256)
     updated_at = models.DateTimeField(null=True)
+
+    api_fields = [
+        APIField('id'),
+        APIField('created_at'),
+        APIField('description'),
+        APIField('device_number'),
+        APIField('entries_number'),
+        APIField('last_entry_at'),
+        APIField('location'),
+        APIField('public_key'),
+        APIField('slug'),
+        APIField('title'),
+        APIField('updated_at'),
+    ]
 
 class DustboxReading(models.Model):
     id = models.UUIDField(primary_key=True)
