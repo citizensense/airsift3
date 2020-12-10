@@ -1,3 +1,4 @@
+from airsift.utils.custom_ui import AutocompletePanelForUUIDModels
 from airsift.observations.serializers import LocationSerializer, UserSerializer
 from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
@@ -14,6 +15,7 @@ from modelcluster.fields import ParentalKey
 from django.utils import timezone
 from wagtail.api import APIField
 from wagtail.images.api.fields import ImageRenditionField
+from modelcluster.fields import ParentalManyToManyField
 
 class Observation(Page):
     show_in_menus_default = True
@@ -23,9 +25,16 @@ class Observation(Page):
     observation_type = ForeignKey('observations.ObservationType', on_delete=models.DO_NOTHING, related_name='+')
     datetime = DateTimeField(blank=True, null=False, default=timezone.now)
     location = PointField(blank=True, null=True)
+    related_dustboxes = ParentalManyToManyField(
+        'data.Dustbox',
+        blank=True,
+        null=True,
+        verbose_name='Are there any Airsift Dustboxes monitoring this area?'
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
+        AutocompletePanelForUUIDModels('related_dustboxes'),
         FieldPanel('datetime', classname="full"),
         AutocompletePanel('observation_type'),
         FieldPanel('location', widget=OSMWidget(attrs={
@@ -50,6 +59,7 @@ class Observation(Page):
 
     api_fields = [
         APIField('body'),
+        APIField('related_dustboxes'),
         APIField('observation_type'),
         APIField('datetime'),
         APIField('location', serializer=LocationSerializer),
