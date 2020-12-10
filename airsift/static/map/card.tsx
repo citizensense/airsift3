@@ -14,8 +14,8 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean }>
   })
 
   const coordinates = useCoordinateData(
-    dustbox?.location?.latitude,
-    dustbox?.location?.longitude
+    dustbox?.location?.coordinates[1],
+    dustbox?.location?.coordinates[0]
   )
 
   let latestReadingDate = parseTimestamp(dustbox.lastEntryAt)
