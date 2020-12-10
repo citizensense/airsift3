@@ -61,6 +61,7 @@ class Command(BaseCommand):
 
         self.sync_boxes()
         self.sync_readings()
+        print('Sync completed!')
 
     def sync_boxes(self):
         print('Sync streams...')
@@ -100,12 +101,22 @@ class Command(BaseCommand):
                 self.handle_exception()
 
     def sync_readings(self):
+        i = 1
+
         if len(self.ids_to_sync) == 0:
+            total = len(Dustbox.objects.all())
+
             for stream in Dustbox.objects.all():
+                print(f'Sync readings from stream {stream.id} ({i}/{total})')
                 self.sync_stream_reading(stream)
+                i += 1
         else:
+            total = len(self.ids_to_sync)
+
             for stream in Dustbox.objects.filter(id__in=self.ids_to_sync):
+                print(f'Sync readings from stream {stream.id} ({i}/{total})')
                 self.sync_stream_reading(stream)
+                i += 1
 
     def sync_stream_reading(self, stream):
         if self.sync_all:
@@ -119,7 +130,7 @@ class Command(BaseCommand):
                 page += 1
 
     def sync_stream_reading_page(self, stream, page, visited):
-        print(f'Sync readings for {stream.id} (page {page})...')
+        print(f'Page {page}...')
 
         readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
             'page': page,
@@ -134,8 +145,6 @@ class Command(BaseCommand):
         return self.sync_stream_readings(stream, readings_data, visited=visited)
 
     def sync_all_stream_readings(self, stream):
-        print(f'Sync readings for {stream.id} (all)')
-
         readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
             'limit': 'off'
         }).json().get('data', [])
