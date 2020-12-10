@@ -12,6 +12,14 @@ RUN apt-get update \
   && apt-get install -y binutils libproj-dev gdal-bin \
   # Translations dependencies
   && apt-get install -y gettext \
+  # Build dependencies
+  && apt-get install -y curl \
+  && curl -sL https://deb.nodesource.com/setup_12.x -o ~/nodesource_setup.sh \
+  && bash ~/nodesource_setup.sh \
+  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+  && apt-get update \
+  && apt-get install -y nodejs yarn  \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
@@ -32,9 +40,15 @@ RUN chmod +x /entrypoint
 COPY --chown=django:django ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
-COPY --chown=django:django . /app
+
+COPY --chown=django:django package.json /app/
+COPY --chown=django:django yarn.lock /app/
 
 USER django
+
+RUN cd /app && yarn
+COPY --chown=django:django . /app
+RUN cd /app && yarn build && rm -rf node_modules
 
 WORKDIR /app
 
