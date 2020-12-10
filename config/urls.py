@@ -33,15 +33,15 @@ urlpatterns = [
     path('', include('observations.urls')),
     path('', include('datastories.urls')),
     path('', views.dustboxes),
-    # Content serve URLS
-    path('documents/', include(wagtaildocs_urls)),
-    path('', include(wagtail_urls)),
     # Django admin
     re_path(r'^admin/login/$', capture_login),
     re_path(r'^admin/logout/$', capture_logout),
     path(settings.ADMIN_URL, admin.site.urls),
     # User management URLs
     path("users/", include("airsift.users.urls", namespace="users")),
+    # Content serve URLS
+    path('documents/', include(wagtaildocs_urls)),
+    path('', include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
