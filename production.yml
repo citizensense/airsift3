@@ -1,6 +1,7 @@
 version: '3'
 
 volumes:
+  production_uploads: {}
   production_postgres_data: {}
   production_postgres_data_backups: {}
   production_traefik: {}
@@ -12,6 +13,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - production_media:/app/airsift/media:Z
     env_file:
       - ./.env
     command: /start
