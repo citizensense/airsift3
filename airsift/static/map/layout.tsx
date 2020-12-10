@@ -22,9 +22,11 @@ const routes = {
 }
 
 export function DustboxMap ({
+  userId,
   mapboxApiAccessToken,
   mapboxStyleConfig,
 }: {
+  userId: string | null
   mapboxApiAccessToken: string
   mapboxStyleConfig?: string
 }) {
@@ -42,6 +44,11 @@ export function DustboxMap ({
     observationIdURLParam?: string
     listObservationsURLParam?: boolean
   }
+
+  const [, setUserId] = useAtom(userIdAtom)
+  useEffect(() => {
+    setUserId(userId)
+  }, [userId])
 
   const [, setHoverId] = useAtom(setHoverIdAtom)
   const [, setHoverType] = useAtom(setHoverTypeAtom)
@@ -206,6 +213,8 @@ export function DustboxMap ({
     </div>
   )
 }
+
+export const userIdAtom = atom<string | null>(null)
 
 type HoverID = string | number
 export const hoverIdAtom = atom<HoverID | undefined>(undefined)

@@ -7,6 +7,8 @@ import { useCoordinateData } from '../utils/geo';
 import querystring from 'query-string';
 import useSWR from 'swr';
 import { firstOf } from '../utils/array';
+import { useAtom } from 'jotai';
+import { userIdAtom } from './layout';
 
 export const ObservationCard: React.FC<{ observation: Observations.Item, withIcon?: boolean }> = memo(({ observation, withIcon }) => {
   // const coordinates = useCoordinateData(
@@ -70,6 +72,8 @@ export function ObservationDetailCard ({ id }: { id: any }) {
     observation?.location?.coordinates[0]
   )
 
+  const [userId, _] = useAtom(userIdAtom)
+
   return (
     <div className='flex flex-col sm:h-screen overflow-x-hidden'>
       <div className='px-4 pt-6 pb-5'>
@@ -91,6 +95,9 @@ export function ObservationDetailCard ({ id }: { id: any }) {
         {!!observation?.contributors.length && <div className='text-S text-softBlack my-2 px-4'>
           Contributors: {observation?.contributors.map(userName).join(', ')}
         </div>}
+        {!!userId && (
+          <a href={`/cms/pages/${observation?.id}/edit/`} className='button-grey mx-4'>Edit this</a>
+        )}
         {coordinates.data && <div className='text-S text-softBlack my-2 px-4'>
           {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
           {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
