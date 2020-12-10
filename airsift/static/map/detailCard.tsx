@@ -1,6 +1,6 @@
 import React from 'react'
 import useSWR from 'swr';
-import { DustboxDetail, DustboxReading } from './types';
+import { DustboxDetail, DustboxReading, Observations } from './types';
 import querystring from 'query-string';
 import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
@@ -12,11 +12,26 @@ import { useCoordinateData } from '../utils/geo';
 import { firstOf } from '../utils/array';
 import { Dustbox24HourChart } from './graph';
 import { ParentSize } from '@visx/responsive'
+import { ObservationList } from './sidebar';
 
 export function DustboxDetailCard ({ id }: { id: string }) {
   const dustboxRes = useSWR<DustboxDetail.Data>(querystring.stringifyUrl({
     url: `/api/v2/dustboxes/${id}`,
     query: { limit: 1, streamId: id }
+  }), undefined, { revalidateOnFocus: false })
+
+  const relatedObservations = useSWR<Observations.Response>(querystring.stringifyUrl({
+    url: `/api/v2/pages/`,
+    query: {
+      type: 'observations.Observation',
+      related_dustboxes: id,
+      fields: [
+        'location',
+        'observation_type(title)',
+        'datetime',
+        'observation_images(image_thumbnail)'
+      ].join(',')
+    }
   }), undefined, { revalidateOnFocus: false })
 
   const dustbox = dustboxRes?.data
@@ -80,6 +95,16 @@ export function DustboxDetailCard ({ id }: { id: string }) {
           </div>
         ) : null}
       </div>
+      {/* Related obs */}
+      {!!relatedObservations?.data?.items?.length && (
+        <div className='mb-4'>
+          <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
+            Related Observations
+          </div>
+          <hr className='border-darkBlue mx-4' />
+          <ObservationList observations={relatedObservations.data?.items || []} />
+        </div>
+      )}
       {/* Footer */}
       <hr className='border-brand mx-4' />
       <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>

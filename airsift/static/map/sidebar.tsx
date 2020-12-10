@@ -78,7 +78,7 @@ export const ObservationList: React.FC<{ observations: Observations.Item[] }> = 
         <Fragment key={observation.id}>
           <ObservationListItem observation={observation} key={observation.id} />
           {(i + 1 < (observations.length || 0)) && (
-            <hr className='border-brand mx-4' />
+            <hr className='border-darkBlue mx-4' />
           )}
         </Fragment>
       )

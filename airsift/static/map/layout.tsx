@@ -194,7 +194,7 @@ export function DustboxMap ({
                 + Add an Observation
               </a>
             </div>
-            <hr className='border-brand mx-4' />
+            <hr className='border-darkBlue mx-4' />
             <div className='sm:overflow-y-auto flex-grow'>
               <ObservationList observations={observations.data?.items || []} />
             </div>
