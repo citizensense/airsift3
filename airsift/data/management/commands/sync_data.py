@@ -83,7 +83,7 @@ class Command(BaseCommand):
                 model.created_at = convert_timestamp(data.get('createdAt'))
                 model.description = data.get('description')
                 model.device_number = data.get('deviceNumber')
-                model.entries_number = data.get('entriesNumber')
+                model.entries_number = convert_int(data.get('entriesNumber'), 0)
                 model.last_entry_at = convert_timestamp(data.get('lastEntryAt', {}).get('timestamp'))
                 model.location = convert_point(data.get('location'))
                 model.public_key = data.get('publicKey')
@@ -200,22 +200,35 @@ class Command(BaseCommand):
 
 
 def convert_timestamp(timestamp):
-    if timestamp == 'never' or timestamp is None:
+    if timestamp == 'never':
         return None
 
-    return datetime.datetime.fromtimestamp(float(timestamp) / 1000, tz=datetime.timezone.utc)
+    ts_float = convert_float(timestamp)
+    if ts_float is None:
+        return None
 
-def convert_point(json = {}):
-    y = json.get('latitude')
-    x = json.get('longitude')
+    return datetime.datetime.fromtimestamp(ts_float / 1000, tz=datetime.timezone.utc)
 
-    if x is None or y is None or x == '' or y == '':
+def convert_point(json):
+    if json is None:
+        return None
+
+    y = convert_float(json.get('latitude'))
+    x = convert_float(json.get('longitude'))
+
+    if x is None or y is None:
         return None
 
     return Point(x=float(x), y=float(y))
 
-def convert_float(json):
+def convert_float(json, default=None):
     if json is None or json == '':
-        return None
+        return default
 
     return float(json)
+
+def convert_int(json, default=None):
+    if json is None or json == '':
+        return default
+
+    return int(json)
