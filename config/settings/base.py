@@ -98,7 +98,8 @@ THIRD_PARTY_APPS = [
     'wagtailautocomplete',
     'wagtail.api.v2',
     'rest_framework',
-    'rest_framework_gis'
+    'rest_framework_gis',
+    'django_filters'
 ]
 
 LOCAL_APPS = [

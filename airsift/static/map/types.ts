@@ -20,6 +20,12 @@ export interface Location {
 
 export type DustboxFeature = turf.Feature<turf.Point, Dustbox>
 
+export interface DustboxReadingResult {
+  count:    number;
+  next:     string;
+  previous: null;
+  results:  DustboxReading[];
+}
 export interface DustboxReading {
   createdAt:   null | string;
   humidity:    number;

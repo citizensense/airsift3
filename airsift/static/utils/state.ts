@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import querystring, { UrlObject } from 'query-string';
+import useDebounce from './time';
 
 export function usePrevious<T>(value: T) {
   // The ref object is a generic container whose current property is mutable ...
@@ -49,42 +50,53 @@ export function useArrayState<T>(value: T[]) {
 }
 
 type URLStateOptions<H> = {
-  updateURL: (stateObj: any) => void
   serialiseStateToObject: (key: string, state: H) => any
 }
 
-export function useURLState <H = any>(
-  key: string,
-  stateHook: (initialValue: string | string[] | null) => H,
-  options?: Partial<URLStateOptions<H>>
-) {
-  const {
-    serialiseStateToObject,
-    updateURL
-  } = Object.assign(
-    {
-      serialiseStateToObject: (key, state) => ({
-        [key]: (state as any).toString()
-      }),
-      updateURL: (query) => window.history.replaceState({}, document.title, querystring.stringifyUrl({
-        url: window.location.toString(),
-        query
-      }))
-    } as URLStateOptions<H>,
-    options
-  )
+export function useURLStateFactory () {
+  // const [params, updateParams] = useState({})
+  const params = useRef({})
+  // const debouncedParams = useDebounce(params, 1000)
 
-  // Look for intiial value from `key`
-  const initialValue = querystring.parseUrl(window.location.toString()).query[key]
-
-  // Initialise state
-  const state = stateHook(initialValue)
-
-  // Update URL when state changes
   useEffect(() => {
-    updateURL(serialiseStateToObject(key, state))
-  }, [state])
+    const interval = setInterval(() => {
+      window.history.replaceState({}, document.title, querystring.stringifyUrl({
+        url: window.location.toString(),
+        query: params.current
+      }))
+    }, 1000)
 
-  // Pass through state
-  return state
+    return () => clearInterval(interval)
+  }, [])
+
+  return function <H = [any, any]>(
+    key: string,
+    stateHook: (initialValue: string | string[] | null) => H,
+    options?: Partial<URLStateOptions<H>>
+  ) {
+    const {
+      serialiseStateToObject,
+    } = Object.assign(
+      {
+        serialiseStateToObject: (key, [state]: any) => ({ [key]: state })
+      } as URLStateOptions<H>,
+      options
+    )
+
+    // Look for initial value from `key`
+    const initialValue = querystring.parseUrl(window.location.toString()).query[key]
+
+    console.log(key, initialValue)
+
+    // Initialise state
+    const state = stateHook(initialValue)
+
+    // Update URL object when state changes
+    useEffect(() => {
+      params.current = ({ ...params.current, ...serialiseStateToObject(key, state) })
+    }, [state])
+
+    // Pass through state
+    return state
+  }
 }

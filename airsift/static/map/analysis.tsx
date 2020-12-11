@@ -1,19 +1,41 @@
-import React, { useMemo, useState, Fragment } from 'react';
+import React, { useMemo, useState, Fragment, useEffect } from 'react';
 import { Footer } from './scaffolding';
 import { useLocationNameCoordinates } from '../utils/geo';
 import useDebounce from '../utils/time';
 import useSWR from 'swr';
-import { Dustbox } from './types';
+import { Dustbox, DustboxReadingResult, DustboxReading } from './types';
 import querystring from 'query-string';
 import distance from '@turf/distance'
 import { point } from '@turf/helpers'
 import { DustboxList } from './sidebar';
 import { DustboxTitle } from './card';
 import { Debug } from '../utils/react';
-import { useArrayState, useURLState } from '../utils/state';
+import { useArrayState, useURLStateFactory } from '../utils/state';
 import { ensureArray } from '../utils/array';
+import { DustboxFlexibleChart } from './graph';
+import { ParentSize } from '@visx/responsive';
+import DayPickerInput from 'react-day-picker/DayPickerInput'
+import { format, parse, subDays } from 'date-fns/esm'
+import { enGB } from 'date-fns/esm/locale';
+// import { DateUtils } from 'react-day-picker/types/DateUtils';
+import 'react-day-picker/lib/style.css';
+import { A } from 'hookrouter';
 
-export function AnalysisView () {
+function parseDate(str: string, formatTemplate: string, locale: any = enGB) {
+  const parsed = parse(str, formatTemplate, new Date(), { locale });
+  return parsed
+  //   if (DateUtils.isDate(parsed)) {
+  //     return parsed;
+  //   }
+  //   return undefined;
+  // }
+}
+
+function formatDate(date: Date, formatTemplate: string, locale: any = enGB) {
+  return format(date, formatTemplate, { locale });
+}
+
+export function AnalysisView() {
   const [locationName, setLocationName] = useState('')
   const debouncedLocationName = useDebounce(locationName, 1000)
   const coordinates = useLocationNameCoordinates(debouncedLocationName)
@@ -35,25 +57,50 @@ export function AnalysisView () {
     }
 
     return dustboxList?.data?.map((a) => {
-        return {
-          ...a,
-          distanceFromSearch: getDistance(a)
-        }
-      }).sort((a, b) =>
-        isNaN(a.distanceFromSearch) ? 1 : isNaN(b.distanceFromSearch) ? -1
+      return {
+        ...a,
+        distanceFromSearch: getDistance(a)
+      }
+    }).sort((a, b) =>
+      isNaN(a.distanceFromSearch) ? 1 : isNaN(b.distanceFromSearch) ? -1
         : a.distanceFromSearch - b.distanceFromSearch
-      ) || []
+    ) || []
   }, [coordinates.data, dustboxList.data])
+
+  const useURLState = useURLStateFactory()
 
   const [dustboxSelections, dustboxActions] = useURLState(
     'dustboxes',
-    (initial) => useArrayState(initial ? ensureArray(initial) as string[] : []),
-    { serialiseStateToObject: (key, [state]) => ({ [key]: state }) }
+    (initial) => useArrayState(initial ? ensureArray(initial) as string[] : [])
   )
 
   const toggleDustbox = (id: string) => {
     dustboxActions.toggle(id)
   }
+
+  const DATE_FORMAT_TEMPLATE = 'P'
+
+  const [dateFrom, setDateFrom] = useURLState(
+    'dateFrom',
+    date => useState(date ? new Date(date.toString()) : subDays(new Date(), 7)),
+    { serialiseStateToObject: (key, [state]) => ({ [key]: state.toISOString() }) }
+  )
+
+  const [dateTo, setDateTo] = useURLState(
+    'dateTo',
+    date => useState(date ? new Date(date.toString()) : subDays(new Date(), 7)),
+    { serialiseStateToObject: (key, [state] )=> ({ [key]: state.toISOString() }) }
+  )
+
+  const [mean, setMean] = useURLState(
+    'mean',
+    mean => useState(mean?.toString() || 'day')
+  )
+
+  const [mode, setMode] = useURLState(
+    'mode',
+    mode => useState(mode?.toString() || 'trunc')
+  )
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
@@ -64,9 +111,45 @@ export function AnalysisView () {
         </div>
         {/* <hr className='border-brand mx-4' /> */}
         <div className='flex-grow flex flex-col'>
-          {/* TODO: Search location */}
-          {/* {JSON.stringify(coordinates.data, null, 2)} */}
+          <A href='/analysis' className='button-grey'>Reset</A>
           <div className='my-4 flex flex-col'>
+            <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
+              Select dates
+            </div>
+            <DayPickerInput
+              value={dateFrom}
+              onDayChange={(d) => setDateFrom(d)}
+              formatDate={formatDate}
+              format={DATE_FORMAT_TEMPLATE}
+              parseDate={parseDate}
+              placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+            />
+            <DayPickerInput
+              value={dateTo}
+              onDayChange={(d) => setDateTo(d)}
+              formatDate={formatDate}
+              format={DATE_FORMAT_TEMPLATE}
+              parseDate={parseDate}
+              placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+            />
+            <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
+              Select data resolution
+            </div>
+            <select onChange={e => setMean(e.target.value)} defaultValue={mean || undefined} value={mean || undefined}>
+              {['minute', 'hour', 'day', 'week', 'month', ['isodow', 'Day of Week']].map((val) => {
+                const label = Array.isArray(val) ? val[1] : val
+                const value = Array.isArray(val) ? val[0] : val
+                return <option key={value} value={value}>{label}</option>
+              })}
+            </select>
+            <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
+              Select visualisation mode
+            </div>
+            <select onChange={e => setMode(e.target.value)} defaultValue={mode || undefined} value={mode || undefined}>
+              {['trunc', 'part'].map((val) =>
+                <option key={val} value={val}>{val}</option>
+              )}
+            </select>
             <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
               Select a dustbox
             </div>
@@ -102,33 +185,74 @@ export function AnalysisView () {
       </div>
       <Visualisation
         dustboxIds={dustboxSelections}
-        dateFrom={new Date()}
-        dateTo={new Date()}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
         visualisationType='line'
-        particleMeasure='pm2.5'
-        mean='24hours'
+        mean={mean}
+        mode={mode}
       />
     </div>
   )
 }
 
 type VisualisationType = 'line' | 'scatter' | 'polar' | 'rose' | 'calendar' | 'time'
-type ParticleMeasureType = 'pm1' | 'pm2.5' | 'pm10'
-type MeanType = '1min' | '1hour' | '24hours'
+// type ParticleMeasureType = 'pm1' | 'pm2_5' | 'pm10'
+type MeanType = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
+type ModeType = 'trunc' | 'part'
 
 export const Visualisation: React.FC<{
   dustboxIds: string[]
-  dateFrom: Date
-  dateTo: Date
+  dateFrom?: Date
+  dateTo?: Date
   visualisationType: VisualisationType
-  particleMeasure: ParticleMeasureType
+  // particleMeasure: ParticleMeasureType
+  mode: ModeType
   mean: MeanType
   // TODO: Weather
-}> = (props) => {
+}> = ({ dustboxIds, dateFrom, dateTo, mode, mean }) => {
+  const keys = [dustboxIds, dateFrom, dateTo, mode, mean]
+
+  const dustboxStreams = useSWR(
+    keys,
+    async (dustboxIds, dateFrom, dateTo, mode, mean) => Promise.all(dustboxIds.map(
+      async (dustboxId: string) => {
+        const url = querystring.stringifyUrl({
+          url: `/api/v2/dustboxes/${dustboxId}/aggregates/`,
+          query: {
+            date_after: dateFrom?.toISOString(),
+            date_before: dateTo?.toISOString(),
+            mode,
+            mean,
+            limit: 10000000
+          }
+        })
+
+        const response = await fetch(url)
+        const result = await response.json()
+        return {
+          dustboxId,
+          readings: result as DustboxReading[]
+        }
+      }
+    )),
+    // {
+    //   refreshWhenHidden: false,
+    //   revalidateOnFocus: false,
+    //   // revalidateOnMount: false,
+    //   revalidateOnReconnect: false
+    // }
+  )
+
   return (
-    <div>
+    <div className='my-6'>
       <div>Visualisation goes here.</div>
-      <Debug>{props}</Debug>
+      <Debug>{keys}</Debug>
+      <ParentSize>{({ width }) =>
+        <DustboxFlexibleChart
+          dustboxStreams={dustboxStreams.data || []}
+          width={width} height={200}
+        />
+      }</ParentSize>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { DustboxReading } from './types';
+import { DustboxReading, DustboxReadingResult } from './types';
 import querystring from 'query-string';
 
 export const useDustboxReading = (dustboxId: string, query: {
@@ -15,21 +15,7 @@ export const useDustboxReading = (dustboxId: string, query: {
     query
   }), async url => {
     const res = await fetch(url)
-    const data = await res.json() as {
-      count:    number;
-      next:     string;
-      previous: null;
-      results:  {
-          id:          string;
-          createdAt:   string;
-          humidity:    number;
-          pm1:         number;
-          pm25:        number;
-          pm10:        number;
-          temperature: number;
-          dustbox:     string;
-      }[];
-    }
+    const data = await res.json() as DustboxReadingResult
     return data.results || []
   }, {
     revalidateOnMount: true,

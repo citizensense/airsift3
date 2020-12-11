@@ -86,12 +86,15 @@ export function DustboxDetailCard ({ id }: { id: string }) {
               Current Reading
             </div>
             <AirQualityReading withFuzzball date={latestReadingDate} reading={latestReadingValue} />
-            <div className='mt-5'>
+            <div className='my-5'>
               <div className='uppercase text-XS font-cousine font-bold mb-1 text-softBlack'>
                 Last 24 hours
               </div>
               <Last24Hours data={dustboxReading.data || []} />
             </div>
+            <A className='button-grey inline-block my-3' href={querystring.stringifyUrl({ url: '/analysis', query: { dustboxes: id }})}>
+              Analyse Data &rarr;
+            </A>
           </div>
         ) : null}
       </div>
