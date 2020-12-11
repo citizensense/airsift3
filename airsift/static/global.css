@@ -77,3 +77,8 @@ text-S font-semibold hoverable;
     display: none;
   }
 }
+
+.DayPickerInput {
+  width: auto;
+  display: inline-block;
+}

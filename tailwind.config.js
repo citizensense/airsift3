@@ -57,6 +57,7 @@ module.exports = {
         "mid": "#8299a5",
         "light": "#ecf1f6",
         "white": "#fafafa",
+        "realWhite": "#FFF",
         "purple air": "#ac44a7",
         "laqn": "#3f7d98",
         "5-10": "#f0f27c",

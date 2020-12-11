@@ -10,6 +10,7 @@ import { DustboxReading, Dustbox } from './types';
 import { Text } from '@visx/text';
 import { Group } from '@visx/group';
 import { Point } from '@visx/point';
+import { ScaleSVG } from "@visx/responsive"
 
 const getDate = (datum: DustboxReading) => new Date(datum.createdAt);
 const getPM1Value = (datum: DustboxReading) => parseFloat(datum["pm1"]);
@@ -147,7 +148,7 @@ export function Dustbox24HourChart ({
           tickClassName='font-cousine text-black text-XXS'
         />
         <AxisBottom
-          top={height + margin.top}
+          top={margin.top + height}
           scale={dateScale}
           stroke={''}
           tickStroke={''}
@@ -198,11 +199,13 @@ export function DustboxFlexibleChart ({
     }
   ]
 
-  const margin = { top: 0, right: 90, bottom: 0, left: 30 };
+  const margin = { top: 0, right: 90, bottom: 100, left: 30 };
 
   // bounds
   const innerWidth = width - margin.left - margin.right;
+  const axisXStart = margin.left
   const innerHeight = height - margin.top - margin.bottom;
+  const axisYStart = margin.top + innerHeight
 
   const data = dustboxStreams.reduce(
     (data, stream) => [...data, ...stream.readings],
@@ -231,10 +234,11 @@ export function DustboxFlexibleChart ({
 
   return (
     <div>
-      <svg width={width} height={height} style={{
+      <ScaleSVG width={width} height={height} style={{
         overflow: 'visible'
       }}>
         <GridRows
+          top={margin.top}
           left={margin.left}
           scale={pm25Scale}
           width={innerWidth}
@@ -245,6 +249,7 @@ export function DustboxFlexibleChart ({
         />
         <GridColumns
           top={margin.top}
+          left={margin.left}
           scale={dateScale}
           height={innerHeight}
           strokeDasharray="1,3"
@@ -292,17 +297,20 @@ export function DustboxFlexibleChart ({
           rx={14}
         />
         <AxisLeft
+          top={margin.top}
+          left={margin.left}
           scale={pm25Scale}
           stroke={''}
           tickStroke={''}
-          left={margin.left}
+          left={axisXStart}
           tickLabelProps={() => ({
             textAnchor: 'end'
           })}
           tickClassName='font-cousine text-black text-XXS'
         />
         <AxisBottom
-          top={height + margin.top}
+          top={margin.top + innerHeight}
+          left={margin.left}
           scale={dateScale}
           stroke={''}
           tickStroke={''}
@@ -312,7 +320,7 @@ export function DustboxFlexibleChart ({
           })}
           tickClassName='font-cousine text-black text-XXS'
         />
-      </svg>
+      </ScaleSVG>
     </div>
   );
 }
