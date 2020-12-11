@@ -13,9 +13,9 @@ import { Debug } from '../utils/react';
 import { useArrayState, useURLStateFactory } from '../utils/state';
 import { ensureArray } from '../utils/array';
 import { DustboxFlexibleChart } from './graph';
-import { ParentSize } from '@visx/responsive';
+import { ParentSize, ScaleSVG } from '@visx/responsive';
 import DayPickerInput from 'react-day-picker/DayPickerInput'
-import { format, parse, subDays } from 'date-fns/esm'
+import { format, parse, subDays, formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 // import { DateUtils } from 'react-day-picker/types/DateUtils';
 import 'react-day-picker/lib/style.css';
@@ -169,24 +169,17 @@ export function AnalysisView() {
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
             />
             {nearestDustboxes.map((dustbox, i) =>
-              <div
-                key={dustbox.id}
-                className={`block pt-4 px-4 ${dustboxSelections.includes(dustbox.id) && 'bg-gray-300'}`}
-                onClick={() => toggleDustbox(dustbox.id)}
-              >
-                <DustboxTitle title={dustbox.title} lat={dustbox.location?.coordinates[1]} lng={dustbox.location?.coordinates[0]} />
-                <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
-                  <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
-                </div>
-                {dustbox.distanceFromSearch !== undefined && !isNaN(dustbox.distanceFromSearch) && (
-                  <div className='text-red-500 font-bold pt-2 text-XXS'>
-                    {dustbox.distanceFromSearch.toFixed(1)} miles away
-                  </div>
-                )}
+              <Fragment>
+                <DustboxAnalysisCard
+                  key={dustbox.id}
+                  dustbox={dustbox}
+                  onClick={() => toggleDustbox(dustbox.id)}
+                  isSelected={dustboxSelections.includes(dustbox.id)}
+                />
                 {(i + 1 < (nearestDustboxes.length || 0)) && (
-                  <hr className='border-brand mt-4' />
+                  <hr className='border-brand' />
                 )}
-              </div>
+              </Fragment>
             )}
           </div>
         </div>
@@ -205,6 +198,49 @@ export function AnalysisView() {
           />
         </div>
       </div>
+    </div>
+  )
+}
+
+const DustboxAnalysisCard: React.FC<{
+  dustbox: Dustbox & { distanceFromSearch?: number }
+  onClick?: any
+  isSelected?: boolean
+}> = ({ dustbox, onClick, isSelected }) => {
+  const monthlyData = useSWR(
+    querystring.stringifyUrl({
+      url: `/api/v2/dustboxes/${dustbox.id}/aggregates/`,
+      query: {
+        date_after: new Date('2010-01-01').toISOString(),
+        date_before: new Date().toISOString(),
+        mode: 'trunc',
+        mean: 'month',
+        limit: 10000000
+      }
+    })
+  )
+
+  const dates = monthlyData?.data?.map(d => new Date(d.created_at)) || []
+  const oldest = dates?.[dates.length - 1]
+  const newest = dates?.[0]
+
+  return (
+    <div
+      className={`block py-4 px-4 ${isSelected && 'bg-gray-300'}`}
+      onClick={onClick}
+    >
+      <DustboxTitle title={dustbox.title} lat={dustbox.location?.coordinates[1]} lng={dustbox.location?.coordinates[0]} />
+      <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
+        <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
+      </div>
+      {dustbox.distanceFromSearch !== undefined && !isNaN(dustbox.distanceFromSearch) && (
+        <div className='text-red-500 font-bold my-2 text-XXS'>
+          {dustbox.distanceFromSearch.toFixed(1)} miles away
+        </div>
+      )}
+      {newest && oldest && <div className='my-2 text-mid'>
+        Data between {format(oldest, 'MMM yyyy', { locale: enGB })} and {format(newest, 'MMM yyyy', { locale: enGB })}
+      </div>}
     </div>
   )
 }
