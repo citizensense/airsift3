@@ -92,11 +92,13 @@ export function DustboxDetailCard ({ id }: { id: string }) {
               </div>
               <Last24Hours data={dustboxReading.data || []} />
             </div>
-            <A className='button-grey inline-block my-3' href={querystring.stringifyUrl({ url: '/analysis', query: { dustboxes: id }})}>
-              Analyse Data &rarr;
-            </A>
           </div>
         ) : null}
+      </div>
+      <div className='mx-4  my-3'>
+        <A className='button-grey' href={querystring.stringifyUrl({ url: '/analysis', query: { dustboxes: id }})}>
+          Analyse Data &rarr;
+        </A>
       </div>
       {/* Related obs */}
       {!!relatedObservations?.data?.items?.length && (
