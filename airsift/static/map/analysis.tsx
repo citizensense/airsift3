@@ -88,7 +88,7 @@ export function AnalysisView() {
 
   const [dateTo, setDateTo] = useURLState(
     'dateTo',
-    date => useState(date ? new Date(date.toString()) : subDays(new Date(), 7)),
+    date => useState(date ? new Date(date.toString()) : new Date()),
     { serialiseStateToObject: (key, [state] )=> ({ [key]: state.toISOString() }) }
   )
 
