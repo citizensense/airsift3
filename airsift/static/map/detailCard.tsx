@@ -96,9 +96,9 @@ export function DustboxDetailCard ({ id }: { id: string }) {
         ) : null}
       </div>
       <div className='mx-4  my-3'>
-        <A className='button-grey' href={querystring.stringifyUrl({ url: '/analysis', query: { dustboxes: id }})}>
+        <a className='button-grey' href={querystring.stringifyUrl({ url: '/analysis', query: { dustboxes: id }})}>
           Analyse Data &rarr;
-        </A>
+        </a>
       </div>
       {/* Related obs */}
       {!!relatedObservations?.data?.items?.length && (

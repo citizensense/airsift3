@@ -86,8 +86,6 @@ export function useURLStateFactory () {
     // Look for initial value from `key`
     const initialValue = querystring.parseUrl(window.location.toString()).query[key]
 
-    console.log(key, initialValue)
-
     // Initialise state
     const state = stateHook(initialValue)
 
