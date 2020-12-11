@@ -207,22 +207,21 @@ const DustboxAnalysisCard: React.FC<{
   onClick?: any
   isSelected?: boolean
 }> = ({ dustbox, onClick, isSelected }) => {
-  const monthlyData = useSWR(
-    querystring.stringifyUrl({
-      url: `/api/v2/dustboxes/${dustbox.id}/aggregates/`,
-      query: {
-        date_after: new Date('2010-01-01').toISOString(),
-        date_before: new Date().toISOString(),
-        mode: 'trunc',
-        mean: 'month',
-        limit: 10000000
-      }
-    })
-  )
+  // const monthlyData = useSWR(
+  //   querystring.stringifyUrl({
+  //     url: `/api/v2/dustboxes/${dustbox.id}/aggregates/`,
+  //     query: {
+  //       date_after: new Date('2010-01-01').toISOString(),
+  //       date_before: new Date().toISOString(),
+  //       mode: 'trunc',
+  //       mean: 'month',
+  //       limit: 10000000
+  //     }
+  //   })
+  // )
 
-  const dates = monthlyData?.data?.map(d => new Date(d.created_at)) || []
-  const oldest = dates?.[dates.length - 1]
-  const newest = dates?.[0]
+  // const oldest = monthlyData?.data?.[monthlyData?.data.length - 1]?.created_at
+  // const newest = monthlyData?.data?.[0]?.created_at
 
   return (
     <div
@@ -238,9 +237,9 @@ const DustboxAnalysisCard: React.FC<{
           {dustbox.distanceFromSearch.toFixed(1)} miles away
         </div>
       )}
-      {newest && oldest && <div className='my-2 text-mid'>
+      {/* {newest && oldest && <div className='my-2 text-mid'>
         Data between {format(oldest, 'MMM yyyy', { locale: enGB })} and {format(newest, 'MMM yyyy', { locale: enGB })}
-      </div>}
+      </div>} */}
     </div>
   )
 }
