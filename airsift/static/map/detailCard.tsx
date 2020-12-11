@@ -122,7 +122,7 @@ export const Last24Hours: React.FC<{ data: DustboxReading[] }> = ({ data }) => {
   const oldest = dateRanges[dateRanges.length - 1]
   return (
     <div>
-      <div className='font-cousine uppercase text-XXS text-midDarker pb-4'>Between {formatRelative(newest, new Date(), { locale: enGB })} and {formatRelative(oldest, new Date(), { locale: enGB })}</div>
+      <div className='font-cousine uppercase text-XXS text-midDarker pb-4'>Between {formatRelative(oldest, new Date(), { locale: enGB })} and {formatRelative(newest, new Date(), { locale: enGB })}</div>
       <ParentSize>{({ width }) =>
         <Dustbox24HourChart data={data} width={width} height={200} />
       }</ParentSize>

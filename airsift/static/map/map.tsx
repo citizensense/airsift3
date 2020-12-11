@@ -173,7 +173,7 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
     // createdAt: dustbox.properties.lastEntryAt.timestamp
     limit: 1
   })
-  const dustboxReadingValue = parseInt(dustboxReading?.data?.[0]?.pm25 || "NaN")
+  const dustboxReadingValue = dustboxReading?.data?.[0]?.pm25
 
   return (
     <Fragment>

@@ -22,13 +22,12 @@ export type DustboxFeature = turf.Feature<turf.Point, Dustbox>
 
 export interface DustboxReading {
   createdAt:   null | string;
-  humidity:    string;
+  humidity:    number;
   id:          string;
-  pm1:         string;
-  pm10:        string;
-  pm25:        string;
-  streamId:    string;
-  temperature: string;
+  pm1:         number;
+  pm10:        number;
+  pm25:        number;
+  temperature: number;
 }
 
 export namespace DustboxDetail {

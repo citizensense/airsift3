@@ -15,8 +15,22 @@ export const useDustboxReading = (dustboxId: string, query: {
     query
   }), async url => {
     const res = await fetch(url)
-    const data = await res.json()
-    return data || []
+    const data = await res.json() as {
+      count:    number;
+      next:     string;
+      previous: null;
+      results:  {
+          id:          string;
+          createdAt:   string;
+          humidity:    number;
+          pm1:         number;
+          pm25:        number;
+          pm10:        number;
+          temperature: number;
+          dustbox:     string;
+      }[];
+    }
+    return data.results || []
   }, {
     revalidateOnMount: true,
     revalidateOnFocus: false,
