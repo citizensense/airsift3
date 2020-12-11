@@ -26,7 +26,7 @@ export function AnalysisView () {
   const nearestDustboxes = useMemo(() => {
     const getDistance = (d: Dustbox): number => {
       if (!coordinates.data?.length || !dustboxList.data?.length || !d.location) return NaN
-      console.log("from", coordinates.data, "to", d.location?.coordinates)
+      // console.log("from", coordinates.data, "to", d.location?.coordinates)
       return distance(
         point(coordinates.data as number[]),
         point(d.location?.coordinates),
