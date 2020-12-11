@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, Fragment } from 'react';
 import { Footer } from './scaffolding';
 import { useLocationNameCoordinates } from '../utils/geo';
 import useDebounce from '../utils/time';
@@ -8,20 +8,23 @@ import querystring from 'query-string';
 import distance from '@turf/distance'
 import { point } from '@turf/helpers'
 import { DustboxList } from './sidebar';
+import { DustboxTitle } from './card';
+import { Debug } from '../utils/react';
+import { useArrayState } from '../utils/state';
 
 export function AnalysisView () {
   const [locationName, setLocationName] = useState('')
   const debouncedLocationName = useDebounce(locationName, 1000)
   const coordinates = useLocationNameCoordinates(debouncedLocationName)
 
-  const dustboxes = useSWR<Dustbox[]>(querystring.stringifyUrl({
+  const dustboxList = useSWR<Dustbox[]>(querystring.stringifyUrl({
     url: '/api/v2/dustboxes/',
     query: {}
   }), undefined, { revalidateOnFocus: false })
 
   const nearestDustboxes = useMemo(() => {
     const getDistance = (d: Dustbox): number => {
-      if (!coordinates.data?.length || !dustboxes.data?.length || !d.location) return NaN
+      if (!coordinates.data?.length || !dustboxList.data?.length || !d.location) return NaN
       console.log("from", coordinates.data, "to", d.location?.coordinates)
       return distance(
         point(coordinates.data as number[]),
@@ -30,16 +33,22 @@ export function AnalysisView () {
       );
     }
 
-    return dustboxes?.data?.map((a) => {
+    return dustboxList?.data?.map((a) => {
         return {
           ...a,
           distanceFromSearch: getDistance(a)
         }
       }).sort((a, b) =>
-        isNaN(a.distanceFromSearch) ? -1 : isNaN(b.distanceFromSearch) ? 1
-        : b.distanceFromSearch - a.distanceFromSearch
+        isNaN(a.distanceFromSearch) ? 1 : isNaN(b.distanceFromSearch) ? -1
+        : a.distanceFromSearch - b.distanceFromSearch
       ) || []
-  }, [coordinates.data, dustboxes.data])
+  }, [coordinates.data, dustboxList.data])
+
+  const [dustboxSelections, dustboxActions] = useArrayState<string>([]);
+
+  const toggleDustbox = (id: string) => {
+    dustboxActions.toggle(id)
+  }
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
@@ -51,29 +60,70 @@ export function AnalysisView () {
         {/* <hr className='border-brand mx-4' /> */}
         <div className='flex-grow flex flex-col'>
           {/* TODO: Search location */}
-          <input
-            value={locationName} onChange={e => setLocationName(e.target.value)}
-            placeholder='Type a location and find nearby dustboxes'
-            className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
-          />
           {/* {JSON.stringify(coordinates.data, null, 2)} */}
-          <div className='my-4'>
+          <div className='my-4 flex flex-col'>
             <div className='uppercase text-XS font-cousine font-bold mb-2 px-4 text-softBlack'>
-            Nearby Dustboxes
+              Select a dustbox
             </div>
-            <DustboxList dustboxes={nearestDustboxes} renderDetail={dustbox => {
-              return dustbox.distanceFromSearch !== undefined && !isNaN(dustbox.distanceFromSearch) && (
-                <div className='text-red-500 font-bold py-3 text-XXS'>
-                  {dustbox.distanceFromSearch.toFixed(1)} miles away
+            <input
+              value={locationName} onChange={e => setLocationName(e.target.value)}
+              placeholder='Search Address, Postcode, Landmark'
+              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
+            />
+            {nearestDustboxes.map((dustbox, i) =>
+              <div
+                key={dustbox.id}
+                className={`block pt-4 px-4 ${dustboxSelections.includes(dustbox.id) && 'bg-gray-300'}`}
+                onClick={() => toggleDustbox(dustbox.id)}
+              >
+                <DustboxTitle title={dustbox.title} />
+                <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
+                  <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
                 </div>
-              )
-            }} />
+                {dustbox.distanceFromSearch !== undefined && !isNaN(dustbox.distanceFromSearch) && (
+                  <div className='text-red-500 font-bold pt-2 text-XXS'>
+                    {dustbox.distanceFromSearch.toFixed(1)} miles away
+                  </div>
+                )}
+                {(i + 1 < (nearestDustboxes.length || 0)) && (
+                  <hr className='border-brand mt-4' />
+                )}
+              </div>
+            )}
           </div>
         </div>
         <hr className='border-brand mx-4' />
         <Footer />
       </div>
-      {/* TODO: Visualisation */}
+      <Visualisation
+        dustboxIds={dustboxSelections}
+        dateFrom={new Date()}
+        dateTo={new Date()}
+        visualisationType='line'
+        particleMeasure='pm2.5'
+        mean='24hours'
+      />
+    </div>
+  )
+}
+
+type VisualisationType = 'line' | 'scatter' | 'polar' | 'rose' | 'calendar' | 'time'
+type ParticleMeasureType = 'pm1' | 'pm2.5' | 'pm10'
+type MeanType = '1min' | '1hour' | '24hours'
+
+export const Visualisation: React.FC<{
+  dustboxIds: string[]
+  dateFrom: Date
+  dateTo: Date
+  visualisationType: VisualisationType
+  particleMeasure: ParticleMeasureType
+  mean: MeanType
+  // TODO: Weather
+}> = (props) => {
+  return (
+    <div>
+      <div>Visualisation goes here.</div>
+      <Debug>{props}</Debug>
     </div>
   )
 }

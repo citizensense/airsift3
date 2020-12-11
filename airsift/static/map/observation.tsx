@@ -10,6 +10,7 @@ import { firstOf } from '../utils/array';
 import { useAtom } from 'jotai';
 import { userIdAtom } from './layout';
 import { DustboxList } from './sidebar';
+import { DustboxTitle } from './card';
 
 export const ObservationCard: React.FC<{ observation: Observations.Item, withIcon?: boolean }> = memo(({ observation, withIcon }) => {
   // const coordinates = useCoordinateData(
@@ -136,7 +137,14 @@ export function ObservationDetailCard ({ id }: { id: any }) {
               Related Dustboxes
             </div>
             <hr className='border-brand mx-4' />
-            <DustboxList dustboxes={observation.related_dustboxes || []} />
+            <DustboxList
+              dustboxes={observation.related_dustboxes || []}
+              renderItem={({ dustbox }) => {
+                return (
+                  <DustboxTitle title={dustbox.title} />
+                )
+              }}
+            />
           </div>
         )}
       </div>

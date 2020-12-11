@@ -11,7 +11,21 @@ import { formatRelative } from 'date-fns/esm';
 import { enGB } from 'date-fns/esm/locale';
 import { ObservationCard } from './observation';
 
-export const DustboxList: React.FC<{ dustboxes: Dustbox[], renderDetail?: (d: Dustbox) => any }> = memo(({ dustboxes, renderDetail }) => {
+type TypeDustboxItemRenderer<T extends Dustbox = Dustbox> = ({ dustbox }: {
+  dustbox: T;
+}) => JSX.Element
+
+const defaultListItem: TypeDustboxItemRenderer = ({ dustbox }) => (
+  <DustboxCard withFuzzball dustbox={dustbox} />
+)
+
+function _DustboxList <T extends Dustbox = any>({
+  dustboxes,
+  renderItem
+}: {
+  dustboxes: T[],
+  renderItem?: TypeDustboxItemRenderer<T>
+}) {
   return (
     <Fragment>
     {dustboxes
@@ -26,7 +40,7 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[], renderDetail?: (d: Du
       })
       .map((dustbox, i) =>
         <Fragment key={dustbox.id}>
-          <DustboxListItem dustbox={dustbox} key={dustbox.id} renderDetail={renderDetail} />
+          <DustboxListItem dustbox={dustbox} key={dustbox.id} renderItem={renderItem} />
           {(i + 1 < (dustboxes.length || 0)) && (
             <hr className='border-brand mx-4' />
           )}
@@ -34,14 +48,22 @@ export const DustboxList: React.FC<{ dustboxes: Dustbox[], renderDetail?: (d: Du
       )
     }</Fragment>
   )
-})
+}
 
-export const DustboxListItem: React.FC<{ dustbox: Dustbox, renderDetail?: (d: Dustbox) => any }> = memo(({ dustbox, renderDetail }) => {
+export const DustboxList = _DustboxList
+
+function _DustboxListItem <T extends Dustbox>({
+  dustbox,
+  renderItem: ItemComponent = defaultListItem
+}: {
+  dustbox: T,
+  renderItem?: TypeDustboxItemRenderer<T>
+}) {
   const [isHovering, setIsHovering, hoverSource] = useHoverContext(dustbox.id, 'dustbox')
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (hoverSource === 'map') {
+    if (isHovering && hoverSource === 'map') {
       ref?.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -57,11 +79,15 @@ export const DustboxListItem: React.FC<{ dustbox: Dustbox, renderDetail?: (d: Du
         onMouseOver={() => setIsHovering(true, 'list')}
         onMouseOut={() => setIsHovering(false, 'list')}
       >
-        <DustboxCard dustbox={dustbox} key={dustbox.id} withFuzzball renderDetail={renderDetail} />
+        <ItemComponent
+          key={dustbox.id}
+          dustbox={dustbox}
+        />
       </A>
     </div>
   )
-})
+}
+export const DustboxListItem = memo(_DustboxListItem)
 
 export const ObservationList: React.FC<{ observations: Observations.Item[] }> = memo(({ observations }) => {
   return (
@@ -91,7 +117,7 @@ export const ObservationListItem: React.FC<{ observation: Observations.Item }> =
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (hoverSource === 'map') {
+    if (isHovering && hoverSource === 'map') {
       ref?.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',

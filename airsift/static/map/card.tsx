@@ -13,11 +13,6 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean, r
     limit: 1
   })
 
-  const coordinates = useCoordinateData(
-    dustbox?.location?.coordinates[1],
-    dustbox?.location?.coordinates[0]
-  )
-
   let latestReadingDate = parseTimestamp(dustbox.lastEntryAt)
   let latestReading = dustboxReading?.data?.[0]
   let latestReadingValue
@@ -28,18 +23,11 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean, r
 
   return (
     <div className='overflow-hidden'>
-      <div className='font-cousine text-XXS font-bold uppercase flex w-full'>
-        <h1 className='flex-shrink-0 truncate text-softBlack'>{dustbox.title}</h1>
-        <div className='flex-shrink-0 truncate pl-3 text-midDarker'>
-          {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
-          {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
-        </div>
-      </div>
-      {/* {process.env.NODE_ENV !== 'production' && (
-        <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
-          <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
-        </div>
-      )} */}
+      <DustboxTitle
+        title={dustbox.title}
+        lat={dustbox?.location?.coordinates[1]}
+        lng={dustbox?.location?.coordinates[0]}
+      />
       <div>
         {!isValid(latestReadingDate) ? (
           <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold font-cousine'>No readings yet</div>
@@ -66,6 +54,24 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean, r
     </div>
   )
 })
+
+export const DustboxTitle: React.FC<{
+  title: string
+  lat?: number
+  lng?: number
+}> = ({ title, lat, lng }) => {
+  const coordinates = useCoordinateData(lat, lng)
+
+  return (
+    <div className='font-cousine text-XXS font-bold uppercase flex w-full'>
+      <h1 className='flex-shrink-0 truncate text-softBlack'>{title}</h1>
+      <div className='flex-shrink-0 truncate pl-3 text-midDarker'>
+        {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
+        {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
+      </div>
+    </div>
+  )
+}
 
 export const AirQualityReading: React.FC<{ withFuzzball?: boolean, date: Date, reading: number }> = ({
   reading, date, withFuzzball = true
