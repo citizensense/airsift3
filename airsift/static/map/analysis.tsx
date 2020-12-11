@@ -174,7 +174,7 @@ export function AnalysisView() {
                 className={`block pt-4 px-4 ${dustboxSelections.includes(dustbox.id) && 'bg-gray-300'}`}
                 onClick={() => toggleDustbox(dustbox.id)}
               >
-                <DustboxTitle title={dustbox.title} />
+                <DustboxTitle title={dustbox.title} lat={dustbox.location?.coordinates[1]} lng={dustbox.location?.coordinates[0]} />
                 <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
                   <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
                 </div>
