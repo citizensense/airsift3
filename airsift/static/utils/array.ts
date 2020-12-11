@@ -6,3 +6,8 @@ export const firstOf = <T>(obj: T, keys: Array<keyof T>, fallbackToAny?: boolean
     return Object.values(obj)[0]
   }
 }
+
+export const ensureArray = <T>(x: T): T[] => {
+  if (Array.isArray(x)) return x
+  return [x]
+}

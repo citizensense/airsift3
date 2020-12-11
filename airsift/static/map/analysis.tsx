@@ -10,7 +10,8 @@ import { point } from '@turf/helpers'
 import { DustboxList } from './sidebar';
 import { DustboxTitle } from './card';
 import { Debug } from '../utils/react';
-import { useArrayState } from '../utils/state';
+import { useArrayState, useURLState } from '../utils/state';
+import { ensureArray } from '../utils/array';
 
 export function AnalysisView () {
   const [locationName, setLocationName] = useState('')
@@ -44,7 +45,11 @@ export function AnalysisView () {
       ) || []
   }, [coordinates.data, dustboxList.data])
 
-  const [dustboxSelections, dustboxActions] = useArrayState<string>([]);
+  const [dustboxSelections, dustboxActions] = useURLState(
+    'dustboxes',
+    (initial) => useArrayState(initial ? ensureArray(initial) as string[] : []),
+    { serialiseStateToObject: (key, [state]) => ({ [key]: state }) }
+  )
 
   const toggleDustbox = (id: string) => {
     dustboxActions.toggle(id)
