@@ -45,7 +45,7 @@ function toOptions (arr: (string | [string, string] | null)[]): [string, string]
 }
 
 function validateOption (val: string, options: string[], fallback?: typeof options[number]) {
-  return options.map(n => n[0]).includes(val) ? val as any : fallback || options[0]
+  return options.includes(val) ? val as any : fallback || options[0]
 }
 
 export function AnalysisView() {
@@ -275,7 +275,7 @@ const DustboxAnalysisCard: React.FC<{
 }
 
 type VisualisationType = 'line' | 'scatter' | 'polar' | 'rose' | 'calendar' | 'time'
-// type ParticleMeasureType = 'pm1' | 'pm2_5' | 'pm10'
+// type ParticleMeasureType = 'pm1' | 'pm25' | 'pm10'
 type MeanType = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
 type ModeType = 'trunc' | 'part'
 
@@ -327,6 +327,8 @@ export const Visualisation: React.FC<{
       <DustboxFlexibleChart
         dustboxStreams={dustboxStreams.data || []}
         width={width} height={Math.min(height, 666)}
+        mode={mode}
+        mean={mean}
       />
     }</ParentSize>
   )
