@@ -35,6 +35,19 @@ function formatDate(date: Date, formatTemplate: string, locale: any = enGB) {
   return format(date, formatTemplate, { locale });
 }
 
+function toOptions (arr: (string | [string, string] | null)[]): [string, string][] {
+  const _arr = arr.filter(n => !!n) as (string | [string, string])[]
+  return _arr.map(val => {
+      const label = Array.isArray(val) ? val[1] : val
+      const value = Array.isArray(val) ? val[0] : val
+      return [value, label]
+    })
+}
+
+function validateOption (val: string, options: string[], fallback?: typeof options[number]) {
+  return options.map(n => n[0]).includes(val) ? val as any : fallback || options[0]
+}
+
 export function AnalysisView() {
   const [locationName, setLocationName] = useState('')
   const debouncedLocationName = useDebounce(locationName, 1000)
@@ -92,14 +105,30 @@ export function AnalysisView() {
     { serialiseStateToObject: (key, [state] )=> ({ [key]: state.toISOString() }) }
   )
 
-  const [mean, setMean] = useURLState(
-    'mean',
-    mean => useState(mean?.toString() || 'day')
-  )
-
+  const modeOptions = toOptions([
+    ['trunc', 'Historical Time Plot'],
+    ['part', 'Seasonal Pattern Plot']
+  ])
   const [mode, setMode] = useURLState(
     'mode',
-    mode => useState(mode?.toString() || 'trunc')
+    mode => useState<'trunc' | 'part'>(
+      validateOption(mode?.toString() || '', modeOptions.map(m => m[0]), 'trunc')
+    )
+  )
+
+  const meanOptions = toOptions([
+    mode === 'part' ? null : 'minute',
+    'hour',
+    mode === 'part' ? ['isodow', 'Day of Week'] : 'day',
+    mode === 'part' ? null : 'week',
+    'month',
+    mode === 'part' ? null : 'year',
+  ])
+  const [mean, setMean] = useURLState(
+    'mean',
+    mean => useState<string>(
+      validateOption(mean?.toString() || '', meanOptions.map(m => m[0]))
+    )
   )
 
   return (
@@ -145,19 +174,17 @@ export function AnalysisView() {
             </div>
             <select onChange={e => setMean(e.target.value)} defaultValue={mean || undefined} value={mean || undefined}
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              {['minute', 'hour', 'day', 'week', 'month', ['isodow', 'Day of Week']].map((val) => {
-                const label = Array.isArray(val) ? val[1] : val
-                const value = Array.isArray(val) ? val[0] : val
+              {meanOptions.map(([value, label]) => {
                 return <option key={value} value={value}>{label}</option>
               })}
             </select>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select visualisation mode
             </div>
-            <select onChange={e => setMode(e.target.value)} defaultValue={mode || undefined} value={mode || undefined}
+            <select onChange={e => setMode(e.target.value as any)} defaultValue={mode || undefined} value={mode || undefined}
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              {['trunc', 'part'].map((val) =>
-                <option key={val} value={val}>{val}</option>
+              {modeOptions.map(([val, label]) =>
+                <option key={val} value={val}>{label}</option>
               )}
             </select>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
@@ -188,6 +215,9 @@ export function AnalysisView() {
       </div>
       <div className='flex flex-col items-stretch bg-light'>
         <div className='my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
+          <div className='text-M font-bold'>
+            {mode === 'trunc'} Air quality
+          </div>
           <Visualisation
             dustboxIds={dustboxSelections}
             dateFrom={dateFrom}
