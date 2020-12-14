@@ -215,9 +215,6 @@ export function AnalysisView() {
       </div>
       <div className='flex flex-col items-stretch bg-light'>
         <div className='my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
-          <div className='text-M font-bold'>
-            {mode === 'trunc'} Air quality
-          </div>
           <Visualisation
             dustboxIds={dustboxSelections}
             dateFrom={dateFrom}
@@ -308,8 +305,16 @@ export const Visualisation: React.FC<{
 
         const response = await fetch(url)
         const result = await response.json()
+
+        const dres = await fetch(querystring.stringifyUrl({
+          url: `/api/v2/dustboxes/${dustboxId}`,
+          query: {}
+        }))
+        const dresult = await dres.json()
+
         return {
           dustboxId,
+          dustbox: dresult,
           readings: result as DustboxReading[]
         }
       }
