@@ -16,7 +16,7 @@ services:
       - postgres
       - redis
     volumes:
-      - airsift_local_media:/app/airsift/media:Z
+      - airsift_local_media:/app/airsift/media
     env_file:
       - ./.env
     command: /start

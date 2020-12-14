@@ -44,10 +44,11 @@ RUN chmod +x /start
 COPY --chown=django:django package.json /app/
 COPY --chown=django:django yarn.lock /app/
 
-USER django
+VOLUME /app/airsift/media
+RUN chown -R django /app/airsift/media
 
 RUN cd /app && yarn
-COPY --chown=django:django . /app
+COPY . /app
 RUN cd /app && yarn build && rm -rf node_modules
 
 WORKDIR /app
