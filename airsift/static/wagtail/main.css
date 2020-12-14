@@ -18,9 +18,9 @@ main header * {
 .nav-search {
   display: none;
 }
-.nav-main ul li:first-child {
+/* .nav-main ul li:first-child {
   display: none;
-}
+} */
 .markdown li,
 .markdown ul {
   list-style-type: disc;

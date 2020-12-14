@@ -82,13 +82,15 @@ modeladmin_register(ObservationAdmin)
 
 @hooks.register('construct_main_menu')
 def hide_most_of_the_menu(request, menu_items):
-    if not request.user.is_staff_editor():
-        menu_items[:] = [item for item in menu_items if item.name not in [
-            'settings',
-            'pages',
-            'images',
-            'reports'
-        ]]
+    if request.user.is_staff_editor():
+        return menu_items
+
+    menu_items[:] = [item for item in menu_items if item.name not in [
+        'settings',
+        'pages',
+        'images',
+        'reports'
+    ]]
 
     menu_items += [
         MenuItem(
