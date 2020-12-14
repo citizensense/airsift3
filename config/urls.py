@@ -33,6 +33,9 @@ urlpatterns = [
     path('', include('observations.urls')),
     path('', include('datastories.urls')),
     path('', views.dustboxes),
+    # Content serve URLS
+    path('documents/', include(wagtaildocs_urls)),
+    path('', include(wagtail_urls)),
     # Django admin
     re_path(r'^admin/login/$', capture_login),
     re_path(r'^admin/logout/$', capture_logout),
