@@ -233,94 +233,92 @@ export function DustboxFlexibleChart ({
   );
 
   return (
-    <div>
-      <ScaleSVG width={width} height={height} style={{
-        overflow: 'visible'
-      }}>
-        <GridRows
-          top={margin.top}
-          left={margin.left}
-          scale={pm25Scale}
-          width={innerWidth}
-          strokeDasharray="1,3"
-          stroke={'black'}
-          strokeOpacity={0.1}
-          pointerEvents="none"
-        />
-        <GridColumns
-          top={margin.top}
-          left={margin.left}
-          scale={dateScale}
-          height={innerHeight}
-          strokeDasharray="1,3"
-          stroke={'black'}
-          strokeOpacity={0.1}
-          pointerEvents="none"
-        />
-        {dustboxStreams.map(({ readings: data }) =>
-          charts.map(({ name, getter, background }, i) => {
-            const id = `gradient-${name.replace(' ','')}`
-            return (
-              <React.Fragment key={name}>
-                <LinearGradient
-                  id={id}
-                  from={background}
-                  // fromOpacity={1}
-                  to={background}
-                  // toOpacity={0.4}
-                />
-                <LinePath
-                  data={data}
-                  x={(d) => dateScale(getDate(d)) ?? 0}
-                  y={(d) => pm25Scale(getter(d)) ?? 0}
-                  yScale={pm25Scale}
-                  strokeWidth={1}
-                  stroke={`url(#${id})`}
-                  // fill={`url(#${id})`}
-                  fill='transparent'
-                  curve={curveMonotoneX}
-                />
-                <Group left={width - margin.right + 10} top={i * 30}>
-                  <Line stroke={background} strokeWidth={2} from={new Point({ x: 0, y: 0 })} to={new Point({ x: 30, y: 0 })} />
-                  <Text y={15} className='text-XXS text-midDarker font-cousine uppercase'>{name}</Text>
-                </Group>
-              </React.Fragment>
-            )
-          })
-        )}
-        <Bar
-          x={margin.left}
-          y={margin.top}
-          width={innerWidth}
-          height={innerHeight}
-          fill="transparent"
-          rx={14}
-        />
-        <AxisLeft
-          top={margin.top}
-          left={margin.left}
-          scale={pm25Scale}
-          stroke={''}
-          tickStroke={''}
-          left={axisXStart}
-          tickLabelProps={() => ({
-            textAnchor: 'end'
-          })}
-          tickClassName='font-cousine text-black text-XXS'
-        />
-        <AxisBottom
-          top={margin.top + innerHeight}
-          left={margin.left}
-          scale={dateScale}
-          stroke={''}
-          tickStroke={''}
-          numTicks={4}
-          tickLabelProps={() => ({
-            textAnchor: 'middle'
-          })}
-          tickClassName='font-cousine text-black text-XXS'
-        />
-      </ScaleSVG>
-    </div>
+    <ScaleSVG width={width} height={height} style={{
+      overflow: 'visible'
+    }}>
+      <GridRows
+        top={margin.top}
+        left={margin.left}
+        scale={pm25Scale}
+        width={innerWidth}
+        strokeDasharray="1,3"
+        stroke={'black'}
+        strokeOpacity={0.1}
+        pointerEvents="none"
+      />
+      <GridColumns
+        top={margin.top}
+        left={margin.left}
+        scale={dateScale}
+        height={innerHeight}
+        strokeDasharray="1,3"
+        stroke={'black'}
+        strokeOpacity={0.1}
+        pointerEvents="none"
+      />
+      {dustboxStreams.map(({ readings: data }) =>
+        charts.map(({ name, getter, background }, i) => {
+          const id = `gradient-${name.replace(' ','')}`
+          return (
+            <React.Fragment key={name}>
+              <LinearGradient
+                id={id}
+                from={background}
+                // fromOpacity={1}
+                to={background}
+                // toOpacity={0.4}
+              />
+              <LinePath
+                data={data}
+                x={(d) => dateScale(getDate(d)) ?? 0}
+                y={(d) => pm25Scale(getter(d)) ?? 0}
+                yScale={pm25Scale}
+                strokeWidth={1}
+                stroke={`url(#${id})`}
+                // fill={`url(#${id})`}
+                fill='transparent'
+                curve={curveMonotoneX}
+              />
+              <Group left={width - margin.right + 10} top={i * 30}>
+                <Line stroke={background} strokeWidth={2} from={new Point({ x: 0, y: 0 })} to={new Point({ x: 30, y: 0 })} />
+                <Text y={15} className='text-XXS text-midDarker font-cousine uppercase'>{name}</Text>
+              </Group>
+            </React.Fragment>
+          )
+        })
+      )}
+      {/* <Bar
+        x={margin.left}
+        y={margin.top}
+        width={innerWidth}
+        height={innerHeight}
+        fill="transparent"
+        rx={14}
+      /> */}
+      <AxisLeft
+        top={margin.top}
+        left={margin.left}
+        scale={pm25Scale}
+        stroke={''}
+        tickStroke={''}
+        left={axisXStart}
+        tickLabelProps={() => ({
+          textAnchor: 'end'
+        })}
+        tickClassName='font-cousine text-black text-XXS'
+      />
+      <AxisBottom
+        top={margin.top + innerHeight}
+        left={margin.left}
+        scale={dateScale}
+        stroke={''}
+        tickStroke={''}
+        numTicks={4}
+        tickLabelProps={() => ({
+          textAnchor: 'middle'
+        })}
+        tickClassName='font-cousine text-black text-XXS'
+      />
+    </ScaleSVG>
   );
 }
