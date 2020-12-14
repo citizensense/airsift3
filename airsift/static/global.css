@@ -81,4 +81,8 @@ text-S font-semibold hoverable;
 .DayPickerInput {
   width: auto;
   display: inline-block;
+
+  input {
+    width: 100%;
+  }
 }

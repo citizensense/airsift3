@@ -21,22 +21,27 @@ const getTemperatureValue = (datum: DustboxReading) => datum["temperature"];
 
 const charts = [
   {
-    name: "PM1 MG/M3",
+    key: 'pm1',
+    name: "PM1 mg/m³",
     getter: getPM1Value,
     background: '#FF8695'
   }, {
-    name: "PM10 MG/M3",
-    getter:getPM10Value,
-    background: '#CF96C8'
-  }, {
-    name: "PM25 MG/M3",
+    key: 'pm25',
+    name: "PM2.5 mg/m³",
     getter:getPM25Value,
     background: '#33CCFF'
   }, {
+    key: 'pm10',
+    name: "PM10 mg/m³",
+    getter:getPM10Value,
+    background: '#CF96C8'
+  }, {
+    key: 'humidity',
     name: "Humidity %",
     getter:getHumidityValue,
     background: '#2E03DA'
   }, {
+    key: 'temperature',
     name: "Temp. ºC",
     getter: getTemperatureValue,
     background: '#39F986'
@@ -174,6 +179,12 @@ type ChartProps = {
     readings: DustboxReading[]
   }[],
   mode: 'trunc' | 'part'
+  measure: string
+  valueGetter: (a: any) => number
+}
+
+const getChartLegend = (str: string) => {
+  return charts.find(({ key }) => key === str)!
 }
 
 export function DustboxFlexibleChart (props: ChartProps) {
@@ -186,8 +197,10 @@ export function DustboxFlexibleChart (props: ChartProps) {
 
 import Plot from 'react-plotly.js';
 import { format, setDay, setHours, setMonth } from 'date-fns/esm';
+import randomcolor from 'randomcolor'
 
-export function HistoricalChart ({ dustboxStreams, width, height }: ChartProps) {
+export function HistoricalChart ({ measure, dustboxStreams, width, height }: ChartProps) {
+  const chartLegend = getChartLegend(measure)
   return (
     <Plot
       data={dustboxStreams.map(stream => {
@@ -196,14 +209,15 @@ export function HistoricalChart ({ dustboxStreams, width, height }: ChartProps) 
         return {
           name: `${stream.dustbox.title}`,
           x: stream.readings.map(getDate),
-          y: stream.readings.map(getPM25Value),
+          y: stream.readings.map(chartLegend.getter),
           type: 'scatter',
           mode: 'lines+markers',
           marker: { color },
+          trendline: "ols"
         }
       })}
       layout={{
-        title: 'Historical data',
+        title: `Historical data (${chartLegend.name})`,
         width,
         height,
       }}
@@ -221,9 +235,8 @@ function polarLabelForDate (i: any, mean: string) {
     : i
 }
 
-import randomcolor from 'randomcolor'
-
-export function PolarChart ({ dustboxStreams, width, height, mean }: ChartProps) {
+export function PolarChart ({ measure, dustboxStreams, width, height, mean }: ChartProps) {
+  const chartLegend = getChartLegend(measure)
   return (
     <Plot
       data={dustboxStreams.map(stream => {
@@ -233,7 +246,7 @@ export function PolarChart ({ dustboxStreams, width, height, mean }: ChartProps)
           name: `${stream.dustbox.title}`,
           type: "scatterpolar",
           mode: "lines+markers",
-          r: stream.readings.map(d => d.pm25),
+          r: stream.readings.map(chartLegend.getter),
           theta: stream.readings.map(d => polarLabelForDate(d.createdAt, mean)),
           line: {
             color
@@ -249,13 +262,14 @@ export function PolarChart ({ dustboxStreams, width, height, mean }: ChartProps)
       layout={{
         polar: {
           angularaxis: {
+            // @ts-ignore
             rotation:
               mean === 'hour' ? (360 / 24) * (1 + 6)
               : mean === 'isodow' ? (360 / 7) * 2.75
               : 0
           }
         },
-        title: 'Pattern of air quality data',
+        title: `Pattern of air quality data (${chartLegend.name})`,
         width,
         height,
       }}

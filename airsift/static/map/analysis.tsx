@@ -1,6 +1,6 @@
 import React, { useMemo, useState, Fragment, useEffect } from 'react';
 import { Footer } from './scaffolding';
-import { useLocationNameCoordinates } from '../utils/geo';
+import { useLocationNameCoordinates, useCoordinateData } from '../utils/geo';
 import useDebounce from '../utils/time';
 import useSWR from 'swr';
 import { Dustbox, DustboxReadingResult, DustboxReading } from './types';
@@ -11,7 +11,7 @@ import { DustboxList } from './sidebar';
 import { DustboxTitle } from './card';
 import { Debug } from '../utils/react';
 import { useArrayState, useURLStateFactory } from '../utils/state';
-import { ensureArray } from '../utils/array';
+import { ensureArray, firstOf } from '../utils/array';
 import { DustboxFlexibleChart } from './graph';
 import { ParentSize, ScaleSVG } from '@visx/responsive';
 import DayPickerInput from 'react-day-picker/DayPickerInput'
@@ -20,6 +20,8 @@ import { enGB } from 'date-fns/esm/locale';
 // import { DateUtils } from 'react-day-picker/types/DateUtils';
 import 'react-day-picker/lib/style.css';
 import { A } from 'hookrouter';
+import { subMonths } from 'date-fns';
+import randomcolor from 'randomcolor';
 
 function parseDate(str: string, formatTemplate: string, locale: any = enGB) {
   const parsed = parse(str, formatTemplate, new Date(), { locale });
@@ -95,7 +97,7 @@ export function AnalysisView() {
 
   const [dateFrom, setDateFrom] = useURLState(
     'dateFrom',
-    date => useState(date ? new Date(date.toString()) : subDays(new Date(), 7)),
+    date => useState(date ? new Date(date.toString()) : subMonths(new Date(), 12)),
     { serialiseStateToObject: (key, [state]) => ({ [key]: state.toISOString() }) }
   )
 
@@ -118,7 +120,7 @@ export function AnalysisView() {
 
   const meanOptions = toOptions([
     mode === 'part' ? null : 'minute',
-    'hour',
+    'day',
     mode === 'part' ? ['isodow', 'Day of Week'] : 'day',
     mode === 'part' ? null : 'week',
     'month',
@@ -127,13 +129,27 @@ export function AnalysisView() {
   const [mean, setMean] = useURLState(
     'mean',
     mean => useState<string>(
-      validateOption(mean?.toString() || '', meanOptions.map(m => m[0]))
+      validateOption(mean?.toString() || '', meanOptions.map(m => m[0]), 'month')
+    )
+  )
+
+  const measureOptions = toOptions([
+    ['pm1', 'PM1'],
+    ['pm25', 'PM2.5'],
+    ['pm10', 'PM10'],
+    ['humidity', 'Humidity'],
+    ['temperature', 'Temperature'],
+  ])
+  const [measure, setMeasure] = useURLState(
+    'measure',
+    measure => useState<string>(
+      validateOption(measure?.toString() || '', measureOptions.map(m => m[0]), 'pm25')
     )
   )
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
-      <div className='flex flex-col sm:h-screen overflow-x-hidden bg-white'>
+      <div className='flex flex-col sm:h-screen overflow-x-hidden'>
         <div className='px-4 mb-4 pt-6'>
           <h1 className='text-M font-bold mb-2'>Analysis</h1>
           <p className='text-S my-4'>Analyse and download citizen-generated air quality data points. You can use this data analysis tool to explore Dustbox data, create plots and identify air pollution problems.</p>
@@ -169,6 +185,16 @@ export function AnalysisView() {
               />
               </div>
             </div>
+            <hr className='border-t-1 border-brand my-2 mx-4' />
+            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+              Select measurement
+            </div>
+            <select onChange={e => setMeasure(e.target.value as any)} defaultValue={measure || undefined} value={measure || undefined}
+              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
+              {measureOptions.map(([val, label]) =>
+                <option key={val} value={val}>{label}</option>
+              )}
+            </select>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select data resolution
             </div>
@@ -195,7 +221,7 @@ export function AnalysisView() {
               placeholder='Search Address, Postcode, Landmark'
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
             />
-            {nearestDustboxes.map((dustbox, i) =>
+            {nearestDustboxes.filter(n => !!n.lastEntryAt).map((dustbox, i) =>
               <Fragment key={dustbox.id}>
                 <DustboxAnalysisCard
                   key={dustbox.id}
@@ -204,7 +230,7 @@ export function AnalysisView() {
                   isSelected={dustboxSelections.includes(dustbox.id)}
                 />
                 {(i + 1 < (nearestDustboxes.length || 0)) && (
-                  <hr className='border-brand' />
+                  <hr className='border-brand mx-4' />
                 )}
               </Fragment>
             )}
@@ -220,6 +246,7 @@ export function AnalysisView() {
             dateFrom={dateFrom}
             dateTo={dateTo}
             visualisationType='line'
+            measure={measure}
             mean={mean}
             mode={mode}
           />
@@ -250,18 +277,29 @@ const DustboxAnalysisCard: React.FC<{
   // const oldest = monthlyData?.data?.[monthlyData?.data.length - 1]?.created_at
   // const newest = monthlyData?.data?.[0]?.created_at
 
+  const coordinates = useCoordinateData(dustbox.location?.coordinates[1], dustbox.location?.coordinates[0])
+
   return (
     <div
-      className={`block py-4 px-4 ${isSelected && 'bg-gray-300'}`}
+      className={`block py-4 px-4`}
+      style={{
+        background: isSelected ? randomcolor({ seed: dustbox.id, luminosity: 'light' }) : ''
+      }}
       onClick={onClick}
     >
-      <DustboxTitle title={dustbox.title} lat={dustbox.location?.coordinates[1]} lng={dustbox.location?.coordinates[0]} />
-      <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
+      <DustboxTitle title={dustbox.title} />
+
+      {coordinates.data?.address ? <div className='font-cousine text-XXS uppercase truncate mt-1 text-midDarker'>
+        {coordinates?.data?.address ? firstOf(coordinates.data.address, ['city', 'county', 'region', 'state', 'town', 'village'], true) : null}
+        {coordinates?.data?.address?.country ? `, ${coordinates?.data?.address.country}` : null}
+      </div> : null}
+
+      {/* <div className='mt-1 font-cousine text-XXS font-bold uppercase flex w-full'>
         <h1 className='text-black text-opacity-25'>{dustbox.id}</h1>
-      </div>
+      </div> */}
       {dustbox.distanceFromSearch !== undefined && !isNaN(dustbox.distanceFromSearch) && (
-        <div className='text-red-500 font-bold my-2 text-XXS'>
-          {dustbox.distanceFromSearch.toFixed(1)} miles away
+        <div className='text-red-500 mt-1 text-XXS font-cousine uppercase'>
+          <b>{dustbox.distanceFromSearch.toFixed(1)}</b> miles away
         </div>
       )}
       {/* {newest && oldest && <div className='my-2 text-mid'>
@@ -284,8 +322,9 @@ export const Visualisation: React.FC<{
   // particleMeasure: ParticleMeasureType
   mode: ModeType
   mean: MeanType
+  measure: string
   // TODO: Weather
-}> = ({ dustboxIds, dateFrom, dateTo, mode, mean }) => {
+}> = ({ measure, dustboxIds, dateFrom, dateTo, mode, mean }) => {
   const keys = [dustboxIds, dateFrom, dateTo, mode, mean]
 
   const dustboxStreams = useSWR(
@@ -332,6 +371,7 @@ export const Visualisation: React.FC<{
       <DustboxFlexibleChart
         dustboxStreams={dustboxStreams.data || []}
         width={width} height={Math.min(height, 666)}
+        measure={measure}
         mode={mode}
         mean={mean}
       />
