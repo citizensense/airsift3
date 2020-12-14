@@ -169,7 +169,7 @@ export function AnalysisView() {
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
             />
             {nearestDustboxes.map((dustbox, i) =>
-              <Fragment>
+              <Fragment key={dustbox.id}>
                 <DustboxAnalysisCard
                   key={dustbox.id}
                   dustbox={dustbox}
