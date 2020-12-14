@@ -12,7 +12,7 @@ class HomePage(Page):
 
 class InfoPage(Page):
     show_in_menus_default = True
-    feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+')
+    feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+', blank=True, null=True)
     body = RichTextField(blank=False, null=False)
 
     content_panels = Page.content_panels + [
