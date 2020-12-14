@@ -1,0 +1,39 @@
+version: '3'
+
+volumes:
+  airsift_local_media: {}
+  airsift_local_postgres_data: {}
+  airsift_local_postgres_data_backups: {}
+  airsift_local_traefik: {}
+
+services:
+  django:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - airsift_local_media:/app/airsift/media:Z
+    env_file:
+      - ./.env
+    command: /start
+    ports:
+      - "0.0.0.0:8181:5000"
+
+  postgres:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    volumes:
+      - airsift_local_postgres_data:/var/lib/postgresql/data:Z
+      - airsift_local_postgres_data_backups:/backups:z
+    env_file:
+      - ./.env
+
+  redis:
+    image: redis:5.0
+
