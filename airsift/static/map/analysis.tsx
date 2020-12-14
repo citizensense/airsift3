@@ -122,7 +122,6 @@ export function AnalysisView() {
 
   const meanOptions = toOptions([
     mode === 'part' ? null : 'minute',
-    'day',
     mode === 'part' ? ['isodow', 'Day of Week'] : 'day',
     mode === 'part' ? null : 'week',
     'month',
@@ -253,7 +252,7 @@ export function AnalysisView() {
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select data resolution
             </div>
-            <select onChange={e => setMean(e.target.value)} defaultValue={mean || undefined} value={mean || undefined}
+            <select onChange={e => setMean(e.target.value)} value={mean || undefined}
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
               {meanOptions.map(([value, label]) => {
                 return <option key={value} value={value}>{label}</option>
@@ -262,7 +261,7 @@ export function AnalysisView() {
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select visualisation mode
             </div>
-            <select onChange={e => setMode(e.target.value as any)} defaultValue={mode || undefined} value={mode || undefined}
+            <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
               {modeOptions.map(([val, label]) =>
                 <option key={val} value={val}>{label}</option>
