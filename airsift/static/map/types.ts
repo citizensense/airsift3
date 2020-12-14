@@ -27,7 +27,7 @@ export interface DustboxReadingResult {
   results:  DustboxReading[];
 }
 export interface DustboxReading {
-  createdAt:   null | string;
+  createdAt:   null | string | number;
   humidity:    number;
   id:          string;
   pm1:         number;

@@ -225,29 +225,80 @@ export function HistoricalChart ({ measure, dustboxStreams, width, height }: Cha
   )
 }
 
-function polarLabelForDate (i: any, mean: string) {
-  return mean === 'isodow'
-    ? format(setDay(new Date(), i), 'iii')
-    : mean === 'hour'
-    ? format(setHours(new Date(), i), 'ha')
-    : mean === 'month'
-    ? format(setMonth(new Date(), i), 'LLL')
-    : i
+class Mean {
+  constructor(
+    public length: number,
+    public FORMAT: string,
+    public labelFn?: (i: number, FORMAT: string) => string,
+    public seriesFn?: (i: number) => number
+  ) {}
+
+  public label = (i: number) => {
+    return this.labelFn ? this.labelFn(i, this.FORMAT) : format(setHours(new Date(), i), this.FORMAT)
+  }
+
+  public series = () => {
+    return this.seriesFn ? this.seriesFn(this.length) : [...new Array(this.length)].map((_, i) => i)
+  }
+}
+
+const hour = new Mean(
+  24, 'ha',
+  (i: number, FORMAT: string) => format(setHours(new Date(), i), FORMAT)
+)
+const isodow = new Mean(
+  7, 'iii',
+  (i: number, FORMAT: string) => format(setDay(new Date(), i), FORMAT)
+)
+const month = new Mean(
+  12, 'MMM',
+  (i: number, FORMAT: string) => format(setMonth(new Date(), i - 1), FORMAT),
+)
+
+const means: { [key: string]: Mean } = { hour, isodow, month }
+
+function loopedPolarData (
+  mean: string,
+  getter: (d: DustboxReading) => number,
+  data: DustboxReading[],
+) {
+  const meanMean = means[mean]!
+
+  let out = {
+    r: data.map(getter),
+    theta: data.map(d => meanMean.label(d.createdAt as any))
+  }
+  if (
+    mean === 'isodow' && data.length === isodow.length ||
+    mean === 'month' && data.length === month.length ||
+    mean === 'hour' && data.length === hour.length
+  ) {
+    out = {
+      r: out.r.concat(out.r[0]),
+      theta: out.theta
+    }
+  }
+
+  return out
 }
 
 export function PolarChart ({ measure, dustboxStreams, width, height, mean }: ChartProps) {
   const chartLegend = getChartLegend(measure)
+  const meanMean = means[mean]!
+  const categoryarray = meanMean.series().map(n => meanMean.label(n))
+
   return (
     <Plot
       data={dustboxStreams.map(stream => {
         const color = randomcolor({ seed: stream.dustboxId, luminosity: 'bright' })
+        const { r, theta } = loopedPolarData(mean, chartLegend.getter, stream.readings)
 
         return {
           name: `${stream.dustbox.title}`,
           type: "scatterpolar",
           mode: "lines+markers",
-          r: stream.readings.map(chartLegend.getter),
-          theta: stream.readings.map(d => polarLabelForDate(d.createdAt, mean)),
+          r,
+          theta,
           line: {
             color
           },
@@ -261,6 +312,10 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
       })}
       layout={{
         polar: {
+          radialaxis: {
+            categoryorder: "array",
+            categoryarray
+          },
           angularaxis: {
             // @ts-ignore
             rotation:

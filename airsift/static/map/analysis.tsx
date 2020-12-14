@@ -244,7 +244,7 @@ export function AnalysisView() {
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select measurement
             </div>
-            <select onChange={e => setMeasure(e.target.value as any)} defaultValue={measure || undefined} value={measure || undefined}
+            <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
               className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
               {measureOptions.map(([val, label]) =>
                 <option key={val} value={val}>{label}</option>
