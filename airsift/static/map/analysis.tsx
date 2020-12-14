@@ -22,6 +22,8 @@ import 'react-day-picker/lib/style.css';
 import { A } from 'hookrouter';
 import { subMonths } from 'date-fns';
 import randomcolor from 'randomcolor';
+import * as jsonexport from "jsonexport/dist"
+import downloadjs from 'downloadjs'
 
 function parseDate(str: string, formatTemplate: string, locale: any = enGB) {
   const parsed = parse(str, formatTemplate, new Date(), { locale });
@@ -147,6 +149,58 @@ export function AnalysisView() {
     )
   )
 
+
+  const keys = [dustboxSelections, dateFrom, dateTo, mode, mean]
+
+  const dustboxStreams = useSWR(
+    keys,
+    async (dustboxIds, dateFrom, dateTo, mode, mean) => Promise.all(dustboxIds.map(
+      async (dustboxId: string) => {
+        const url = querystring.stringifyUrl({
+          url: `/api/v2/dustboxes/${dustboxId}/aggregates/`,
+          query: {
+            date_after: dateFrom?.toISOString(),
+            date_before: dateTo?.toISOString(),
+            mode,
+            mean,
+            limit: 10000000
+          }
+        })
+
+        const response = await fetch(url)
+        const result = await response.json()
+
+        const dres = await fetch(querystring.stringifyUrl({
+          url: `/api/v2/dustboxes/${dustboxId}`,
+          query: {}
+        }))
+        const dresult = await dres.json()
+
+        return {
+          dustboxId,
+          dustbox: dresult,
+          readings: result as DustboxReading[]
+        }
+      }
+    )),
+    // {
+    //   refreshWhenHidden: false,
+    //   revalidateOnFocus: false,
+    //   // revalidateOnMount: false,
+    //   revalidateOnReconnect: false
+    // }
+  )
+
+  const download = () => {
+    for (const stream of dustboxStreams?.data || []) {
+      jsonexport(stream?.readings, function(err, csv) {
+        const from = format(dateFrom, 'yyyy-MM-dd')
+        const to = format(dateTo, 'yyyy-MM-dd')
+        downloadjs(csv, `Airsift - ${stream.dustbox.title} ${mode} ${mean} ${measure} from ${from} to ${to}.csv`, 'text/csv')
+      })
+    }
+  }
+
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
       <div className='flex flex-col sm:h-screen overflow-x-hidden'>
@@ -158,6 +212,7 @@ export function AnalysisView() {
         <div className='flex-grow flex flex-col'>
           <div className='mx-4'>
             <a href='/analysis' className='button-grey inline-block'>Reset Options</a>
+            <span onClick={download} className='ml-2 button-grey inline-block'>Download Data</span>
           </div>
           <div className='my-4 flex flex-col'>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
@@ -241,15 +296,15 @@ export function AnalysisView() {
       </div>
       <div className='flex flex-col items-stretch bg-light'>
         <div className='my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
-          <Visualisation
-            dustboxIds={dustboxSelections}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            visualisationType='line'
-            measure={measure}
-            mean={mean}
-            mode={mode}
-          />
+          <ParentSize className='flex flex-col justify-center items-center align-middle'>{({ width, height }) =>
+            <DustboxFlexibleChart
+              dustboxStreams={dustboxStreams.data || []}
+              width={width} height={Math.min(height, 666)}
+              measure={measure}
+              mode={mode}
+              mean={mean}
+            />
+          }</ParentSize>
         </div>
       </div>
     </div>
@@ -314,67 +369,67 @@ type VisualisationType = 'line' | 'scatter' | 'polar' | 'rose' | 'calendar' | 't
 type MeanType = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
 type ModeType = 'trunc' | 'part'
 
-export const Visualisation: React.FC<{
-  dustboxIds: string[]
-  dateFrom?: Date
-  dateTo?: Date
-  visualisationType: VisualisationType
-  // particleMeasure: ParticleMeasureType
-  mode: ModeType
-  mean: MeanType
-  measure: string
-  // TODO: Weather
-}> = ({ measure, dustboxIds, dateFrom, dateTo, mode, mean }) => {
-  const keys = [dustboxIds, dateFrom, dateTo, mode, mean]
+// export const Visualisation: React.FC<{
+//   dustboxIds: string[]
+//   dateFrom?: Date
+//   dateTo?: Date
+//   visualisationType: VisualisationType
+//   // particleMeasure: ParticleMeasureType
+//   mode: ModeType
+//   mean: MeanType
+//   measure: string
+//   // TODO: Weather
+// }> = ({ measure, dustboxIds, dateFrom, dateTo, mode, mean }) => {
+//   const keys = [dustboxIds, dateFrom, dateTo, mode, mean]
 
-  const dustboxStreams = useSWR(
-    keys,
-    async (dustboxIds, dateFrom, dateTo, mode, mean) => Promise.all(dustboxIds.map(
-      async (dustboxId: string) => {
-        const url = querystring.stringifyUrl({
-          url: `/api/v2/dustboxes/${dustboxId}/aggregates/`,
-          query: {
-            date_after: dateFrom?.toISOString(),
-            date_before: dateTo?.toISOString(),
-            mode,
-            mean,
-            limit: 10000000
-          }
-        })
+//   const dustboxStreams = useSWR(
+//     keys,
+//     async (dustboxIds, dateFrom, dateTo, mode, mean) => Promise.all(dustboxIds.map(
+//       async (dustboxId: string) => {
+//         const url = querystring.stringifyUrl({
+//           url: `/api/v2/dustboxes/${dustboxId}/aggregates/`,
+//           query: {
+//             date_after: dateFrom?.toISOString(),
+//             date_before: dateTo?.toISOString(),
+//             mode,
+//             mean,
+//             limit: 10000000
+//           }
+//         })
 
-        const response = await fetch(url)
-        const result = await response.json()
+//         const response = await fetch(url)
+//         const result = await response.json()
 
-        const dres = await fetch(querystring.stringifyUrl({
-          url: `/api/v2/dustboxes/${dustboxId}`,
-          query: {}
-        }))
-        const dresult = await dres.json()
+//         const dres = await fetch(querystring.stringifyUrl({
+//           url: `/api/v2/dustboxes/${dustboxId}`,
+//           query: {}
+//         }))
+//         const dresult = await dres.json()
 
-        return {
-          dustboxId,
-          dustbox: dresult,
-          readings: result as DustboxReading[]
-        }
-      }
-    )),
-    // {
-    //   refreshWhenHidden: false,
-    //   revalidateOnFocus: false,
-    //   // revalidateOnMount: false,
-    //   revalidateOnReconnect: false
-    // }
-  )
+//         return {
+//           dustboxId,
+//           dustbox: dresult,
+//           readings: result as DustboxReading[]
+//         }
+//       }
+//     )),
+//     // {
+//     //   refreshWhenHidden: false,
+//     //   revalidateOnFocus: false,
+//     //   // revalidateOnMount: false,
+//     //   revalidateOnReconnect: false
+//     // }
+//   )
 
-  return (
-    <ParentSize className='flex flex-col justify-center items-center align-middle'>{({ width, height }) =>
-      <DustboxFlexibleChart
-        dustboxStreams={dustboxStreams.data || []}
-        width={width} height={Math.min(height, 666)}
-        measure={measure}
-        mode={mode}
-        mean={mean}
-      />
-    }</ParentSize>
-  )
-}
+//   return (
+//     <ParentSize className='flex flex-col justify-center items-center align-middle'>{({ width, height }) =>
+//       <DustboxFlexibleChart
+//         dustboxStreams={dustboxStreams.data || []}
+//         width={width} height={Math.min(height, 666)}
+//         measure={measure}
+//         mode={mode}
+//         mean={mean}
+//       />
+//     }</ParentSize>
+//   )
+// }
