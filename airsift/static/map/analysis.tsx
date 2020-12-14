@@ -12,7 +12,7 @@ import { DustboxTitle } from './card';
 import { Debug } from '../utils/react';
 import { useArrayState, useURLStateFactory } from '../utils/state';
 import { ensureArray, firstOf } from '../utils/array';
-import { DustboxFlexibleChart } from './graph';
+import { DustboxFlexibleChart, means } from './graph';
 import { ParentSize, ScaleSVG } from '@visx/responsive';
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 import { format, parse, subDays, formatRelative } from 'date-fns/esm';
@@ -134,6 +134,15 @@ export function AnalysisView() {
       validateOption(mean?.toString() || '', meanOptions.map(m => m[0]), 'month')
     )
   )
+
+  // TODO: Redo all of this validation with a proper validation system
+  useEffect(() => {
+    if (mode === 'part' && !Object.keys(means).includes(mean)) {
+      setMean('isodow')
+    } else if (mode === 'trunc' && !['minute', 'hour', 'week', 'month', 'year'].includes(mean)) {
+      setMean('day')
+    }
+  }, [mean, mode])
 
   const measureOptions = toOptions([
     ['pm1', 'PM1'],

@@ -255,7 +255,7 @@ const month = new Mean(
   (i: number, FORMAT: string) => format(setMonth(new Date(), i - 1), FORMAT),
 )
 
-const means: { [key: string]: Mean } = { hour, isodow, month }
+export const means: { [key: string]: Mean } = { hour, isodow, month }
 
 function loopedPolarData (
   mean: string,
@@ -283,6 +283,9 @@ function loopedPolarData (
 }
 
 export function PolarChart ({ measure, dustboxStreams, width, height, mean }: ChartProps) {
+  if (!Object.keys(means).includes(mean)) {
+    mean = 'isodow'
+  }
   const chartLegend = getChartLegend(measure)
   const meanMean = means[mean]!
   const categoryarray = meanMean.series().map(n => meanMean.label(n))
