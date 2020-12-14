@@ -24,28 +24,22 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
-
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
 RUN pip install --no-cache-dir -r /requirements/production.txt \
     && rm -rf /requirements
 
-COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
+COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
 
-COPY --chown=django:django ./compose/production/django/start /start
+COPY ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-COPY --chown=django:django package.json /app/
-COPY --chown=django:django yarn.lock /app/
-
-VOLUME /app/airsift/media
-RUN chown -R django /app/airsift/media
+COPY package.json /app/
+COPY yarn.lock /app/
 
 RUN cd /app && yarn
 COPY . /app
