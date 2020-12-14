@@ -122,6 +122,7 @@ export function AnalysisView() {
 
   const meanOptions = toOptions([
     mode === 'part' ? null : 'minute',
+    'hour',
     mode === 'part' ? ['isodow', 'Day of Week'] : 'day',
     mode === 'part' ? null : 'week',
     'month',
