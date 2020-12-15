@@ -10,6 +10,7 @@ from wagtail.images.edit_handlers import ImageChooserPanel
 from markdown import markdown
 from modelcluster.fields import ParentalManyToManyField
 from wagtailautocomplete.edit_handlers import AutocompletePanel
+from wagtail.core.models import PageRevision
 
 # Create your models here.
 class DataStory(Page):
@@ -502,3 +503,9 @@ In this space you can thank and acknowledge the contributions that different peo
     promote_panels = []
 
     settings_panels = []
+
+    def contributors(self):
+        return list(set([
+            revision.user
+            for revision in PageRevision.objects.filter(page=self)
+        ]))

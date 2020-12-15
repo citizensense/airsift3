@@ -3,41 +3,82 @@
 {% load wagtailcore_tags %}
 {% block content %}
   <main>
-    {% image page.feature_image fill-1200x600 class='md:rounded-md text-center mx-auto md:mt-4' %}
-    <div class='mx-auto max-w-3xl px-4 my-5 lg:my-6'>
-      <h1 class='text-M font-semibold my-4 text-black'>{{ page.title }}</h1>
-      {% if page.owner == user or user.is_staff_editor %}
-      <div class='my-3'>
-        <a href='/cms/pages/{{page.id}}/edit/' class='button-grey'>Edit this</a>
+    <div class='md:grid md:article-grid gap-4 p-4'>
+      <div class='my-4 md:my-0'>
+        <h1 class='text-M font-semibold text-black'>{{ page.title }}</h1>
+        <div>
+          <a href='#location' class='inline-block link my-1'>1. Location</a><br/>
+          <a href='#location' class='inline-block link my-1'>2. Evidence of a Problem</a><br/>
+          <a href='#location' class='inline-block link my-1'>3. Characterising the Problem</a><br/>
+          <a href='#location' class='inline-block link my-1'>4. Drawing the Evidence Together</a><br/>
+          <a href='#location' class='inline-block link my-1'>5. Actions</a><br/>
+        </div>
+        {% if page.owner == user or user.is_staff_editor %}
+        <div class='my-3'>
+          <a href='/cms/pages/{{page.id}}/edit/' class='button-grey'>Edit this</a>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
-      <div class='prose'>
-        {{ page.introduction_copy|richtext }}
+      <div class='md:col-span-2 my-4 md:my-0'>
+        {% image page.feature_image fill-1200x500 class='rounded-md w-full' %}
+      </div>
+      <div>
+        <section class='my-4'>
+          <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
+            Dates
+          </header>
+          <div class='text-XXS uppercase font-cousine text-midDarker mt-1'>
+            {{ page.date_from|date:"d.m.yy" }}-{{page.date_to|date:"d.m.yy" }}
+          </div>
+        </section>
+        <section class='my-4'>
+          <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
+            Dustboxes
+          </header>
+          <div class='text-XXS uppercase font-cousine text-midDarker mt-1'>
+            {% for dustbox in page.related_dustboxes.all %}
+              <a href='/dustboxes/inspect/{{dustbox.id}}'>{{ dustbox.title }}</a>,
+            {% endfor %}
+          </div>
+        </section>
+        <section class='my-4'>
+          <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
+            Contributors
+          </header>
+          <div class='text-XXS uppercase font-cousine text-midDarker mt-1'>
+            {{ page.contributors|join:", " }}
+          </div>
+        </section>
+      </div>
+      <div>
+        <div class='prose'>
+          {{ page.introduction_copy|richtext }}
 
-        <h3>I. Location</h3>
-        {{ page.landuse_description|richtext }}
-        {{ page.green_space_description|richtext }}
-        {{ page.industrial_activity_description|richtext }}
-        {{ page.waste_disposal_description|richtext }}
-        {{ page.agriculture_description|richtext }}
-        {{ page.nearby_monitors_description|richtext }}
-        {{ page.regional_pollution_sources_description|richtext }}
-        {{ page.location_copy|richtext }}
+          <h3 id='location'>I. Location</h3>
+          {{ page.landuse_description|richtext }}
+          {{ page.green_space_description|richtext }}
+          {{ page.industrial_activity_description|richtext }}
+          {{ page.waste_disposal_description|richtext }}
+          {{ page.agriculture_description|richtext }}
+          {{ page.nearby_monitors_description|richtext }}
+          {{ page.regional_pollution_sources_description|richtext }}
+          {{ page.location_copy|richtext }}
 
-        <h3>II. Is There Evidence of a Problem</h3>
-        {{ page.evidenceofproblem_copy|richtext }}
+          <h3 id='evidence'>II. Is There Evidence of a Problem</h3>
+          {{ page.evidenceofproblem_copy|richtext }}
 
-        <h3>III. Characterising The Problem </h3>
-        {{ page.characterofproblem_copy|richtext }}
+          <h3 id='problem'>III. Characterising The Problem </h3>
+          {{ page.characterofproblem_copy|richtext }}
 
-        <h3>IV. Drawing The Evidence Together</h3>
-        {{ page.evidencesummary_copy|richtext }}
+          <h3 id='summary'>IV. Drawing The Evidence Together</h3>
+          {{ page.evidencesummary_copy|richtext }}
 
-        <h3>V. Actions</h3>
-        {{ page.actions_copy|richtext }}
+          <h3 id='actions'>V. Actions</h3>
+          {{ page.actions_copy|richtext }}
 
-        <h3>Acknowledgements</h3>
-        {{ page.acknowledgements_copy|richtext }}
+          <h3 id='acknowledgements'>Acknowledgements</h3>
+          {{ page.acknowledgements_copy|richtext }}
+        </div>
       </div>
     </div>
   </main>
