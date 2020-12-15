@@ -235,7 +235,7 @@ class Mean {
     public length: number,
     public FORMAT: string,
     public labelFn?: (i: number, FORMAT: string) => string,
-    public seriesFn?: (i: number) => number
+    public seriesFn?: (i: number) => number[]
   ) {}
 
   public label = (i: number) => {
@@ -258,30 +258,38 @@ const isodow = new Mean(
 const month = new Mean(
   12, 'MMM',
   (i: number, FORMAT: string) => format(setMonth(new Date(), i - 1), FORMAT),
+  (length) => [...new Array(length)].map((_, i) => i + 1)
 )
 
 export const means: { [key: string]: Mean } = { hour, isodow, month }
 
+function dummyArrayItem <T>(a: T[]): T {
+  const example = JSON.parse(JSON.stringify(a[0]))
+  for (const key in example) {
+    if (typeof example[key] === 'number' || 'string' || 'boolean') {
+      // @ts-ignore
+      example[key] = null
+    }
+  }
+  return example
+}
+
 function loopedPolarData (
   mean: string,
   getter: (d: DustboxReading) => number,
-  data: DustboxReading[],
+  _data: DustboxReading[],
 ) {
+  const data = _data.slice()
+  if (!data.length) return { r: [], theta: [] }
   const meanMean = means[mean]!
 
+  const loopedData = meanMean.series().map(createdAt => {
+    return data.find(a => a.createdAt === createdAt) || { ...dummyArrayItem(data), createdAt: createdAt }
+  })
+
   let out = {
-    r: data.map(getter),
-    theta: data.map(d => meanMean.label(d.createdAt as any))
-  }
-  if (
-    mean === 'isodow' && data.length === isodow.length ||
-    mean === 'month' && data.length === month.length ||
-    mean === 'hour' && data.length === hour.length
-  ) {
-    out = {
-      r: out.r.concat(out.r[0]),
-      theta: out.theta
-    }
+    r: loopedData.map(getter),
+    theta: loopedData.map(d => meanMean.label(d.createdAt as any))
   }
 
   return out
@@ -306,7 +314,7 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
           type: "scatterpolar",
           mode: "lines+markers",
           r,
-          theta,
+          theta: categoryarray,
           line: {
             color
           },
@@ -320,16 +328,13 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
       })}
       layout={{
         polar: {
-          radialaxis: {
-            categoryorder: "array",
-            categoryarray
-          },
           angularaxis: {
             // @ts-ignore
             rotation:
-              mean === 'hour' ? (360 / 24) * (1 + 6)
+              mean === 'hour' ? (360 / 24) * 6
               : mean === 'isodow' ? (360 / 7) * 2.75
-              : 0
+              : 360 * 0.25,
+            direction: 'clockwise'
           }
         },
         title: `Pattern of air quality data (${chartLegend.name})`,
