@@ -29,7 +29,7 @@ export const DustboxCard: React.FC<{ dustbox: Dustbox, withFuzzball?: boolean, r
         lng={dustbox?.location?.coordinates[0]}
       />
       <div>
-        {!isValid(latestReadingDate) ? (
+        {!isValid(latestReadingDate) || (!dustboxReading.isValidating && !latestReading) ? (
           <div className='text-XXS text-opacity-50 mt-2 text-error uppercase font-bold font-cousine'>No readings yet</div>
         ) : (latestReading === undefined) ? (
           <div className='flex w-full justify-between items-end'>
