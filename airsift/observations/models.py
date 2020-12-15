@@ -1,5 +1,5 @@
 from airsift.utils.custom_ui import AutocompletePanelForUUIDModels
-from airsift.observations.serializers import LocationSerializer, UserSerializer
+from airsift.observations.serializers import APIRichTextField, LocationSerializer, UserSerializer
 from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
 from wagtail.core.models import Page, Orderable, PageRevision
@@ -59,7 +59,7 @@ class Observation(Page):
         return UserSerializer(items, many=True).data
 
     api_fields = [
-        APIField('body'),
+        APIRichTextField('body'),
         APIField('related_dustboxes'),
         APIField('observation_type'),
         APIField('datetime'),
