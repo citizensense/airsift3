@@ -160,7 +160,7 @@ export function MapLayout ({
                 }
               ].map(item => (
                 <Fragment>
-                  <a href={item.url} key={item.url} className='flex flex-row justify-between w-full px-4 my-4'>
+                  <a href={item.url} key={item.url} className='hover:bg-brand hover:bg-opacity-10 flex flex-row justify-between w-full px-4 py-4'>
                     <div>
                       <div className='font-cousine text-XS font-bold uppercase flex w-full'>
                         <h2 className='flex-shrink-0 truncat'>
