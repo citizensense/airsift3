@@ -13,6 +13,7 @@ import { firstOf } from '../utils/array';
 import { Dustbox24HourChart } from './graph';
 import { ParentSize } from '@visx/responsive'
 import { ObservationList } from './sidebar';
+import { Footer } from './scaffolding';
 
 export function DustboxDetailCard ({ id }: { id: string }) {
   const dustboxRes = useSWR<DustboxDetail.Data>(querystring.stringifyUrl({
@@ -112,11 +113,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
       )}
       {/* Footer */}
       <hr className='border-brand mx-4' />
-      <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
-        <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
-        <a href='https://citizensense.net/about/contact/'>Contact</a>
-        <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
-      </div>
+      <Footer />
     </div>
   )
 }

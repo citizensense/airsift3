@@ -11,6 +11,7 @@ import { useAtom } from 'jotai';
 import { userIdAtom } from './layout';
 import { DustboxList } from './sidebar';
 import { DustboxTitle } from './card';
+import { Footer } from './scaffolding';
 
 export const ObservationCard: React.FC<{ observation: Observations.Item, withIcon?: boolean }> = memo(({ observation, withIcon }) => {
   // const coordinates = useCoordinateData(
@@ -150,11 +151,7 @@ export function ObservationDetailCard ({ id }: { id: any }) {
       </div>
       {/* Footer */}
       <hr className='border-brand mx-4' />
-      <div className='px-4 mt-4 pb-3 uppercase font-cousine text-XS'>
-        <img src={'/static/images/citizenSenseLogo.png'} className='mb-3' />
-        <a href='https://citizensense.net/about/contact/'>Contact</a>
-        <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
-      </div>
+      <Footer />
     </div>
   )
 }
