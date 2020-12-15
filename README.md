@@ -72,7 +72,21 @@ source python/bin/activate
 python manage.py migrate
 ```
 
-### Deploy to server
+### Deployment info
+
+- Deployed to a VPS (/var/www/airsift3) via docker-compose using github actions on push to `main`
+
+- Compose files:
+  - Production: production.yml
+  - Run production-like setup locally: local.yml
+
+- Expects a .env file in /var/www/airsift3 to contain the server's environment config.
+
+- Expects a regular cron job to run `manage.py sync_data`
+
+- View logs: `docker-compose -f /var/www/airsift3/production.yml logs`
+
+- Adhoc django-admin commands: `docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py [...]`
 
 #### Install docker if required
 
