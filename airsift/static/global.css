@@ -86,3 +86,7 @@ text-S font-semibold hoverable;
     width: 100%;
   }
 }
+
+.js-plotly-plot .plotly .modebar-btn {
+  display: inline-block;
+}

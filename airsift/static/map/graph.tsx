@@ -221,6 +221,11 @@ export function HistoricalChart ({ measure, dustboxStreams, width, height }: Cha
         width,
         height,
       }}
+      config={{
+        responsive: true,
+        displaylogo: false,
+        displayModeBar: true,
+      }}
     />
   )
 }
