@@ -32,6 +32,12 @@ http:
         - csrf
       service: django
 
+    static:
+      rule: "Host(`airsift-static.multitude.cloud`)"
+      entryPoints:
+        - web-secure
+      service: static
+
     web-secure-router:
       rule: "Host(`airsift-staging.multitude.cloud`)"
 
@@ -61,6 +67,11 @@ http:
       loadBalancer:
         servers:
           - url: http://django:5000
+
+    static:
+      loadBalancer:
+        servers:
+          - url: http://nginx:80
 
 providers:
   # https://docs.traefik.io/master/providers/file/

@@ -34,6 +34,14 @@ services:
     env_file:
       - ./.env
 
+  nginx:
+    restart: always
+    image: nginx
+    volumes:
+      - airsift_local_media:/usr/share/nginx/html:z
+    ports:
+      - "0.0.0.0:3111:80"
+
   redis:
     image: redis:5.0
 

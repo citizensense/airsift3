@@ -41,6 +41,12 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
 
+  nginx:
+    restart: always
+    image: nginx
+    volumes:
+      - airsift_local_media:/usr/share/nginx/html:z
+
   redis:
     image: redis:5.0
 
