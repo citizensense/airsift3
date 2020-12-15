@@ -95,3 +95,14 @@ text-S font-semibold hoverable;
 .link {
   @apply no-underline border-b border-brand;
 }
+
+#div_id_terms {
+  @apply flex flex-row items-center;
+  input {
+    @apply order-1;
+  }
+  label {
+    @apply order-2 pl-2;
+    margin-bottom: 0;
+  }
+}
