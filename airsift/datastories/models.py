@@ -128,14 +128,14 @@ class DataStory(Page):
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
         verbose_name='How might these sources impact local air-quality and what are the specific sources?'
     )
+
     # How many Dusboxes are monitoring in the area? [number field].
-    # TODO:
-    # related_dustboxes = ParentalManyToManyField(
-    #     'dustboxes.Dustbox',
-    #     blank=True,
-    #     null=True,
-    #     verbose_name='Are there any Airsift Dustboxes monitoring this area?'
-    # )
+    related_dustboxes = ParentalManyToManyField(
+        'data.Dustbox',
+        blank=True,
+        null=True,
+        verbose_name='Are there any Airsift Dustboxes monitoring this area?'
+    )
 
     # Where are Dustboxes located (if known) <br>
     dustbox_location_choices = create_choices(
@@ -344,6 +344,9 @@ How might these sources impact local air-quality and what are the specific sourc
                 FieldPanel(
                     'dustbox_location_options',
                     widget=forms.CheckboxSelectMultiple(choices=dustbox_location_choices)
+                ),
+                AutocompletePanel(
+                    'related_dustboxes'
                 ),
 
                 # R
