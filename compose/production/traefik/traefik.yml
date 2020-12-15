@@ -37,6 +37,9 @@ http:
       entryPoints:
         - web-secure
       service: static
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
 
     web-secure-router:
       rule: "Host(`airsift-staging.multitude.cloud`)"
