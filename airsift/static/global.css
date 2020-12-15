@@ -90,3 +90,8 @@ text-S font-semibold hoverable;
 .js-plotly-plot .plotly .modebar-btn {
   display: inline-block;
 }
+
+.prose a,
+.link {
+  @apply no-underline border-b border-brand;
+}
