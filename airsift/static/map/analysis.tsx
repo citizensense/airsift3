@@ -253,30 +253,36 @@ export function AnalysisView() {
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select measurement
             </div>
-            <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
-              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              {measureOptions.map(([val, label]) =>
-                <option key={val} value={val}>{label}</option>
-              )}
-            </select>
+            <div className='mx-4 my-2'>
+              <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
+                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+                {measureOptions.map(([val, label]) =>
+                  <option key={val} value={val}>{label}</option>
+                )}
+              </select>
+            </div>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select data resolution
             </div>
-            <select onChange={e => setMean(e.target.value)} value={mean || undefined}
-              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              {meanOptions.map(([value, label]) => {
-                return <option key={value} value={value}>{label}</option>
-              })}
-            </select>
+            <div className='mx-4 my-2'>
+              <select onChange={e => setMean(e.target.value)} value={mean || undefined}
+                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+                {meanOptions.map(([value, label]) => {
+                  return <option key={value} value={value}>{label}</option>
+                })}
+              </select>
+            </div>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select visualisation mode
             </div>
-            <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
-              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              {modeOptions.map(([val, label]) =>
-                <option key={val} value={val}>{label}</option>
-              )}
-            </select>
+            <div className='mx-4 my-2'>
+              <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
+                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+                {modeOptions.map(([val, label]) =>
+                  <option key={val} value={val}>{label}</option>
+                )}
+              </select>
+            </div>
             <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
               Select dustboxes to visualise data
             </div>

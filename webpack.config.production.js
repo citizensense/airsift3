@@ -34,6 +34,7 @@ const config = mergeWithCustomize({
                   require('postcss-css-variables')(),
                   require('tailwindcss')(path.resolve(__dirname, './tailwind.config.js')),
                   require('postcss-nested')(),
+                  require('autoprefixer'),
                   require('postcss-preset-env'),
                   require('cssnano')({ preset: 'default' })
                 ],
