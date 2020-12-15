@@ -212,100 +212,95 @@ export function AnalysisView() {
 
   return (
     <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
-      <div className='flex flex-col sm:h-screen overflow-x-hidden'>
+      <div className='flex flex-col overflow-y-auto'>
         <div className='px-4 mb-4 pt-6'>
           <h1 className='text-M font-bold mb-2'>Analysis</h1>
           <p className='text-S my-4'>Analyse and download citizen-generated air quality data points. You can use this data analysis tool to explore Dustbox data, create plots and identify air pollution problems.</p>
         </div>
-        {/* <hr className='border-brand mx-4' /> */}
-        <div className='flex-grow flex flex-col'>
-          <div className='mx-4'>
-            <a href='/analysis' className='button-grey inline-block'>Reset Options</a>
-            <span onClick={download} className='ml-2 button-grey inline-block'>Download Data</span>
+        <div className='mx-4'>
+          <a href='/analysis' className='button-grey inline-block'>Reset Options</a>
+          <span onClick={download} className='ml-2 button-grey inline-block'>Download Data</span>
+        </div>
+        <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+          Select dates
+        </div>
+        <div className='grid gap-3 grid-cols-2'>
+          <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
+          <DayPickerInput
+            value={dateFrom}
+            onDayChange={(d) => setDateFrom(d)}
+            formatDate={formatDate}
+            format={DATE_FORMAT_TEMPLATE}
+            parseDate={parseDate}
+            placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+          />
           </div>
-          <div className='my-4 flex flex-col'>
-            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-              Select dates
-            </div>
-            <div className='grid gap-3 grid-cols-2'>
-              <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              <DayPickerInput
-                value={dateFrom}
-                onDayChange={(d) => setDateFrom(d)}
-                formatDate={formatDate}
-                format={DATE_FORMAT_TEMPLATE}
-                parseDate={parseDate}
-                placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
-              />
-              </div>
-              <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
-              <DayPickerInput
-                value={dateTo}
-                onDayChange={(d) => setDateTo(d)}
-                formatDate={formatDate}
-                format={DATE_FORMAT_TEMPLATE}
-                parseDate={parseDate}
-                placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
-              />
-              </div>
-            </div>
-            <hr className='border-t-1 border-brand my-2 mx-4' />
-            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-              Select measurement
-            </div>
-            <div className='mx-4 my-2'>
-              <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
-                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
-                {measureOptions.map(([val, label]) =>
-                  <option key={val} value={val}>{label}</option>
-                )}
-              </select>
-            </div>
-            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-              Select data resolution
-            </div>
-            <div className='mx-4 my-2'>
-              <select onChange={e => setMean(e.target.value)} value={mean || undefined}
-                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
-                {meanOptions.map(([value, label]) => {
-                  return <option key={value} value={value}>{label}</option>
-                })}
-              </select>
-            </div>
-            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-              Select visualisation mode
-            </div>
-            <div className='mx-4 my-2'>
-              <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
-                className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
-                {modeOptions.map(([val, label]) =>
-                  <option key={val} value={val}>{label}</option>
-                )}
-              </select>
-            </div>
-            <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-              Select dustboxes to visualise data
-            </div>
-            <input
-              value={locationName} onChange={e => setLocationName(e.target.value)}
-              placeholder='Search Address, Postcode, Landmark'
-              className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
-            />
-            {nearestDustboxes.filter(n => !!n.lastEntryAt).map((dustbox, i) =>
-              <Fragment key={dustbox.id}>
-                <DustboxAnalysisCard
-                  key={dustbox.id}
-                  dustbox={dustbox}
-                  onClick={() => toggleDustbox(dustbox.id)}
-                  isSelected={dustboxSelections.includes(dustbox.id)}
-                />
-                {(i + 1 < (nearestDustboxes.length || 0)) && (
-                  <hr className='border-brand mx-4' />
-                )}
-              </Fragment>
-            )}
+          <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
+          <DayPickerInput
+            value={dateTo}
+            onDayChange={(d) => setDateTo(d)}
+            formatDate={formatDate}
+            format={DATE_FORMAT_TEMPLATE}
+            parseDate={parseDate}
+            placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+          />
           </div>
         </div>
+        <hr className='border-t-1 border-brand my-2 mx-4' />
+        <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+          Select measurement
+        </div>
+        <div className='mx-4 my-2'>
+          <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
+            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            {measureOptions.map(([val, label]) =>
+              <option key={val} value={val}>{label}</option>
+            )}
+          </select>
+        </div>
+        <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+          Select data resolution
+        </div>
+        <div className='mx-4 my-2'>
+          <select onChange={e => setMean(e.target.value)} value={mean || undefined}
+            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            {meanOptions.map(([value, label]) => {
+              return <option key={value} value={value}>{label}</option>
+            })}
+          </select>
+        </div>
+        <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+          Select visualisation mode
+        </div>
+        <div className='mx-4 my-2'>
+          <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
+            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            {modeOptions.map(([val, label]) =>
+              <option key={val} value={val}>{label}</option>
+            )}
+          </select>
+        </div>
+        <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
+          Select dustboxes to visualise data
+        </div>
+        <input
+          value={locationName} onChange={e => setLocationName(e.target.value)}
+          placeholder='Search Address, Postcode, Landmark'
+          className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
+        />
+        {nearestDustboxes.filter(n => !!n.lastEntryAt).map((dustbox, i) =>
+          <Fragment key={dustbox.id}>
+            <DustboxAnalysisCard
+              key={dustbox.id}
+              dustbox={dustbox}
+              onClick={() => toggleDustbox(dustbox.id)}
+              isSelected={dustboxSelections.includes(dustbox.id)}
+            />
+            {(i + 1 < (nearestDustboxes.length || 0)) && (
+              <hr className='border-brand mx-4' />
+            )}
+          </Fragment>
+        )}
         <hr className='border-brand mx-4' />
         <Footer />
       </div>
