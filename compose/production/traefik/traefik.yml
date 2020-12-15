@@ -23,7 +23,7 @@ certificatesResolvers:
 http:
   routers:
     web-router:
-      rule: "Host(`airsift-staging.multitude.cloud`)"
+      rule: "Host(`airsift.citizensense.co.uk`)"
 
       entryPoints:
         - web
@@ -33,7 +33,7 @@ http:
       service: django
 
     static:
-      rule: "Host(`airsift-static.multitude.cloud`)"
+      rule: "Host(`airsift.static.citizensense.co.uk`)"
       entryPoints:
         - web-secure
       service: static
@@ -42,7 +42,7 @@ http:
         certResolver: letsencrypt
 
     web-secure-router:
-      rule: "Host(`airsift-staging.multitude.cloud`)"
+      rule: "Host(`airsift.citizensense.co.uk`)"
 
       entryPoints:
         - web-secure
