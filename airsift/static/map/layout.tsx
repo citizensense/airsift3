@@ -116,7 +116,7 @@ export function MapLayout ({
       .reduce((observationAddresses, item) => {
         const feature: ObservationFeature = turf.feature({
           "type": "Point",
-          "coordinates": item.location.coordinates.slice().reverse()
+          "coordinates": item.location.coordinates
         }, item)
         return [...observationAddresses, feature]
       }, [] as Array<ObservationFeature>)
