@@ -1,4 +1,3 @@
-from airsift.utils.custom_ui import AutocompletePanelForUUIDModels
 from airsift.observations.serializers import APIRichTextField, LocationSerializer, UserSerializer
 from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
@@ -35,7 +34,7 @@ class Observation(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
-        AutocompletePanelForUUIDModels('related_dustboxes'),
+        AutocompletePanel('related_dustboxes'),
         FieldPanel('datetime', classname="full"),
         AutocompletePanel('observation_type'),
         FieldPanel('location', widget=OSMWidget(attrs={

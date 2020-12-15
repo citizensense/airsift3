@@ -3,7 +3,7 @@ from django.contrib.gis.db.models import PointField
 from wagtail.api import APIField
 
 class Dustbox(models.Model):
-    id = models.UUIDField(primary_key=True)
+    id = models.CharField(primary_key=True, max_length=36)
     created_at = models.DateTimeField()
     description = models.TextField()
     device_number = models.CharField(null=True, max_length=256)
@@ -30,7 +30,7 @@ class Dustbox(models.Model):
     ]
 
 class DustboxReading(models.Model):
-    id = models.UUIDField(primary_key=True)
+    id = models.CharField(primary_key=True, max_length=36)
     created_at = models.DateTimeField()
     humidity = models.FloatField(null=True)
     pm1 = models.FloatField(null=True)
