@@ -16,6 +16,7 @@ from django.utils import timezone
 from wagtail.api import APIField
 from wagtail.images.api.fields import ImageRenditionField
 from modelcluster.fields import ParentalManyToManyField
+from django.shortcuts import redirect
 
 class Observation(Page):
     show_in_menus_default = True
@@ -72,6 +73,18 @@ class Observation(Page):
 
     def autocomplete_label(self):
         return self.__str__()
+
+    def relative_url(self, *args, **kwargs):
+        print(self)
+        return f'/observations/inspect/{self.pk}'
+
+    def get_url(self, *args, **kwargs):
+        print(self)
+        return f'/observations/inspect/{self.pk}'
+
+    def serve(self, request):
+        # site_id, site_root, relative_page_url = self.get_url_parts(request)
+        return redirect(f'/observations/inspect/{self.pk}')
 
 class ObservationImage(Orderable):
     page = ParentalKey(Observation, related_name="observation_images")
