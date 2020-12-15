@@ -110,6 +110,12 @@ python manage.py collectstatic
 gunicorn config.wsgi:application --bind=136.244.105.217:8001 --bind=[::1]:8001
 ```
 
+#### Production commands
+
+```
+docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py
+```
+
 #### Troubleshooting
 
 If you see errors relating to `GDAL` missing:
