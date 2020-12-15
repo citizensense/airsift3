@@ -75,11 +75,9 @@ class Observation(Page):
         return self.__str__()
 
     def relative_url(self, *args, **kwargs):
-        print(self)
         return f'/observations/inspect/{self.pk}'
 
     def get_url(self, *args, **kwargs):
-        print(self)
         return f'/observations/inspect/{self.pk}'
 
     def serve(self, request):

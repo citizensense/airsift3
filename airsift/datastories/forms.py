@@ -32,7 +32,6 @@ class ArrayFieldSelectMultiple(SelectMultiple):
         super(ArrayFieldSelectMultiple, self).__init__(*args, **kwargs)
 
     def render_options(self, choices, value):
-        print(self, choices, value)
         # value *should* be a list, but it might be a delimited string.
         if isinstance(value, str):  # python 2 users may need to use basestring instead of str
             value = value.split(self.delimiter)

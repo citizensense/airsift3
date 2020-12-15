@@ -37,7 +37,5 @@ class APIRichTextSerializer(Field):
         # self.context['view'].seen_types[name] = type(obj)
         # return name
         value = getattr(obj, self.name)
-        print('APIRichTextSerializer 1', value)
         html = expand_db_html(value)
-        print('APIRichTextSerializer 2', html)
         return html
