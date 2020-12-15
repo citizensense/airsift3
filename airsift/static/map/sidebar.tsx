@@ -75,7 +75,7 @@ function _DustboxListItem <T extends Dustbox>({
     <div ref={ref}>
       <A
         href={`/dustboxes/inspect/${dustbox.id}`}
-        className={`block py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
+        className={`block py-4 px-4 ${isHovering ? 'bg-brand bg-opacity-10' : ''}`}
         onMouseOver={() => setIsHovering(true, 'list')}
         onMouseOut={() => setIsHovering(false, 'list')}
       >
@@ -129,7 +129,7 @@ export const ObservationListItem: React.FC<{ observation: Observations.Item }> =
     <div ref={ref}>
       <A
         href={`/observations/inspect/${observation.id}`}
-        className={`block py-4 px-4 ${isHovering ? 'bg-gray-300' : ''}`}
+        className={`block py-4 px-4 ${isHovering ? 'bg-darkBlue bg-opacity-10' : ''}`}
         onMouseOver={() => setIsHovering(true, 'list')}
         onMouseOut={() => setIsHovering(false, 'list')}
       >
