@@ -146,7 +146,7 @@ class User(AbstractUser):
             # Allow edits
             PAGE_PERMISSION_TYPES[1][0],
             # Allow users to publish their pages straight away
-            PAGE_PERMISSION_TYPES[2][0],
+            # PAGE_PERMISSION_TYPES[2][0],
         ]:
             GroupPagePermission.objects.create(
                 group=new_group,
