@@ -225,7 +225,7 @@ export function AnalysisView() {
           Select dates
         </div>
         <div className='grid gap-3 grid-cols-2'>
-          <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
+          <div className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'>
           <DayPickerInput
             value={dateFrom}
             onDayChange={(d) => setDateFrom(d)}
@@ -235,7 +235,7 @@ export function AnalysisView() {
             placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
           />
           </div>
-          <div className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'>
+          <div className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'>
           <DayPickerInput
             value={dateTo}
             onDayChange={(d) => setDateTo(d)}
@@ -252,7 +252,7 @@ export function AnalysisView() {
         </div>
         <div className='mx-4 my-2'>
           <select onChange={e => setMeasure(e.target.value as any)} value={measure || undefined}
-            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            className='appearance-none block py-2 px-3 box-border border border-gray-500 rounded-md w-full'>
             {measureOptions.map(([val, label]) =>
               <option key={val} value={val}>{label}</option>
             )}
@@ -263,7 +263,7 @@ export function AnalysisView() {
         </div>
         <div className='mx-4 my-2'>
           <select onChange={e => setMean(e.target.value)} value={mean || undefined}
-            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            className='appearance-none block py-2 px-3 box-border border border-gray-500 rounded-md w-full'>
             {meanOptions.map(([value, label]) => {
               return <option key={value} value={value}>{label}</option>
             })}
@@ -274,7 +274,7 @@ export function AnalysisView() {
         </div>
         <div className='mx-4 my-2'>
           <select onChange={e => setMode(e.target.value as any)} value={mode || undefined}
-            className='appearance-none block py-2 px-3 box-border border border-grey-500 rounded-md w-full'>
+            className='appearance-none block py-2 px-3 box-border border border-gray-500 rounded-md w-full'>
             {modeOptions.map(([val, label]) =>
               <option key={val} value={val}>{label}</option>
             )}
@@ -286,7 +286,7 @@ export function AnalysisView() {
         <input
           value={locationName} onChange={e => setLocationName(e.target.value)}
           placeholder='Search Address, Postcode, Landmark'
-          className='block py-2 px-3 mx-4 my-2 box-border border border-grey-500 rounded-md'
+          className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'
         />
         {nearestDustboxes.filter(n => !!n.lastEntryAt).map((dustbox, i) =>
           <Fragment key={dustbox.id}>
@@ -346,7 +346,7 @@ const DustboxAnalysisCard: React.FC<{
 
   return (
     <div
-      className={`block py-4 px-4`}
+      className={`block py-4 px-4 hover:bg-brand hover:bg-opacity-10`}
       style={{
         background: isSelected ? randomcolor({ seed: dustbox.id, luminosity: 'light' }) : ''
       }}
