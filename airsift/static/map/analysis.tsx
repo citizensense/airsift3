@@ -110,8 +110,8 @@ export function AnalysisView() {
   )
 
   const modeOptions = toOptions([
-    ['trunc', 'Historical Time Plot'],
-    ['part', 'Seasonal Pattern Plot']
+    ['trunc', 'Time Series Plot'],
+    ['part', 'Pattern Plot']
   ])
   const [mode, setMode] = useURLState(
     'mode',
