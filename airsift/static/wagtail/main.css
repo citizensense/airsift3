@@ -1,3 +1,36 @@
+.breadcrumb {
+  background: #33ccff;
+}
+
+header,
+.page-explorer .listing .index {
+  color: black;
+  background: linear-gradient(180deg, rgba(51,204,255,0.800000011920929), rgba(51,204,255,0));
+}
+.tab-nav.merged {
+  background: white;
+}
+
+body header .user-name,
+body header h1,
+body header .button,
+.page-editor h1.header-title,
+.breadcrumb *,
+.page-explorer .listing .index .title h2,
+.page-explorer .listing .index .button,
+.t-inverted .u-btn-current {
+  color: black;
+}
+
+body header .button.bicolor,
+.page-explorer .listing .index .button.bicolor {
+  color: white;
+}
+
+a {
+  color: #2e03da;
+}
+
 /* .nav-wrapper, .nav-wrapper .inner,
 .nav-wrapper, .nav-wrapper .inner * {
     background: white !important;
