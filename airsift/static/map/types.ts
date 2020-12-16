@@ -39,6 +39,7 @@ export interface DustboxReading {
 
 export namespace DustboxDetail {
   export interface Data {
+    hasData?: boolean
     createdAt:     null | string;
     description:   string;
     deviceNumber:  string;

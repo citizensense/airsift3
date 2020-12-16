@@ -51,9 +51,11 @@ text-S font-semibold hoverable;
 
 .grid-sidebar-map {
   grid-template-columns: 1fr;
+  grid-template-rows: 75vh 1fr;
 
   @screen md {
     grid-template-columns: min(50%, 500px) 1fr;
+    grid-template-rows: 1fr;
   }
 }
 
