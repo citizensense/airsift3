@@ -169,6 +169,10 @@ class User(AbstractUser):
             )
         )
 
+@receiver(user_signed_up)
+def create_user_group_and_pages(sender, **kwargs):
+    user: User = kwargs['user']
+    user.create_user_group_and_pages()
 
 class UserIndexPage(Page):
     '''
