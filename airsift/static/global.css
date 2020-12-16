@@ -112,3 +112,9 @@ text-S font-semibold hoverable;
     margin-bottom: 0;
   }
 }
+
+form {
+  input.checkboxinput  {
+    @apply appearance-none p-2 box-border border border-gray-500 rounded-md;
+  }
+}
