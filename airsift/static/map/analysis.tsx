@@ -224,28 +224,22 @@ export function AnalysisView() {
         <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
           Select dates
         </div>
-        <div className='grid gap-3 grid-cols-2'>
-          <div className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'>
-          <DayPickerInput
-            value={dateFrom}
-            onDayChange={(d) => setDateFrom(d)}
-            formatDate={formatDate}
-            format={DATE_FORMAT_TEMPLATE}
-            parseDate={parseDate}
-            placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
-          />
-          </div>
-          <div className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'>
-          <DayPickerInput
-            value={dateTo}
-            onDayChange={(d) => setDateTo(d)}
-            formatDate={formatDate}
-            format={DATE_FORMAT_TEMPLATE}
-            parseDate={parseDate}
-            placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
-          />
-          </div>
-        </div>
+        <DayPickerInput
+          value={dateFrom}
+          onDayChange={(d) => setDateFrom(d)}
+          formatDate={formatDate}
+          format={DATE_FORMAT_TEMPLATE}
+          parseDate={parseDate}
+          placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+        />
+        <DayPickerInput
+          value={dateTo}
+          onDayChange={(d) => setDateTo(d)}
+          formatDate={formatDate}
+          format={DATE_FORMAT_TEMPLATE}
+          parseDate={parseDate}
+          placeholder={`${format(new Date(), DATE_FORMAT_TEMPLATE)}`}
+        />
         <hr className='border-t-1 border-brand my-2 mx-4' />
         <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
           Select measurement

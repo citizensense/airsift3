@@ -85,8 +85,7 @@ text-S font-semibold hoverable;
 }
 
 .DayPickerInput {
-  width: auto;
-  display: inline-block;
+  @apply block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md;
 
   input {
     width: 100%;
