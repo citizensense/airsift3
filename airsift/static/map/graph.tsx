@@ -170,6 +170,7 @@ export function Dustbox24HourChart ({
 }
 
 type ChartProps = {
+  isLoading: boolean,
   width: number,
   height: number,
   mean: string,
@@ -188,11 +189,17 @@ const getChartLegend = (str: string) => {
 }
 
 export function DustboxFlexibleChart (props: ChartProps) {
+  if (!props.isLoading && props.dustboxStreams.length === 0) {
+    return (
+      <div className='text-S font-cousine uppercase text-midDarker text-center m-4 max-w-md'>
+        Select one or more dustboxes to visualise air quality readings data.
+      </div>
+    )
+  }
   if (props.mode === 'trunc') {
     return <HistoricalChart {...props} />
-  } else {
-    return <PolarChart {...props} />
   }
+  return <PolarChart {...props} />
 }
 
 import Plot from 'react-plotly.js';

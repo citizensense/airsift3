@@ -308,6 +308,7 @@ export function AnalysisView() {
         <div className='my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
           <ParentSize className='flex flex-col justify-center items-center align-middle'>{({ width, height }) =>
             <DustboxFlexibleChart
+              isLoading={dustboxStreams.isValidating}
               dustboxStreams={dustboxStreams.data || []}
               width={width} height={Math.min(height, 666)}
               measure={measure}
