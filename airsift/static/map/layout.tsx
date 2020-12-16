@@ -150,7 +150,7 @@ export function MapLayout ({
                   url: '/analysis',
                   name: "Analysis",
                   description: 'Explore Dustbox data, create plots and identify air pollution problems.',
-                  imageURL: "/static/images/Sidebar/Home/analysis.png"
+                  imageURL: "/static/images/Sidebar/Home/analysis.jpg"
                 },
                 {
                   url: '/datastories',
