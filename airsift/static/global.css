@@ -52,7 +52,7 @@ text-S font-semibold hoverable;
 .grid-sidebar-map {
   grid-template-columns: 1fr;
 
-  @screen sm {
+  @screen md {
     grid-template-columns: min(50%, 500px) 1fr;
   }
 }

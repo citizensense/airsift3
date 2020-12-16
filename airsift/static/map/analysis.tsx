@@ -211,9 +211,9 @@ export function AnalysisView() {
   }
 
   return (
-    <div className='grid overflow-y-auto sm:overflow-hidden h-screen w-full -my-6 grid-sidebar-map'>
-      <div className='flex flex-col overflow-y-auto'>
-        <div className='px-4 mb-4 pt-6'>
+    <div className='grid overflow-y-auto overflow-x-hidden md:overflow-y-hidden md:h-screen w-full -my-6 grid-sidebar-map'>
+      <div className='order-2 md:order-1 flex flex-col overflow-y-auto overflow-x-hidden'>
+        <div className='px-4 mb-4 pt-4 md:pt-6'>
           <h1 className='text-M font-bold mb-2'>Analysis</h1>
           <p className='text-S my-4'>Analyse and download citizen-generated air quality data points. You can use this data analysis tool to explore Dustbox data, create plots and identify air pollution problems.</p>
         </div>
@@ -300,13 +300,14 @@ export function AnalysisView() {
         <hr className='border-brand mx-4' />
         <Footer />
       </div>
-      <div className='flex flex-col items-stretch bg-light'>
-        <div className='my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
+      <div className='flex flex-col items-stretch bg-light overflow-x-auto order-1 md:order-2'>
+        <div className='mt-5 md:my-6 flex flex-col justify-center items-center align-middle p-4 h-full'>
           <ParentSize className='flex flex-col justify-center items-center align-middle'>{({ width, height }) =>
             <DustboxFlexibleChart
               isLoading={dustboxStreams.isValidating}
               dustboxStreams={dustboxStreams.data || []}
-              width={width} height={Math.min(height, 666)}
+              width={width}
+              height={Math.min(height, 666)}
               measure={measure}
               mode={mode}
               mean={mean}
