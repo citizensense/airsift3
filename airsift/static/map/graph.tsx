@@ -214,7 +214,7 @@ export function HistoricalChart ({ measure, dustboxStreams, width, height }: Cha
         const color = randomcolor({ seed: stream.dustboxId, luminosity: 'bright' })
 
         return {
-          name: `${stream.dustbox.title}`,
+          name: `${stream.dustbox.title.toUpperCase()}`,
           x: stream.readings.map(getDate),
           y: stream.readings.map(chartLegend.getter),
           type: 'scatter',
@@ -227,6 +227,11 @@ export function HistoricalChart ({ measure, dustboxStreams, width, height }: Cha
         title: `Historical data (${chartLegend.name})`,
         width,
         height,
+        font: {
+          family: "Cousine, 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+          size: 16,
+          color: '#585e5f',
+        },
         yaxis: {
           title: {
             text: chartLegend.name
@@ -313,7 +318,7 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
   }
   const chartLegend = getChartLegend(measure)
   const meanMean = means[mean]!
-  const categoryarray = meanMean.series().map(n => meanMean.label(n))
+  const categoryarray = meanMean.series().map(n => meanMean.label(n).toUpperCase())
 
   return (
     <Plot
@@ -322,7 +327,7 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
         const { r, theta } = loopedPolarData(mean, chartLegend.getter, stream.readings)
 
         return {
-          name: `${stream.dustbox.title}`,
+          name: `${stream.dustbox.title.toUpperCase()}`,
           type: "scatterpolar",
           mode: "lines+markers",
           r,
@@ -339,6 +344,11 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
         }
       })}
       layout={{
+        font: {
+          family: "Cousine, 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+          size: 16,
+          color: '#585e5f',
+        },
         polar: {
           radialaxis: {
             title: {
