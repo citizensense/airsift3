@@ -270,7 +270,8 @@ const hour = new Mean(
 )
 const isodow = new Mean(
   7, 'iii',
-  (i: number, FORMAT: string) => format(setDay(new Date(), i), FORMAT)
+  (i: number, FORMAT: string) => format(setDay(new Date(), i), FORMAT),
+  (length) => [...new Array(length)].map((_, i) => i + 1)
 )
 const month = new Mean(
   12, 'MMM',
@@ -309,6 +310,19 @@ function loopedPolarData (
     theta: loopedData.map(d => meanMean.label(d.createdAt as any))
   }
 
+  if (
+    mean === 'isodow' && data.length === isodow.length ||
+    mean === 'month' && data.length === month.length ||
+    mean === 'hour' && data.length === hour.length
+  ) {
+    console.log("Full house of data, can loop", out)
+    out = {
+      r: out.r.concat([out.r[0]]),
+      theta: out.theta.concat([out.theta[0]])
+    }
+    console.log(out)
+  }
+
   return out
 }
 
@@ -318,7 +332,6 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
   }
   const chartLegend = getChartLegend(measure)
   const meanMean = means[mean]!
-  const categoryarray = meanMean.series().map(n => meanMean.label(n).toUpperCase())
 
   return (
     <Plot
@@ -331,7 +344,7 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
           type: "scatterpolar",
           mode: "lines+markers",
           r,
-          theta: categoryarray,
+          theta,
           line: {
             color
           },
@@ -359,7 +372,7 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
             // @ts-ignore
             rotation:
               mean === 'hour' ? (360 / 24) * 6
-              : mean === 'isodow' ? (360 / 7) * 2.75
+              : mean === 'isodow' ? (360 / 7) * 1.75
               : 360 * 0.25,
             direction: 'clockwise'
           }
