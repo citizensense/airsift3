@@ -227,6 +227,11 @@ export function HistoricalChart ({ measure, dustboxStreams, width, height }: Cha
         title: `Historical data (${chartLegend.name})`,
         width,
         height,
+        yaxis: {
+          title: {
+            text: chartLegend.name
+          }
+        }
       }}
       config={{
         responsive: true,
