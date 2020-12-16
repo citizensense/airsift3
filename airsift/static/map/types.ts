@@ -2,6 +2,7 @@ import * as turf from '@turf/helpers';
 
 export interface Dustbox {
     id:            string;
+    hasData: boolean;
     createdAt:     Date;
     description:   string;
     deviceNumber:  null | string;

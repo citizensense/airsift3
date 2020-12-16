@@ -91,7 +91,7 @@ export function MapLayout ({
   const dustboxAddresses = useMemo(() => {
     return (dustboxes.data ?? [])
       .reduce((dustboxAddresses, item) => {
-        if (!item.location) return dustboxAddresses
+        if (!item.location || !item.hasData) return dustboxAddresses
         const feature: DustboxFeature = turf.feature(item.location, item)
         return [...dustboxAddresses, feature]
       }, [] as Array<DustboxFeature>)
@@ -191,7 +191,7 @@ export function MapLayout ({
               <p className='text-S'>Dustboxes measure small particles between 1 to 2.5 micrometers (μm), which are effectively designated as particulate matter 2.5 (PM2.5) for this research in order to compare readings to official air quality guidance.</p>
             </div>
             <hr className='border-brand mx-4' />
-            <DustboxList dustboxes={dustboxes.data || []} />
+            <DustboxList dustboxes={dustboxes.data?.filter(d => d.hasData) || []} />
             <hr className='border-brand mx-4' />
             <Footer />
           </div>

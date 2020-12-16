@@ -288,7 +288,9 @@ export function AnalysisView() {
           placeholder='Search Address, Postcode, Landmark'
           className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'
         />
-        {nearestDustboxes.filter(n => !!n.lastEntryAt).map((dustbox, i) =>
+        {nearestDustboxes
+          .filter(n => n.hasData)
+          .map((dustbox, i) =>
           <Fragment key={dustbox.id}>
             <DustboxAnalysisCard
               key={dustbox.id}
