@@ -281,11 +281,11 @@ export function AnalysisView() {
           </select>
         </div>
         <div className='uppercase text-XS font-cousine font-bold mt-2 px-4 text-softBlack'>
-          Select dustboxes to visualise data
+          Select one or more dustboxes
         </div>
         <input
           value={locationName} onChange={e => setLocationName(e.target.value)}
-          placeholder='Search Address, Postcode, Landmark'
+          placeholder='Search dustbox by address, postcode, landmark'
           className='block py-2 px-3 mx-4 my-2 box-border border border-gray-500 rounded-md'
         />
         {nearestDustboxes
