@@ -340,6 +340,11 @@ export function PolarChart ({ measure, dustboxStreams, width, height, mean }: Ch
       })}
       layout={{
         polar: {
+          radialaxis: {
+            title: {
+              text: chartLegend.name
+            }
+          },
           angularaxis: {
             // @ts-ignore
             rotation:
