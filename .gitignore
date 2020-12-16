@@ -274,3 +274,5 @@ airsift/static/webpack_bundles
 .pytest_cache/
 
 
+
+.vscode/settings.json
