@@ -154,12 +154,12 @@ LOGGING = {
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
-            "propagate": True,
+            "propagate": False,
         },
         "django.security.DisallowedHost": {
             "level": "ERROR",
             "handlers": ["console"],
-            "propagate": True,
+            "propagate": False,
         },
     },
 }
