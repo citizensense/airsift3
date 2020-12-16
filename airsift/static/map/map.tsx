@@ -1,7 +1,7 @@
 import { DustboxFeature, ObservationFeature } from './types';
 import React, { Fragment, useState, useRef, useEffect, useContext, memo } from 'react';
 import { useDustboxReading, airQualityColour, airQualityLegend } from './data';
-import MapGL, { Marker, Popup } from '@urbica/react-map-gl'
+import MapGL, { MapContext, Marker, Popup, NavigationControl, GeolocateControl } from '@urbica/react-map-gl'
 import { AirQualityFuzzball, DustboxCard } from './card';
 import { useHoverContext, hoverIdAtom, hoverSourceAtom, hoverTypeAtom } from './layout';
 import { WebMercatorViewport } from '@math.gl/web-mercator';
@@ -11,6 +11,9 @@ import { usePrevious } from '../utils/state';
 import { useAtom } from 'jotai';
 import { A } from 'hookrouter';
 import { ObservationCard } from './observation';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import mapboxgl from 'mapbox-gl';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 export const Map: React.FC<{
   dustboxAddresses: DustboxFeature[]
@@ -139,6 +142,9 @@ export const Map: React.FC<{
         onViewportChange={setViewport}
         viewportChangeMethod='flyTo'
       >
+        <GeocodeControl position='top-right' accessToken={mapboxApiAccessToken} />
+        <NavigationControl showCompass showZoom position='top-right' />
+        <GeolocateControl position='top-right' />
         <DustboxItems addresses={dustboxAddresses || []} />
         <ObservationItems addresses={observationAddresses || []} />
       </MapGL>
@@ -156,6 +162,31 @@ export const Map: React.FC<{
     </div>
   )
 })
+
+function GeocodeControl ({ position, accessToken }: {
+  accessToken: string,
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right',
+}) {
+  const map: mapboxgl.Map = useContext(MapContext)
+
+  useEffect(() => {
+    const control = new MapboxGeocoder({
+      accessToken,
+      mapboxgl
+    })
+
+    map?.addControl(
+      control,
+      position
+    )
+
+    return () => {
+      map?.removeControl(control)
+    }
+  }, [map, position])
+
+  return null
+}
 
 export const DustboxItems: React.FC<{ addresses: DustboxFeature[] }> = ({ addresses }) => {
   return (

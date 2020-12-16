@@ -118,3 +118,54 @@ form {
     @apply appearance-none p-2 box-border border border-gray-500 rounded-md;
   }
 }
+
+.mapboxgl-ctrl-top-right {
+  @apply mt-6 flex flex-col items-end;
+
+  .mapboxgl-ctrl {
+    @apply my-1 order-2;
+  }
+
+  .mapboxgl-ctrl-geocoder {
+    @apply order-1;
+    width: auto;
+    min-width: 0;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+
+    .mapboxgl-ctrl-geocoder--input {
+      max-width: 0;
+      padding-left: 15px;
+      padding-right: 14px;
+    }
+
+    .mapboxgl-ctrl-geocoder--icon-search {
+      left: 5px;
+    }
+
+    &:hover {
+      max-width: 360px;
+      overflow: visible;
+
+      .mapboxgl-ctrl-geocoder--input {
+        max-width: 100%;
+        padding: 6px 35px;
+      }
+
+      .suggestions {
+        /* Cursor catcher so hover continues */
+        position: relative;
+        &:after {
+          content: '';
+          display: block;
+          opacity: 0;
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          width: 100%;
+          height: 10px;
+        }
+      }
+    }
+  }
+}
