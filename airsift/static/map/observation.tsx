@@ -80,8 +80,8 @@ export function ObservationDetailCard ({ id }: { id: any }) {
 
   return (
     <div className='flex flex-col sm:h-screen overflow-x-hidden'>
-      <div className='px-4 pt-6 pb-5'>
-        <A href='/observations' className='text-midDarker block font-bold font-cousine leading-none'>&larr; All Dustboxes</A>
+      <div className='px-4 pt-4 md:pt-6 pb-4 md:pb-5'>
+        <A href='/observations' className='text-midDarker block font-bold font-cousine leading-none'>&larr; All Observations</A>
       </div>
       <div className='flex-grow overlow-y-auto overflow-x-hidden'>
         <div className='font-cousine text-XS font-bold uppercase flex w-full items-baseline px-4'>

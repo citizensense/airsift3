@@ -56,7 +56,7 @@ export function DustboxDetailCard ({ id }: { id: string }) {
 
   return (
     <div className='flex flex-col sm:h-screen overflow-x-hidden'>
-      <div className='px-4 pt-6 pb-5'>
+      <div className='px-4 pt-4 md:pt-6 pb-4 md:pb-5'>
         <A href='/dustboxes' className='text-midDarker block font-bold font-cousine leading-none'>&larr; All Dustboxes</A>
         <div className='uppercase text-XS font-cousine font-bold mt-5 mb-4 text-softBlack leading-none'>{dustbox?.title || `Dustbox ${id}`}</div>
         <h1 className='text-M font-bold my-4 leading-none'>
