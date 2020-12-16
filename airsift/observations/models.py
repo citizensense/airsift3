@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import CharField, DateTimeField, ForeignKey
 from wagtail.core.models import Page, Orderable, PageRevision
 from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, ObjectList, TabbedInterface
 from django.contrib.gis.db.models import PointField
 from django.contrib.gis.forms import OSMWidget
 from wagtail.images.edit_handlers import ImageChooserPanel
@@ -56,6 +56,12 @@ class Observation(Page):
             for revision in PageRevision.objects.filter(page=self)
         ]))
         return UserSerializer(items, many=True).data
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+        ]
+    )
 
     api_fields = [
         APIRichTextField('body'),

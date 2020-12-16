@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import ForeignKey
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, HelpPanel, MultiFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, HelpPanel, MultiFieldPanel, ObjectList, TabbedInterface
 from wagtail.images.edit_handlers import ImageChooserPanel
 from markdown import markdown
 from modelcluster.fields import ParentalManyToManyField
@@ -503,6 +503,12 @@ In this space you can thank and acknowledge the contributions that different peo
     promote_panels = []
 
     settings_panels = []
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+        ]
+    )
 
     def contributors(self):
         return list(set([
