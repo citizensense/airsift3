@@ -124,6 +124,15 @@ python manage.py collectstatic
 gunicorn config.wsgi:application --bind=136.244.105.217:8001 --bind=[::1]:8001
 ```
 
+#### CMS setup
+To begin there will be mostly nothing.
+
+- Create a `HomePage` page at the root.
+- Configure a `Site` in the Wagtail CMS, and select the `HomePage` you just created as the root page
+- Create three `InteractiveMapPage` with the following slugs: `dustboxes`, `observations` and `analysis`
+- Create a `DataStoryIndex` with the slug `datastories`
+- Create an `InfoPage` with the slug `about`
+
 #### Production commands
 
 ```
