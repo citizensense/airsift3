@@ -32,7 +32,7 @@ text-S font-semibold hoverable;
 .prose {
   @apply text-S text-softBlack;
 
-  p:first-child {
+  &.big-first-paragraph p:first-child {
     @apply text-M text-black;
   }
 }

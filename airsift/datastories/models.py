@@ -11,13 +11,84 @@ from markdown import markdown
 from modelcluster.fields import ParentalManyToManyField
 from wagtailautocomplete.edit_handlers import AutocompletePanel
 from wagtail.core.models import PageRevision
+from wagtailseo.models import SeoMixin, SeoType, TwitterCard
+from django.utils.html import strip_tags
 
-# Create your models here.
-class DataStory(Page):
+class DataStoryIndex(SeoMixin, Page):
+    # Copy
+    summary_text = RichTextField()
+
+    content_panels = Page.content_panels + [
+        FieldPanel('summary_text')
+    ]
+
+    # Editor
+    show_in_menus_default = True
+    promote_panels = SeoMixin.seo_panels
+
+    # SEO
+    seo_content_type = SeoType.WEBSITE
+    seo_twitter_card = TwitterCard.SUMMARY
+    seo_image_sources = [
+        "og_image",
+    ]
+    seo_description_sources = [
+        "search_description",
+        "summary_text",
+    ]
+    @property
+    def seo_description(self) -> str:
+        """
+        Gets the correct search engine and Open Graph description of this page.
+        Override in your Page model as necessary.
+        """
+        for attr in self.seo_description_sources:
+            if hasattr(self, attr):
+                text = getattr(self, attr)
+                if text:
+                    return strip_tags(text)
+        return ""
+
+
+class DataStory(SeoMixin, Page):
     class Meta:
         verbose_name_plural = 'Data Stories'
 
+    # SEO
+    seo_content_type = SeoType.ARTICLE
+    seo_twitter_card = TwitterCard.LARGE
+    seo_description_sources = [
+        "search_description",
+        "introduction_copy",
+        "location_copy",
+        'evidenceofproblem_copy',
+        'characterofproblem_copy',
+        'evidencesummary_copy',
+        'actions_copy',
+        'acknowledgements_copy',
+    ]
+    seo_image_sources = [
+        "og_image",
+        "feature_image",
+    ]
+
+    @property
+    def seo_description(self) -> str:
+        """
+        Gets the correct search engine and Open Graph description of this page.
+        Override in your Page model as necessary.
+        """
+        for attr in self.seo_description_sources:
+            if hasattr(self, attr):
+                text = getattr(self, attr)
+                if text:
+                    return strip_tags(text)
+        return ""
+
+    # Editor
     show_in_menus_default = True
+
+    # Copy
     feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+', blank=True, null=True)
     location_name = CharField(max_length=500, blank=True, null=True, verbose_name='The general location or area this report covers')
     date_from = DateField(blank=True, null=True, verbose_name='Beginning of report timespan')

@@ -5,13 +5,12 @@
 {% block content %}
   <div>
     <div class='px-4 mb-4 md:w-1/2'>
-      <h1 class='text-M font-bold mb-2'>Data Stories</h1>
-      <p class='text-S'>
-        Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in an area.
-      </p>
-      <p class='text-S'>
-        They group together multiple forms of evidence that might include citizen data, regulatory data, weather data, local observations and other kinds of visual and auditory media.
-      </p>
+      <h1 class='text-M font-bold mb-2'>
+        {{ page.title }}
+      </h1>
+      <div class='prose text-S'>
+        {{ page.summary_text|richtext }}
+      </div>
       <a href="/user_action_redirect/create_datastory" class='button-grey my-4'>
         + Add a Data Story
       </a>

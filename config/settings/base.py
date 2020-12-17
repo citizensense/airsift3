@@ -83,7 +83,9 @@ THIRD_PARTY_APPS = [
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
     'wagtail.embeds',
-    'wagtail.sites',
+    "wagtailseo",
+    "wagtail.contrib.settings",
+    "wagtail.sites",
     'wagtail.users',
     'wagtail.snippets',
     'wagtail.documents',
@@ -216,6 +218,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "airsift.utils.context_processors.settings_context",
+                "wagtail.contrib.settings.context_processors.settings",
             ],
         },
     }

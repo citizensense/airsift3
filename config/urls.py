@@ -27,12 +27,6 @@ urlpatterns = [
     path('cms/', include(wagtailadmin_urls)),
     path('', include('users.urls')),
     path("accounts/", include("allauth.urls")),
-    # Feature URLS
-    re_path(r'^analysis', views.dustboxes),
-    path('', include('dustboxes.urls')),
-    path('', include('observations.urls')),
-    path('', include('datastories.urls')),
-    path('', views.dustboxes),
     # Content serve URLS
     path('documents/', include(wagtaildocs_urls)),
     path('', include(wagtail_urls)),
