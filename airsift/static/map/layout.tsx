@@ -46,7 +46,7 @@ export function Root ({
 
 function DragHandle ({ classname = '' }: { classname?: string }) {
   return (
-    <hr className={`border-mid border-2 rounded-lg mx-auto w-6 max-w-full opacity-70 ${classname}`} />
+    <hr className={`border-mid border-2 rounded-lg mx-auto w-6 max-w-full opacity-70 ${classname} md:hidden`} />
   )
 }
 
