@@ -17,9 +17,9 @@ import { AnalysisView } from './analysis';
 const routes = {
   '/analysis*': () => ({ root: AnalysisView }),
   '/': () => ({ root: MapLayout, homePageURLParam: true }),
-  '/dustboxes/inspect/:dustboxIdURLParam': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ root: MapLayout, dustboxIdURLParam }),
+  '/dustboxes/inspect/:dustboxIdURLParam*': ({ dustboxIdURLParam }: { dustboxIdURLParam: string }) => ({ root: MapLayout, dustboxIdURLParam }),
   '/dustboxes*': () => ({ root: MapLayout, listDusboxesURLParam: true }),
-  '/observations/inspect/:observationIdURLParam': ({ observationIdURLParam }: { observationIdURLParam: string }) => ({ root: MapLayout, observationIdURLParam }),
+  '/observations/inspect/:observationIdURLParam*': ({ observationIdURLParam }: { observationIdURLParam: string }) => ({ root: MapLayout, observationIdURLParam }),
   '/observations*': () => ({ root: MapLayout, listObservationsURLParam: true }),
   '*': () => ({ root: MapLayout, homePageURLParam: true }),
 }
