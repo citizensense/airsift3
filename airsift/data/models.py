@@ -1,3 +1,4 @@
+from airsift.utils.models import TweakedSeoMixin
 from django.db import models
 from django.contrib.gis.db.models import PointField
 from wagtail.api import APIField
@@ -43,7 +44,7 @@ class Dustbox(models.Model):
         )
         return page
 
-class DustboxPage(SeoMixin, Page):
+class DustboxPage(TweakedSeoMixin, Page):
     template = 'dustboxes/interactive_map_page.html'
     seo_content_type=SeoType.ARTICLE
 

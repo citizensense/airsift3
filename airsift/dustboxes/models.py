@@ -1,3 +1,4 @@
+from airsift.utils.models import TweakedSeoMixin
 from airsift.data.models import Dustbox, DustboxPage
 from airsift.observations.models import Observation
 from django.db.models.fields import CharField
@@ -11,7 +12,7 @@ from wagtailseo.models import SeoMixin, SeoType, TwitterCard
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from django.core.handlers.wsgi import WSGIRequest
 
-class InteractiveMapPage(RoutablePageMixin, SeoMixin, Page):
+class InteractiveMapPage(RoutablePageMixin, TweakedSeoMixin, Page):
     # Copy
     feature_image = feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+', blank=True, null=True)
     summary_text = CharField(max_length=300)

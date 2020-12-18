@@ -1,3 +1,4 @@
+from airsift.utils.models import TweakedSeoMixin
 from typing import Optional
 from airsift.observations.serializers import APIRichTextField, LocationSerializer, UserSerializer
 from django.db import models
@@ -20,7 +21,7 @@ from django.shortcuts import redirect
 from wagtailseo.models import SeoMixin, SeoType, TwitterCard, AbstractImage
 from django.utils.html import strip_tags
 
-class Observation(SeoMixin, Page):
+class Observation(TweakedSeoMixin, Page):
     # Copy
     body = RichTextField(blank=True, null=True)
     observation_type = ForeignKey('observations.ObservationType', on_delete=models.DO_NOTHING, related_name='+')

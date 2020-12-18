@@ -1,3 +1,4 @@
+from airsift.utils.models import TweakedSeoMixin
 from django.db.models.fields import CharField
 from django.db.models.fields.related import ForeignKey
 from wagtail.admin.edit_handlers import FieldPanel
@@ -7,7 +8,7 @@ from django.db import models
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtailseo.models import SeoMixin, SeoType, TwitterCard
 
-class HomePage(SeoMixin, Page):
+class HomePage(TweakedSeoMixin, Page):
     template = 'dustboxes/interactive_map_page.html'
 
     def get_active():
@@ -17,7 +18,7 @@ class HomePage(SeoMixin, Page):
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
 
-class InfoPage(SeoMixin, Page):
+class InfoPage(TweakedSeoMixin, Page):
     # SEO
     seo_content_type = SeoType.ARTICLE
     seo_twitter_card = TwitterCard.SUMMARY

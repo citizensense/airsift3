@@ -1,3 +1,4 @@
+from airsift.utils.models import TweakedSeoMixin
 from django import forms
 from django.db.models.fields import BooleanField, CharField, DateField, Field
 from airsift.datastories.forms import MultipleChoiceModel, create_choices
@@ -14,7 +15,7 @@ from wagtail.core.models import PageRevision
 from wagtailseo.models import SeoMixin, SeoType, TwitterCard
 from django.utils.html import strip_tags
 
-class DataStoryIndex(SeoMixin, Page):
+class DataStoryIndex(TweakedSeoMixin, Page):
     # Copy
     summary_text = RichTextField()
 
@@ -50,7 +51,7 @@ class DataStoryIndex(SeoMixin, Page):
         return ""
 
 
-class DataStory(SeoMixin, Page):
+class DataStory(TweakedSeoMixin, Page):
     class Meta:
         verbose_name_plural = 'Data Stories'
 

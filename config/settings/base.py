@@ -106,11 +106,12 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "airsift.data",
-    "airsift.users.apps.UsersConfig",
-    "airsift.home.apps.HomeConfig",
-    "airsift.dustboxes.apps.DustboxesConfig",
-    "airsift.observations.apps.ObservationsConfig",
-    "airsift.datastories.apps.DatastoriesConfig",
+    "airsift.utils",
+    "airsift.users",
+    "airsift.home",
+    "airsift.dustboxes",
+    "airsift.observations",
+    "airsift.datastories",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
