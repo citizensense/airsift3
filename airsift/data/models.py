@@ -67,7 +67,7 @@ class Dustbox(models.Model):
         zoom = 12.5
         bearing = 0
         pitch = 0
-        width = 600
+        width = 250
         height = width
 
         params = {
@@ -121,16 +121,13 @@ class DustboxPage(TweakedSeoMixin, Page):
             return
         url = self.related_dustbox.static_map_marker_image_url()
         # Download data from url (requires `requests` module.  Can also be done with urllib)
-        print('✅', url)
         response = requests.get(url)
         # Set icon field (ImageField) to binary file
         # image = UploadedFile(BytesIO(response.content))
-        print(response)
         image = Image(
             file=ImageFile(BytesIO(response.content), name=f'{urllib.parse.quote(url)}.png'),
             title=f'Generated map thumbnail for Dustbox {self.slug}'
         )
-        print(image)
         image.save()
         self.map_image = image
 
