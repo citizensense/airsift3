@@ -205,7 +205,6 @@ class DataStory(SeoMixin, Page):
     related_dustboxes = ParentalManyToManyField(
         'data.Dustbox',
         blank=True,
-        null=True,
         verbose_name='Are there any Airsift Dustboxes monitoring this area?'
     )
 
@@ -267,7 +266,6 @@ class DataStory(SeoMixin, Page):
     related_observations = ParentalManyToManyField(
         'observations.Observation',
         blank=True,
-        null=True,
         verbose_name='Are there any local observations on Airsift from the monitoring period (and before)'
     )
 

@@ -35,7 +35,7 @@ urlpatterns = [
     re_path(r'^admin/logout/$', capture_logout),
     path(settings.ADMIN_URL, admin.site.urls),
     # User management URLs
-    path("users/", include("airsift.users.urls", namespace="users")),
+    path("users/", include("airsift.users.urls", namespace="airsift-users")),
     # Content serve URLS
     path('documents/', include(wagtaildocs_urls)),
     path('', include(wagtail_urls)),

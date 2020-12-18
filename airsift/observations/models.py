@@ -29,7 +29,6 @@ class Observation(SeoMixin, Page):
     related_dustboxes = ParentalManyToManyField(
         'data.Dustbox',
         blank=True,
-        null=True,
         verbose_name='Are there any Airsift Dustboxes monitoring this area?'
     )
 
