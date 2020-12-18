@@ -114,7 +114,7 @@ class DustboxPage(TweakedSeoMixin, Page):
 
     @property
     def seo_canonical_url(self) -> str:
-        return f'{self.get_site().root_url}/dustboxes/inspect/{self.id}'
+        return f'{self.get_site().root_url}/dustboxes/inspect/{self.slug}'
 
     def generate_map_thumbnail(self):
         if self.related_dustbox is None:
