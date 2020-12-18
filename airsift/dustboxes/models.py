@@ -16,14 +16,13 @@ class InteractiveMapPage(RoutablePageMixin, SeoMixin, Page):
     feature_image = feature_image = ForeignKey('wagtailimages.image', on_delete=models.DO_NOTHING, related_name='+', blank=True, null=True)
     summary_text = CharField(max_length=300)
 
+    # Editor
+    show_in_menus_default = True
+    promote_panels = SeoMixin.seo_panels
     content_panels = Page.content_panels + [
         ImageChooserPanel('feature_image'),
         FieldPanel('summary_text')
     ]
-
-    # Editor
-    show_in_menus_default = True
-    promote_panels = SeoMixin.seo_panels
 
     # SEO
     seo_content_type = SeoType.WEBSITE

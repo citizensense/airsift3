@@ -29,6 +29,8 @@ services:
       - production_postgres_data_backups:/backups:z
     env_file:
       - ./.env
+    ports:
+      - "0.0.0.0:5432:5432"
 
   traefik:
     restart: always
@@ -40,6 +42,7 @@ services:
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
+      - "0.0.0.0:5432:5432"
 
   nginx:
     restart: always
