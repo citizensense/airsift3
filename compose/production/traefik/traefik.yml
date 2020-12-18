@@ -10,10 +10,6 @@ entryPoints:
     # https
     address: ":443"
 
-  postgres:
-    # postgres
-    address: ":5432"
-
 certificatesResolvers:
   letsencrypt:
     # https://docs.traefik.io/master/https/acme/#lets-encrypt
