@@ -237,11 +237,12 @@ export const DustboxMapMarker: React.FC<{ dustbox: DustboxFeature }> = memo(({ d
             border: 'none',
             boxShadow: 'none'
           }}>
-            <div
-              className='p-2 rounded-lg'
+            <A
+              href={`/dustboxes/inspect/${dustbox.properties.id}`}
+              className='block p-2 rounded-lg'
               style={{ background: airQualityColour(dustboxReadingValue) }}>
               <DustboxCard dustbox={dustbox.properties} />
-            </div>
+            </A>
         </Popup>
       )}
     </Fragment>
@@ -283,9 +284,11 @@ export const ObservationMapMarker: React.FC<{ observation: ObservationFeature }>
           latitude={observation?.geometry?.coordinates[1]}
           offset={20}
         >
-          <div className='p-2 rounded-lg bg-white'>
+          <A
+            href={`/observations/inspect/${observation.properties.id}`}
+            className='block p-2 rounded-lg bg-white'>
             <ObservationCard observation={observation.properties} />
-          </div>
+          </A>
         </Popup>
       )}
     </Fragment>
