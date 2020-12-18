@@ -52,8 +52,11 @@ class InteractiveMapPage(RoutablePageMixin, TweakedSeoMixin, Page):
                 child_page = DustboxPage.objects.get(slug=id)
             except:
                 try:
-                    dustbox = Dustbox.objects.get(id=id).get_page_representation(self.get_site())
-                    dustbox.og_image = self.feature_image
+                    dustbox = Dustbox.objects.get(id=id).get_page_representation()
+                    try:
+                        dustbox.generate_map_thumbnail()
+                    except:
+                        dustbox.og_image = self.feature_image
                     self.add_child(instance=dustbox)
                     child_page = DustboxPage.objects.get(slug=id)
                 except:
