@@ -133,7 +133,7 @@ class DataStory(TweakedSeoMixin, Page):
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
     )
 
-    # * Are there any plans to change the use of the land in the future? (select multiple) <br>
+    # * Are there any plans to change land use in the future? (select multiple) <br>
     landuse_changes_planned_choices = create_choices(
         'Residential developments',
         'Industrial developments',
@@ -142,7 +142,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
     landuse_changes_planned_options = MultipleChoiceModel(
         choices=landuse_changes_planned_choices,
-        verbose_name='Are there any plans to change the use of the land in the future? (select multiple)'
+        verbose_name='Are there any plans to change the land use in the future? (select multiple)'
     )
 
     # Green space
