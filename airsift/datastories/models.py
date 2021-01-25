@@ -124,7 +124,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
     landuse_options = MultipleChoiceModel(
         choices=landuse_choices,
-        verbose_name='Are there any plans to change the use of the land in the future? (select multiple)'
+        verbose_name='How is the land currently being used? (select multiple)'
     )
 
     landuse_description = RichTextField(
