@@ -113,89 +113,10 @@ class DataStory(TweakedSeoMixin, Page):
         verbose_name='Write page section'
     )
 
-    # Land use
-
-    # * How is the land currently being used? (select multiple)  <br>
-    landuse_choices = create_choices(
-        'Residential',
-        'Retail',
-        'Industry',
-        'Agriculture',
-    )
-    landuse_options = MultipleChoiceModel(
-        choices=landuse_choices,
-        verbose_name='How is the land currently being used? (select multiple)'
-    )
-
-    landuse_description = RichTextField(
-        blank=True,
-        null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
-    # * Are there any plans to change land use in the future? (select multiple) <br>
-    landuse_changes_planned_choices = create_choices(
-        'Residential developments',
-        'Industrial developments',
-        'Development of green space',
-        'Development of retail sites',
-    )
-    landuse_changes_planned_options = MultipleChoiceModel(
-        choices=landuse_changes_planned_choices,
-        verbose_name='Are there any plans to change the land use in the future? (select multiple)'
-    )
-
-    # Green space
-
-    # * What kinds of public green space are in the area? [Y/N] <br>
-    green_spaces_choices = create_choices(
-        'Parks',
-        'Nature reserve',
-        'Woods or Forest',
-    )
-    green_spaces_options = MultipleChoiceModel(
-        choices=green_spaces_choices,
-        verbose_name='What kinds of public green space are in the area?'
-    )
-
-    # * Describe the available green space in further detail [small free text] <br>
-    green_space_description = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
-    # **Anthropogenic Activity**
-    # Note the kinds of human activity that take place on the land.
-
-    # * Industrial activity [Y/N]
-    industrial_activity = BooleanField(blank=True, null=True)
-
-    # * Describe this: [short free text].
-    industrial_activity_description = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
-    # * Waste disposal, recycling plants [Y/N]
-    waste_disposal = BooleanField(blank=True, null=True)
-    # * Describe this: [short free text].
-    waste_disposal_description = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
-    # * Agriculture [Y/N]
-    agriculture = BooleanField(blank=True, null=True)
-    # * Describe this: [short free text].
-    agriculture_description = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
     # Local sources of particle pollution
-    # Look at the area on the Airsift map. Here, add any possible sources of pollution. This will relate to the land use mentioned above, and might include transport, waste, industry as appropriate for the area. Include a snapshot of this map in your data story.
+    # Look at the area on the Airsift map. In the section below, describe land use in the area and list possible sources of local and regional pollution. This might include transport, waste, industry, agriculture, construction, residential areas or greenspace. Identify whether there are Dustboxes and other monitors in the area. Include a map in your data story.
 
-    # How might these sources impact local air-quality and what are the specific sources? [medium free text]
+    # What are possible air pollution sources and how might they impact air quality? [medium free text]
     impacting_sources_of_pollution_description = RichTextField(
         blank=True, null=True,
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
@@ -215,11 +136,7 @@ class DataStory(TweakedSeoMixin, Page):
         'Garden',
         'Indoors',
     )
-    dustbox_location_options = MultipleChoiceModel(
-        choices=dustbox_location_choices,
-        verbose_name='What kinds of public green space are in the area?'
-    )
-
+    
     # * Are there other citizen or regulatory monitors in your area? [Y/N]
     nearby_monitors_exists = BooleanField(blank=True, null=True)
 
@@ -232,34 +149,9 @@ class DataStory(TweakedSeoMixin, Page):
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
     )
 
-    # What regional sources of air pollution impact your local area?
-    regional_pollution_choices = create_choices(
-        'Agricultural',
-        'Industrial',
-        'Wildfire',
-        'Volcanic'
-    )
-    regional_pollution_options = MultipleChoiceModel(
-        choices=regional_pollution_choices,
-        verbose_name='What regional sources of air pollution impact your local area? '
-    )
-    regional_pollution_sources_description = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
-    )
-
     # **Observations**
-    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the Airsift platform [link] and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
+    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
     # Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
-
-    # Community Discussion
-    # * Did your community identify any observations based on your discussions? [Y/N]
-    # * Did your community identify any observations based on your discussions? [long text field].
-    community_observations = RichTextField(
-        blank=True, null=True,
-        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
-        verbose_name='Did your community identify any observations based on your discussions?'
-    )
 
     # From Airsift
     # * Are there any local observations on Airsift from the monitoring period (and before) [Y/N].
@@ -271,7 +163,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
 
     '''
-    Section 2: Is there evidence?
+    Section 2: Is There Evidence of a Problem?
     '''
     evidenceofproblem_copy = RichTextField(
         blank=True, null=True,
@@ -280,7 +172,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
 
     '''
-    Section 3: Character of Problem
+    Section 3: Characterizing the Problem
     '''
     characterofproblem_copy = RichTextField(
         blank=True, null=True,
@@ -289,7 +181,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
 
     '''
-    Section 4: Drawing it all together
+    Section 4: Drawing the Evidence Together
     '''
     evidencesummary_copy = RichTextField(
         blank=True, null=True,
@@ -319,23 +211,26 @@ class DataStory(TweakedSeoMixin, Page):
         HelpPanel(markdown('''
 # What is a Data Story?
 
-Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in your area. You can group together multiple forms of evidence that might include citizen data, regulatory data, weather data, local observations and other kinds of visual and auditory media. Monitoring studies normally start from a series of questions that you want to ask about your local air quality. For more guidance on this, please refer to the AirKit Logbook [link to section]. You may have also identified different sources of data to identify possible sources of pollution and develop actions for improving local air quality. This guide will assist you in writing a Data Story on Airsift.
+Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in your area. This guide will assist you in writing a Data Story on Airsift. You can group together multiple forms of evidence that could include citizen data, regulatory data, weather data, local observations, maps and other kinds of visual and auditory media. Monitoring studies normally start from a series of questions that you want to ask about your local air quality. For more guidance on setting up an air quality study, please refer to the [AirKit Logbook](https://github.com/citizensense/AirKit_Logbook/blob/main/README.md). 
 
 # Writing Your Data Story
 
-Writing a Data Story is a detailed and collaborative process that will likely require several iterations and revisions. The instructions below can act as a guideline to help you structure and complete a Data Story based on citizen data. You can see this structure in action by browsing these [link] published Data Stories. It can be helpful to include images of your local area in the data story to illustrate the landscape, highlight visible pollution and activity, or demonstrate how and where sensors are installed.
+Writing a Data Story is a detailed and collaborative process that will likely require several iterations and revisions. The instructions below can act as a guideline to help you structure and complete a Data Story using citizen data and other forms of evidence. You can see this structure in action by browsing our [Covid Data Stories](https://datastories-covid.citizensense.net/). It can be helpful to include images of your local area in the data story to illustrate the landscape, highlight possible pollution sources, and demonstrate how and where sensors are installed.
 
-1. Select a title for your story, keeping it simple, short and descriptive.
-2. Click the sections below and follow the instructions to fill out the story.
-3. Using the tool-bar you can add simple formatting to text (i.e. bold, italics etc.), add links to other media, and insert images and tables.
-4. You can upload images from your computer or copy and paste plots from Analytics.
-5. You can save your progress by selecting 'save draft', in the menu next to the 'publish'
-6. You can [view and read published data stories here](/datastories)
+1. Create an account by clicking "Sign In" and following the instructions to register.
+2. Navigate to "Stories" in the top right-hand menu, and click "+Add a Data Story."
+3. Create a title for your story, keeping it simple, short and descriptive.
+4. Click the sections below numbered 0 to 5 and follow the instructions to write your story. You can follow these instructions as closely or loosely as suits your study.
+5. Use the toolbar to add simple formatting to your text (i.e., bold, italics etc.), add links to other media, and insert images and tables.
+6. Upload images from your computer, or copy and paste plots from [Airsift Analysis](https://airsift.citizensense.net/analysis/).
+7. Save your progress by selecting "Save Draft," on the bottom menu marked "Publish."
+8. When you are ready to publish your Data Story, click "Publish." The story will be sent for moderation before publication.
+9. You can [view and read published Data Stories here](/datastories)
         '''), classname='markdown'),
         MultiFieldPanel(
             [
                 HelpPanel(markdown('''
-At the start of the data story, it is useful to give a summary of the key findings and the data used in your Data Story. This section should be short at around 1–2 paragraphs.
+At the start of the data story, it is useful to give a summary of the key findings and the data used in your Data Story. This section should be short, or around 1–2 paragraphs.
                 '''), classname='markdown help-compact'),
                 ImageChooserPanel('feature_image'),
                 FieldRowPanel([
