@@ -249,9 +249,17 @@ class DataStory(TweakedSeoMixin, Page):
     )
 
     # **Observations**
-    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
-    
+    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the Airsift platform [link] and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
     # Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+
+    # Community Discussion
+    # * Did your community identify any observations based on your discussions? [Y/N]
+    # * Did your community identify any observations based on your discussions? [long text field].
+    community_observations = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        verbose_name='Did your community identify any observations based on your discussions?'
+    )
 
     # From Airsift
     # * Are there any local observations on Airsift from the monitoring period (and before) [Y/N].
@@ -577,4 +585,3 @@ In this space you can thank and acknowledge the contributions that different peo
             revision.user
             for revision in PageRevision.objects.filter(page=self)
         ]))
-
