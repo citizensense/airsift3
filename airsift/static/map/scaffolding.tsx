@@ -8,6 +8,8 @@ export const Footer = () => {
       </a>
       <a href='https://citizensense.net/about/contact/'>Contact</a>
       <a className='ml-3' href='https://citizensense.net/about/terms/'>Terms &amp; Conditions</a>
+      <br />
+      <a href='https://commonknowledge.coop'>Site by Common Knowledge</a>
     </div>
   )
 }
