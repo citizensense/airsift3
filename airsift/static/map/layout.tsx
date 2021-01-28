@@ -145,7 +145,7 @@ export function MapLayout ({
                 {
                   url: '/dustboxes',
                   name: "Dustboxes",
-                  description: 'Particulate matter sensors designed by Citizen Sense to measure and compare air quality.',
+                  description: 'Review Dustbox data on particulate matter levels and check air quality measurements.',
                   imageURL: "/static/images/Sidebar/Home/dustboxes.png"
                 },
                 {
