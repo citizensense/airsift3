@@ -1,6 +1,6 @@
 # Airsift
 
-Version 3 of the Airsift citizen-data air-quality platform. Part of the AirKit toolkit by Citizen Sense.
+Version 3 of the Airsift citizen-data air-quality platform. Part of the [AirKit](https://citizensense.net/projects/airkit/) toolkit by [Citizen Sense](https://citizensense.net/).
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
