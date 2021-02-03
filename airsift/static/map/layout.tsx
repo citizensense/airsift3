@@ -137,7 +137,7 @@ export function MapLayout ({
             <div className='px-4 mb-4 pt-4 md:pt-6'>
               <DragHandle classname='mb-3' />
               <p className='text-S my-2'>Air pollution is a planetary health emergency. Air quality monitors are not always located where air pollution is occurring, and citizens might have many reasons to gather data to document and analyze air quality.</p>
-              <p className='text-S'><b>Airsift</b> is a platform to analyze citizen data. It is developed as part of the AirKit tookit that provides resources for you to set up a citizen-led monitoring project to keep track of air quality in your area.</p>
+              <p className='text-S'><b>Airsift</b> is a platform to analyze citizen data. It is developed as part of the [AirKit tookit](https://citizensense.net/kits/airkit/) that provides resources for you to set up a citizen-led monitoring project to keep track of air quality in your area.</p>
             </div>
             <hr className='border-brand mx-4' />
             <div>
