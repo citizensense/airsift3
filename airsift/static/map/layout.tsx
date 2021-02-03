@@ -212,7 +212,7 @@ export function MapLayout ({
             <div className='px-4 mb-4 pt-4 md:pt-6'>
               <DragHandle classname='mb-3' />
               <h1 className='text-M font-bold mb-2'>Observations</h1>
-              <p className='text-S my-4'>Document and map pollution or other environmental events. You can compare observations to Dustbox data, and incorporate this evidence into Data Stories.</p>
+              <p className='text-S my-4'>Document and map pollution and other environmental events. You can compare observations to Dustbox data, and incorporate this evidence into Data Stories.</p>
               <a className='button-grey mb-4' href='/user_action_redirect/create_observation'>
                 + Add an Observation
               </a>
