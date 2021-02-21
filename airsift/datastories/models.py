@@ -438,10 +438,9 @@ In this section, describe regional pollution sources for your area. Regional sou
                 # O
                 HelpPanel(markdown('''
 # Observations
-In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
+In this section, note any key observations from the monitoring period (and before). Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
 
-
-Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. 
 
 ## Community Discussion
                 '''), classname='help-compact markdown'),
@@ -463,23 +462,22 @@ Observations might include unpleasant smells, sources of noise and visible sourc
         MultiFieldPanel(
             [
                 HelpPanel(markdown('''
-This section can be adapted from existing story text to fit the context of your monitoring study. This includes a paragraph that explains what is meant by the Dustbox 2.0 device being an "indicative" monitor.
+This section can be adapted from to fit the context of your monitoring study. You can include an explanation that by the Dustbox 2.0 are similar devices are an "indicative" monitor, rather than regulatory station.
 
-Here you should note any co-location activity of the monitors (before, after or ideally both) and the findings of this.
+Here you can note whether you co-located monitors (before, after or ideally both), and your findings.
 
-Note that whilst the World Health Organisation has established guidelines on PM2.5 exposure there is not safe level.
+Note that while the World Health Organisation has established outdoor air quality guidelines for PM2.5, there is no safe level of exposure.
 
 ## How to establish evidence of elevated pollution
 
 To establish whether there is evidence of elevated pollution in your area, you can follow these steps:
 
-* Create a **line plot** for each Dustbox in your area for the monitoring period with 24 h mean.
+* Create a [line plot](airsift.citizensense.net/analysis/) for each Dustbox in your study area, selecting the monitoring period and mean.
 * Review the peaks and baseline of the data.
 * Are the World Health Organisation or local air-quality guidelines regularly breached?
-* Is there any other data/information from your local authority or other monitoring projects that support this finding?
-* You can also compare the data you have collected to other monitors for this period.
-* If there are ambient monitors (those away from the roadside), you can compare and see if peaks are caused by local or regional sources of pollution.
-* If pollution is local you will see a spike in your monitor where the ambient monitor is flat. If it is regional you will see similar peaks and troughs in both monitors.
+* You can also compare the data you have collected to other monitors for this period, to see if other monitoring projects support your findings.
+* You can compare different monitors--including background and roadside--to see if peaks are caused by local or regional sources of pollution.
+* If pollution is local to your monitor, you will likely see a spike in your data in comparison to the background monitor. If pollution is regional, you will likely see similar peaks and troughs in comparison datasets.
                 '''), classname='markdown help-compact'),
                 FieldPanel('evidenceofproblem_copy', classname="full"),
             ],
@@ -494,13 +492,13 @@ In this section you can use Airsift to identify the times of day and weather con
 ## When is the source most evident?
 **Time plots** can be used to analyze the times when pollution levels are most frequently elevated. Time plots aggregate PM2.5 concentrations according to time to indicate:
 
-* Key patterns such as rush hours and traffic.
+* Key patterns such as rush hour and traffic.
 * Possible construction or industry sources.
 * Regional pollution events due to seasonal variation
 
-Create a plot for each of the Dustboxes in your monitoring study. Look for peaks across weekdays and weekends. If traffic is a source of pollution, you would expect to see peaks at times of increased congestion i.e. the morning and evening rush hour.
+Create a plot for each of the Dustboxes in your monitoring study. Look for peaks across weekdays and weekends. If traffic is a source of pollution, you would expect to see peaks at times of increased congestion, i.e., the morning and evening rush hour.
 
-When you look at each plot consider how the Dustbox installation could impact the data. Dustboxes that are close to the roadside will often see higher peaks at rush hour. Those in the garden might show peaks at different times, for example barbecues on Sunday afternoons.
+When you look at each plot consider how the Dustbox installation could impact the data. Dustboxes that are close to the roadside will often register higher peaks at rush hour. Monitors located in background locations such as gardens might show peaks at different times, for example barbecues on Sunday afternoons.
 
 ## Which direction is PM2.5 coming from?
 
