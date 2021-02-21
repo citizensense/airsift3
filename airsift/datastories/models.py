@@ -500,24 +500,6 @@ Create a plot for each of the Dustboxes in your monitoring study. Look for peaks
 
 When you look at each plot consider how the Dustbox installation could impact the data. Dustboxes that are close to the roadside will often register higher peaks at rush hour. Monitors located in background locations such as gardens might show peaks at different times, for example barbecues on Sunday afternoons.
 
-## Which direction is PM2.5 coming from?
-
-**Scatter Plots of PM2.5 Concentrations and Wind Direction** can be used to gauge the location of emissions sources in relation to the Dustbox monitors. Particulate matter is carried by the wind from emissions sources to the monitoring area. Wind direction is given in degrees where 0 (o) is North and 180 (o) is South. Note the directions where the highest levels of pollution are recorded.
-
-**Polar plots** can also illustrate this relationship. Colour contours reflect pollutant concentrations in relation to wind direction and wind speed. Calm conditions (zero wind) are shown in the centre, increasing up to 20 metres per second (ms-1) at the outer ring. The highest mean concentrations are shown in red, the lowest are in blue, in a dynamic scale.
-
-* Look for patterns in the polar plots, are they similar across the different monitors?
-* Where are the highest levels of pollutants coming from?
-* Look at the satellite map and see if you can see any possible sources of these emissions.
-
-## Under which weather conditions are PM2.5 levels most evident?
-
-**Scatter Plots of PM2.5 Concentrations and Wind Speed** can be used to understand the relationship between wind speed and PM2.5 to identify if elevated levels are present at low winds, thereby indicating possible local emission source(s).
-
-**Scatter Plots of PM2.5 Concentrations and Temperature** can be used to check if there is a positive or negative correlation between temperature and PM2.5. This can help in understanding the seasonal variation of PM2.5 with respect to temperature.
-
-**Scatter Plots of PM2.5 Concentrations and Humidity** can be used to illustrate the relationship between PM2.5 and humidity. During high humidity, there would be fewer occurrences of wind-blown dust.
-
 ## Write up
                 '''), classname='markdown help-compact'),
                 FieldPanel('characterofproblem_copy', classname="full"),
@@ -528,7 +510,7 @@ When you look at each plot consider how the Dustbox installation could impact th
         MultiFieldPanel(
             [
                 HelpPanel(markdown('''
-This section brings together a bullet point list that summarises all the evidence presented throughout the previous sections.
+This section brings together a summary of all the evidence presented in the previous sections.
 
 * Summarise the sources of data that have been used in the study.
 * Draw out the key findings of your analysis and observations to identify key sources of pollution.
@@ -542,13 +524,11 @@ This section brings together a bullet point list that summarises all the evidenc
         MultiFieldPanel(
             [
                 HelpPanel(markdown('''
-Actions are recommendations for things that can be done to improve local air-quality and to mitigate the effects of pollution. The process of developing actions should be in dialogue with your community and through engagement with local policy and planning around infrastructure, development and industry. Consider what the main sources of pollution are and what kinds of actions would help improve air quality. It is likely that actions relating to a combination of these would improve your local air quality. This could be related to: traffic and transport; construction and development; green infrastructure; air quality monitoring; waste management; industry and/or agriculture.
-
-For each source of pollution or intervention, investigate local policy and planning. Here you should consider ways in which existing policies or plans could be extended to improve air quality. For example:
+Actions are recommendations for things that can be done to improve local air-quality and to mitigate the effects of pollution. The process of developing actions should be in dialogue with your community and through engagement with local policy and planning around infrastructure, development and industry. Consider what the main sources of pollution are and what kinds of actions would help improve air quality. This could be related to: traffic and transport; construction and development; green infrastructure; air quality monitoring; waste management; industry and/or agriculture. Example actions could include:
 
 * The local council may have plans to improve cycling infrastructure. The findings of your data story might highlight the need to extend this to a wider area.
 * Your monitoring might identify an area where a green screen could notably improve air quality at a key community site.
-* Your study might determine a potential source of pollution that requires further and more focussed monitoring.
+* Your study might determine a potential source of pollution that requires further and more focused monitoring.
 '''), classname='markdown help-compact'),
                 FieldPanel('actions_copy', classname="full"),
             ],
