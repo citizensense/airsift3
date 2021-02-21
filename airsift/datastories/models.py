@@ -249,8 +249,9 @@ class DataStory(TweakedSeoMixin, Page):
     )
 
     # **Observations**
-    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the Airsift platform [link] and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
-    # Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+    # In this section, note any key observations from the monitoring period (and before). Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.         
+    
+    # Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. 
 
     # Community Discussion
     # * Did your community identify any observations based on your discussions? [Y/N]
@@ -500,7 +501,6 @@ Create a plot for each of the Dustboxes in your monitoring study. Look for peaks
 
 When you look at each plot consider how the Dustbox installation could impact the data. Dustboxes that are close to the roadside will often register higher peaks at rush hour. Monitors located in background locations such as gardens might show peaks at different times, for example barbecues on Sunday afternoons.
 
-## Write up
                 '''), classname='markdown help-compact'),
                 FieldPanel('characterofproblem_copy', classname="full"),
             ],
