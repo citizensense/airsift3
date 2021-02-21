@@ -133,6 +133,65 @@ class DataStory(TweakedSeoMixin, Page):
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
     )
 
+    # * Are there any plans to change land use in the future? (select multiple) <br>
+    landuse_changes_planned_choices = create_choices(
+        'Residential developments',
+        'Industrial developments',
+        'Development of green space',
+        'Development of retail sites',
+    )
+    landuse_changes_planned_options = MultipleChoiceModel(
+        choices=landuse_changes_planned_choices,
+        verbose_name='Are there any plans to change the land use in the future? (select multiple)'
+    )
+
+    # Green space
+
+    # * What kinds of public green space are in the area? [Y/N] <br>
+    green_spaces_choices = create_choices(
+        'Parks',
+        'Nature reserve',
+        'Woods or Forest',
+    )
+    green_spaces_options = MultipleChoiceModel(
+        choices=green_spaces_choices,
+        verbose_name='What kinds of public green space are in the area?'
+    )
+
+    # * Describe the available green space in further detail [small free text] <br>
+    green_space_description = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
+    )
+
+    # **Anthropogenic Activity**
+    # Note the kinds of human activity that take place on the land.
+
+    # * Industrial activity [Y/N]
+    industrial_activity = BooleanField(blank=True, null=True)
+
+    # * Describe this: [short free text].
+    industrial_activity_description = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
+    )
+
+    # * Waste disposal, recycling plants [Y/N]
+    waste_disposal = BooleanField(blank=True, null=True)
+    # * Describe this: [short free text].
+    waste_disposal_description = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
+    )
+
+    # * Agriculture [Y/N]
+    agriculture = BooleanField(blank=True, null=True)
+    # * Describe this: [short free text].
+    agriculture_description = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
+    )
+
     # Local sources of particle pollution
     # Look at the area on the Airsift map. In the section below, describe land use in the area and list possible sources of local and regional pollution. This might include transport, waste, industry, agriculture, construction, residential areas or greenspace. Identify whether there are Dustboxes and other monitors in the area. Include a map in your data story.
  
@@ -150,7 +209,18 @@ class DataStory(TweakedSeoMixin, Page):
         verbose_name='Are there any Airsift Dustboxes monitoring this area?'
     )
 
-      # * Are there other citizen or regulatory monitors in your area? [Y/N]
+    # Where are Dustboxes located (if known) <br>
+    dustbox_location_choices = create_choices(
+        'Roadside',
+        'Garden',
+        'Indoors',
+    )
+    dustbox_location_options = MultipleChoiceModel(
+        choices=dustbox_location_choices,
+        verbose_name='What kinds of public green space are in the area?'
+    )
+
+    # * Are there other citizen or regulatory monitors in your area? [Y/N]
     nearby_monitors_exists = BooleanField(blank=True, null=True)
 
     # * Are able to access and use the data produced by them, describe? [Y/N]
@@ -162,8 +232,34 @@ class DataStory(TweakedSeoMixin, Page):
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
     )
 
+    # What regional sources of air pollution impact your local area?
+    regional_pollution_choices = create_choices(
+        'Agricultural',
+        'Industrial',
+        'Wildfire',
+        'Volcanic'
+    )
+    regional_pollution_options = MultipleChoiceModel(
+        choices=regional_pollution_choices,
+        verbose_name='What regional sources of air pollution impact your local area? '
+    )
+    regional_pollution_sources_description = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote']
+    )
+
     # **Observations**
-    # In this section, note any key observations from the monitoring period (and before). Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+    # In this section, note any key observations from the monitoring period (and before). Observations can be used to help you understand some context behind the Dustbox data. The time and location of these events are important factors to note as they can help you identify possible sources of pollution. You can map observations on the Airsift platform [link] and view the observations from other contributors. It is also useful to meet as a group and discuss your shared observations as other observations and experiences may become apparent.
+    # Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+
+    # Community Discussion
+    # * Did your community identify any observations based on your discussions? [Y/N]
+    # * Did your community identify any observations based on your discussions? [long text field].
+    community_observations = RichTextField(
+        blank=True, null=True,
+        features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
+        verbose_name='Did your community identify any observations based on your discussions?'
+    )
 
     # From Airsift
     # * Are there any local observations on Airsift from the monitoring period (and before) [Y/N].
