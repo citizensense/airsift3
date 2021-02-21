@@ -472,7 +472,7 @@ Note that while the World Health Organisation has established outdoor air qualit
 
 To establish whether there is evidence of elevated pollution in your area, you can follow these steps:
 
-* Create a [line plot](airsift.citizensense.net/analysis/) for each Dustbox in your study area, selecting the monitoring period and mean.
+* Create a [line plot](https://airsift.citizensense.net/analysis/) for each Dustbox in your study area, selecting the monitoring period and mean.
 * Review the peaks and baseline of the data.
 * Are the World Health Organisation or local air-quality guidelines regularly breached?
 * You can also compare the data you have collected to other monitors for this period, to see if other monitoring projects support your findings.
