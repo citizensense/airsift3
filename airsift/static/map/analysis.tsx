@@ -215,7 +215,7 @@ export function AnalysisView() {
       <div className='order-2 md:order-1 flex flex-col overflow-y-auto overflow-x-hidden'>
         <div className='px-4 mb-4 pt-4 md:pt-6'>
           <h1 className='text-M font-bold mb-2'>Analysis</h1>
-          <p className='text-S my-4'>Analyse and download citizen-generated air quality data points. You can use this data analysis tool to explore Dustbox data, create plots and identify air pollution problems.</p>
+          <p className='text-S my-4'>Analyze and download citizen-generated air quality data. You can use this data analysis tool to explore Dustbox data, create plots and identify air pollution problems.</p>
         </div>
         <div className='mx-4'>
           <a href='/analysis' className='button-grey inline-block'>Reset Options</a>
