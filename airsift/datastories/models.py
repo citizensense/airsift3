@@ -194,7 +194,7 @@ class DataStory(TweakedSeoMixin, Page):
 
     # Local sources of particle pollution
     # Look at the area on the Airsift map. In the section below, describe land use in the area and list possible sources of local and regional pollution. This might include transport, waste, industry, agriculture, construction, residential areas or greenspace. Identify whether there are Dustboxes and other monitors in the area. Include a map in your data story.
- 
+
     # How might these sources impact local air-quality and what are the specific sources? [medium free text]
     impacting_sources_of_pollution_description = RichTextField(
         blank=True, null=True,
@@ -217,7 +217,7 @@ class DataStory(TweakedSeoMixin, Page):
     )
     dustbox_location_options = MultipleChoiceModel(
         choices=dustbox_location_choices,
-        verbose_name='What kinds of public green space are in the area?'
+        verbose_name='Where are these dustboxes placed?'
     )
 
     # * Are there other citizen or regulatory monitors in your area? [Y/N]
@@ -319,7 +319,7 @@ class DataStory(TweakedSeoMixin, Page):
         HelpPanel(markdown('''
 # What is a Data Story?
 
-Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in your area. This guide will assist you in writing a Data Story on Airsift. You can group together multiple forms of evidence that could include citizen data, regulatory data, weather data, local observations, maps and other kinds of visual and auditory media. Monitoring studies normally start from a series of questions that you want to ask about your local air quality. For more guidance on setting up an air quality study, please refer to the [AirKit Logbook](https://github.com/citizensense/AirKit_Logbook/blob/main/README.md). 
+Data Stories draw together different kinds of evidence to narrate the impact that air pollution is having in your area. This guide will assist you in writing a Data Story on Airsift. You can group together multiple forms of evidence that could include citizen data, regulatory data, weather data, local observations, maps and other kinds of visual and auditory media. Monitoring studies normally start from a series of questions that you want to ask about your local air quality. For more guidance on setting up an air quality study, please refer to the [AirKit Logbook](https://github.com/citizensense/AirKit_Logbook/blob/main/README.md).
 
 # Writing Your Data Story
 
@@ -356,44 +356,6 @@ At the start of the data story, it is useful to give a summary of the key findin
 In the early stages of your project, you will have considered the local area and possible pollution sources. Begin this section by offering some context and background on the area that you are monitoring.
                 '''), classname='help-compact markdown'),
                 FieldPanel('location_name'),
-
-                HelpPanel(markdown('''
-# Land Use
-                '''), classname='help-compact markdown'),
-                # Land use
-                FieldPanel(
-                    'landuse_options',
-                    widget=forms.CheckboxSelectMultiple(choices=landuse_choices)
-                ),
-                FieldPanel('landuse_description'),
-                FieldPanel(
-                    'landuse_changes_planned_options',
-                    widget=forms.CheckboxSelectMultiple(choices=landuse_changes_planned_choices)
-                ),
-
-                # Green space
-                HelpPanel(markdown('''
-# Green Space
-                '''), classname='help-compact markdown'),
-                FieldPanel(
-                    'green_spaces_options',
-                    widget=forms.CheckboxSelectMultiple(choices=green_spaces_choices)
-                ),
-                FieldPanel('green_space_description'),
-
-                # Antrho
-                HelpPanel(markdown('''
-# Anthropogenic Activity
-
-Note the kinds of human activity that take place on the land.
-                '''), classname='help-compact'),
-                FieldPanel('industrial_activity', widget=forms.CheckboxInput),
-                FieldPanel('industrial_activity_description'),
-                FieldPanel('waste_disposal', widget=forms.CheckboxInput),
-                FieldPanel('waste_disposal_description'),
-                FieldPanel('agriculture', widget=forms.CheckboxInput),
-                FieldPanel('agriculture_description'),
-
                 HelpPanel(markdown('''
 # Local sources of particle pollution
 
@@ -410,17 +372,14 @@ Identify possible pollution sources including but not limited to:
 - Sites of potential burning activity such as allotments.
 - Factories and other industrial activity.
 - Biogenic or geological sources of pollution (such as volcanoes, deserts, wildfires).
-
-How might these sources impact local air-quality and what are the specific sources?
                 '''), classname='help-compact markdown'),
-                FieldPanel('impacting_sources_of_pollution_description'),
 
+                AutocompletePanel(
+                    'related_dustboxes'
+                ),
                 FieldPanel(
                     'dustbox_location_options',
                     widget=forms.CheckboxSelectMultiple(choices=dustbox_location_choices)
-                ),
-                AutocompletePanel(
-                    'related_dustboxes'
                 ),
 
                 # R
@@ -429,10 +388,6 @@ How might these sources impact local air-quality and what are the specific sourc
 
 In this section, describe regional pollution sources for your area. Regional sources can be identified by looking at local pollution reporting mechanisms.
                 '''), classname='help-compact markdown'),
-                FieldPanel(
-                    'regional_pollution_options',
-                    widget=forms.CheckboxSelectMultiple(choices=regional_pollution_choices)
-                ),
                 FieldPanel('regional_pollution_sources_description',),
 
                 # O
@@ -442,13 +397,8 @@ In this section, note any key observations from the monitoring period (and befor
 
 
 Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
+                '''), classname='help-compact markdown'),
 
-## Community Discussion
-                '''), classname='help-compact markdown'),
-                FieldPanel('community_observations'),
-                HelpPanel(markdown('''
-## From Airsift
-                '''), classname='help-compact markdown'),
                 AutocompletePanel('related_observations'),
 
                 # Other
