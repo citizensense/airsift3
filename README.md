@@ -50,6 +50,9 @@ pip install -r requirements/local.txt
 # Configure the app's database
 python manage.py migrate
 
+# Load some real data into the system
+python manage.py sync_data --all
+
 # Create an admin user
 python manage.py createsuperuser
 
