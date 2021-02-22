@@ -21,9 +21,25 @@ Developing this app requires the following tools:
 
 First, copy `.env.template` to `.env` in the root.
 
-Then run the following commands:
+Then run the following commands in a terminal window:
 
 ```shell
+# Install frontend dependencies
+yarn
+
+# Build the CSS and JS for the site
+yarn watch
+```
+
+Now open another terminal window and let's set up the database and app:
+
+```
+# Copy the .env template into place and update the variables
+cp .env.template .env
+
+# Provision a postgres database in the background for the app to work with.
+docker-compose -f docker-compose.yml up -d
+
 # Optional: prepare a python environment with the right packages
 python3.8 -m venv .venv
 source .venv/bin/activate
@@ -31,17 +47,11 @@ source .venv/bin/activate
 # Install python dependencies
 pip install -r requirements/local.txt
 
-# Install frontend dependencies
-yarn
-
-# Copy the .env template into place
-cp .env.template .env
-
-# Provision a postgres database for the app to work with
-docker-compose -f docker-compose.yml up
-
 # Configure the app's database
 python manage.py migrate
+
+# Load some real data into the system
+python manage.py sync_data --all
 
 # Create an admin user
 python manage.py createsuperuser
