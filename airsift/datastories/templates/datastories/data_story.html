@@ -31,16 +31,30 @@
             {{ page.date_from|date:"d.m.Y" }}-{{page.date_to|date:"d.m.Y" }}
           </div>
         </section>
+        {% if page.related_dustboxes.count > 0 %}
         <section class='my-4'>
           <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
-            Dustboxes
+            Related Dustboxes
           </header>
           <div class='text-XXS uppercase font-cousine text-midDarker mt-1'>
             {% for dustbox in page.related_dustboxes.all %}
-              <a href='/dustboxes/inspect/{{dustbox.id}}'>{{ dustbox.title }}</a>,
+              <a href='{{dustbox.url}}'>{{ dustbox.title }}</a>,
             {% endfor %}
           </div>
         </section>
+        {% endif %}
+        {% if page.related_observations.count > 0 %}
+        <section class='my-4'>
+          <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
+            Related Observations
+          </header>
+          <div class='text-XXS uppercase font-cousine text-midDarker mt-1'>
+            {% for observation in page.related_observations.all %}
+              <a href='{{observation.url}}'>{{ observation.title }}</a>,
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
         <section class='my-4'>
           <header class='text-XXS font-bold uppercase font-cousine text-midDarker'>
             Contributors
