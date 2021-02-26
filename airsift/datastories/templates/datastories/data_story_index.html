@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailimages_tags %}
 {% load wagtailcore_tags %}
-{% load get_datastories %}
 {% block content %}
   <div>
     <div class='px-4 mb-4 md:w-1/2'>
@@ -16,8 +15,7 @@
       </a>
     </div>
     <div class='px-4 my-5 lg:my-6 grid gap-4 md:grid-cols-2'>
-      {% get_datastories %}
-      {% for story in datastories %}
+      {% for story in datastory_objects.live.public.all %}
         <a href="{{ story.url }}" title="{{ story.title }}">
           <div class='text-XXS uppercase font-bold my-2'>
             {% if story.location_name %}

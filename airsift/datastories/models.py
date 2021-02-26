@@ -50,6 +50,12 @@ class DataStoryIndex(TweakedSeoMixin, Page):
                     return strip_tags(text)
         return ""
 
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        return {
+            **ctx,
+            'datastory_objects': list(DataStory.objects.live().public().all())
+        }
 
 class DataStory(TweakedSeoMixin, Page):
     class Meta:
@@ -251,9 +257,9 @@ class DataStory(TweakedSeoMixin, Page):
     # **Observations**
     # In this section, note any key observations from the monitoring period (and before). Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
 
-    # You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. 
-     
-    
+    # You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors.
+
+
     community_observations = RichTextField(
         blank=True, null=True,
         features=['bold', 'italic', 'link', 'ol', 'ul', 'image', 'blockquote'],
@@ -394,7 +400,7 @@ In this section, describe regional pollution sources for your area. Regional sou
 # Observations
 In this section, note any key observations from the monitoring period (and before). Observations might include unpleasant smells, sources of noise and visible sources of pollution such as smog, smoke and dust. It could also relate to visible activity such as construction work. Some residents might note the health effects of pollution. You could find news reports of fires, pollution warnings and other media that can help explain peaks in the data.
 
-You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors. 
+You can map observations on the [Airsift platform](https://airsift.citizensense.net/observations/) and view the observations from other contributors.
 
 ## Community Discussion
                 '''), classname='help-compact markdown'),
