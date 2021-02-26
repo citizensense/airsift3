@@ -94,7 +94,7 @@ class DataStory(TweakedSeoMixin, Page):
         return ""
 
     # Editor
-    parent_page_types = ['DataStoryIndex']
+    parent_page_types = ['DataStoryIndex', 'users.UserIndexPage']
     subpage_types = []
     show_in_menus_default = True
 
