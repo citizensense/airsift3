@@ -337,6 +337,6 @@ WEBPACK_LOADER = {
     }
 }
 
-WAGTAILAPI_LIMIT_MAX = None
+WAGTAILAPI_LIMIT_MAX = 1000
 
 CITIZENSENSE_DATA_API = 'https://citizensense.co.uk:7000'
