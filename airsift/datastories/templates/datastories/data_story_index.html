@@ -15,7 +15,7 @@
       </a>
     </div>
     <div class='px-4 my-5 lg:my-6 grid gap-4 md:grid-cols-2'>
-      {% for story in datastory_objects.live.public.all %}
+      {% for story in datastory_objects %}
         <a href="{{ story.url }}" title="{{ story.title }}">
           <div class='text-XXS uppercase font-bold my-2'>
             {% if story.location_name %}
