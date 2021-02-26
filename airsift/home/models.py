@@ -15,6 +15,7 @@ class HomePage(TweakedSeoMixin, Page):
         return HomePage.objects.child_of(Page.get_first_root_node()).first()
 
     # Editor
+    parent_page_types = []
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
 

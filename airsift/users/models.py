@@ -184,4 +184,4 @@ class UserIndexPage(Page):
         'observations.Observation',
         'datastories.DataStory',
     ]
-    pass
+    parent_page_types = []

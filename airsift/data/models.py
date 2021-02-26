@@ -99,6 +99,9 @@ class DustboxPage(TweakedSeoMixin, Page):
         "map_image",
     ]
 
+    # Editor
+    parent_page_types = ['dustboxes.InteractiveMapPage']
+    subpage_types = []
     promote_panels = SeoMixin.seo_panels
     content_panels = Page.content_panels + [
         ImageChooserPanel('map_image'),

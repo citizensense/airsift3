@@ -24,6 +24,7 @@ class DataStoryIndex(TweakedSeoMixin, Page):
     ]
 
     # Editor
+    parent_page_types = ['home.HomePage']
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
 
@@ -93,6 +94,8 @@ class DataStory(TweakedSeoMixin, Page):
         return ""
 
     # Editor
+    parent_page_types = ['DataStoryIndex']
+    subpage_types = []
     show_in_menus_default = True
 
     # Copy

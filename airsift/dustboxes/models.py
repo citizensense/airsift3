@@ -18,6 +18,7 @@ class InteractiveMapPage(RoutablePageMixin, TweakedSeoMixin, Page):
     summary_text = CharField(max_length=300)
 
     # Editor
+    parent_page_types = ['home.HomePage']
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
     content_panels = Page.content_panels + [

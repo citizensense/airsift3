@@ -54,6 +54,7 @@ class Observation(TweakedSeoMixin, Page):
     ]
 
     # Editor
+    parent_page_types = ['dustboxes.InteractiveMapPage']
     show_in_menus_default = True
     subpage_types = []
 
