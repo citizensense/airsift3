@@ -93,19 +93,28 @@ python manage.py migrate
 
 ### Deployment info
 
-- Deployed to a VPS (/var/www/airsift3) via docker-compose using github actions on push to `main`
+- Pushing new commits to `main` branch will trigger a new deployment
+  - This is managed by a [Github action in this repo](./.github/workflows/deploy.yml)
+  - It adds new images to the Github Container Registry
+  - Then it instructs the server to restart the system with those updated images
+  - `docker-compose` is used to configure and run these images
+      - `production.yml` is used in production
+      - you can run `local.yml` to emulate the production setup on your own machine
+- The app is hosted at 209.250.252.222 and served at https://airsift.citizensense.net
+  - Configure the server (VPS) at Vultr.com: https://my.vultr.com/subs/?id=b2a8d3fa-326d-43bf-aaab-41e0a168be68
+- Server code is located at /var/www/airsift3
 
-- Compose files:
-  - Production: production.yml
-  - Run production-like setup locally: local.yml
-
-- Expects a .env file in /var/www/airsift3 to contain the server's environment config.
-
-- Expects a regular cron job to run `manage.py sync_data`
+#### Manage the app on the server
 
 - View logs: `docker-compose -f /var/www/airsift3/production.yml logs`
+- Ad-hoc django-admin commands: `docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py [...]`
 
-- Adhoc django-admin commands: `docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py [...]`
+### How to deploy the app to a new server
+
+#### Configure the app on a server for the first time
+
+- Expects a .env file in /var/www/airsift3 to contain the server's environment config.
+- Expects a regular cron job to run `manage.py sync_data`
 
 #### Install docker if required
 
