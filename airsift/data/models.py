@@ -30,6 +30,10 @@ class Dustbox(models.Model):
     title = models.CharField(max_length=256)
     updated_at = models.DateTimeField(null=True)
 
+    @property
+    def url(self, *args, **kwargs):
+        return f'/dustboxes/inspect/{self.id}'
+
     api_fields = [
         APIField('id'),
         APIField('created_at'),
