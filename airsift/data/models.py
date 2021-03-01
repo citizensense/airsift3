@@ -103,6 +103,12 @@ class DustboxPage(TweakedSeoMixin, Page):
         "map_image",
     ]
 
+    def relative_url(self, *args, **kwargs):
+        return f'/dustboxes/inspect/{self.slug}'
+
+    def get_url(self, *args, **kwargs):
+        return f'/dustboxes/inspect/{self.slug}'
+
     # Editor
     parent_page_types = ['dustboxes.InteractiveMapPage']
     subpage_types = []
