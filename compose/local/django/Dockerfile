@@ -8,6 +8,8 @@ RUN apt-get update \
   && apt-get install -y build-essential \
   # psycopg2 dependencies
   && apt-get install -y libpq-dev \
+  # Gis dependencies
+  && apt-get install -y binutils libproj-dev gdal-bin \
   # Translations dependencies
   && apt-get install -y gettext \
   # cleaning up unused files
@@ -26,6 +28,8 @@ COPY ./compose/local/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
+COPY . /app
+RUN cd /app
 WORKDIR /app
 
 ENTRYPOINT ["/entrypoint"]

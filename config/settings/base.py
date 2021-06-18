@@ -44,7 +44,7 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 
 POSTGRES_USER = env.str("POSTGRES_USER", default="postgres")
 POSTGRES_PASSWORD = env.str("POSTGRES_PASSWORD", default="postgres")
-POSTGRES_HOST = env.str("POSTGRES_HOST", default="localhost")
+POSTGRES_HOST = env.str("POSTGRES_HOST", default="postgres")
 POSTGRES_DB = env.str("POSTGRES_DB", default="postgres")
 POSTGRES_PORT = env.int("POSTGRES_PORT", default=5432)
 DATABASE_OBJ = env.db("DATABASE_URL", default=f"postgis://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")

@@ -11,17 +11,27 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./compose/production/django/Dockerfile
+      dockerfile: ./compose/local/django/Dockerfile
     depends_on:
       - postgres
-      - redis
+      # - redis
     volumes:
       - airsift_local_media:/app/airsift/media
+      - .:/app
     env_file:
       - ./.env
     command: /start
     ports:
-      - "0.0.0.0:8181:5000"
+      - "0.0.0.0:8000:8000"
+
+  # webpack:
+  #   build: .
+  #   ports:
+  #     - '3000:3000'
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - .:/usr/src/app
 
   postgres:
     restart: always
@@ -33,15 +43,21 @@ services:
       - airsift_local_postgres_data_backups:/backups:z
     env_file:
       - ./.env
-
-  nginx:
-    restart: always
-    image: nginx
-    volumes:
-      - airsift_local_media:/usr/share/nginx/html:z
     ports:
-      - "0.0.0.0:3111:80"
+      - "5432:5432"
 
-  redis:
-    image: redis:5.0
+  # nginx:
+  #   restart: always
+  #   image: nginx
+  #   volumes:
+  #     - airsift_local_media:/usr/share/nginx/html:z
+  #   ports:
+  #     - "0.0.0.0:3111:80"
+  #   env_file:
+  #     - ./.env
+
+  # redis:
+  #   image: redis:5.0
+  #   env_file:
+  #     - ./.env
 

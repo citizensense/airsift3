@@ -67,29 +67,36 @@ class Command(BaseCommand):
         return user
 
     def set_root_page_for_site(self, root_page):
-        root = Page.get_first_root_node()
-        print(root)
-        root.add_child(instance=root_page)
-
-        # Add the right metadata
         from wagtail.core.models import Site as WagtailSite
         wagtail_site = WagtailSite.objects.get()
-        wagtail_site.hostname = "localhost"
-        wagtail_site.port = 8000
-        wagtail_site.site_name = "Airsift Development Site"
-        wagtail_site.root_page = root_page
-        Page.objects\
-            .not_page(root_page)\
-            .not_page(root)\
-            .delete()
-        wagtail_site.save()
+
+        if wagtail_site.site_name != 'Airsift Development Site':
+            # Create root
+            root = Page.get_first_root_node()
+            root.add_child(instance=root_page)
+
+            # Configure site
+            wagtail_site.hostname = "localhost"
+            wagtail_site.port = 8000
+            wagtail_site.site_name = "Airsift Development Site"
+            wagtail_site.root_page = root_page
+            wagtail_site.save()
+
+            # Clear other pages
+            Page.objects\
+                .not_page(root_page)\
+                .not_page(root)\
+                .delete()
 
     def create_and_publish_page(self, type, **kwargs):
-        parent_slug = kwargs.pop('parent_slug', None)
-        page = type(
-            **kwargs
-        )
-        if parent_slug:
-            parent = Page.objects.get(slug=parent_slug)
-            parent.add_child(instance=page)
+        try:
+            page = Page.objects.get(slug=kwargs.get('slug', None))
+        except:
+            parent_slug = kwargs.pop('parent_slug', None)
+            page = type(
+                **kwargs
+            )
+            if parent_slug:
+                parent = Page.objects.get(slug=parent_slug)
+                parent.add_child(instance=page)
         return page
