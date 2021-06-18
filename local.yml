@@ -5,6 +5,7 @@ volumes:
   airsift_local_postgres_data: {}
   airsift_local_postgres_data_backups: {}
   airsift_local_traefik: {}
+  node_modules: {}
 
 services:
   django:
@@ -17,21 +18,23 @@ services:
       # - redis
     volumes:
       - airsift_local_media:/app/airsift/media
-      - .:/app
+      - .:/app:rw
     env_file:
       - ./.env
     command: /start
     ports:
       - "0.0.0.0:8000:8000"
 
-  # webpack:
-  #   build: .
-  #   ports:
-  #     - '3000:3000'
-  #   env_file:
-  #     - ./.env
-  #   volumes:
-  #     - .:/usr/src/app
+  webpack:
+    build:
+      dockerfile: ./compose/local/webpack/Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app:rw
+      - node_modules:/src/node_modules
 
   postgres:
     restart: always
