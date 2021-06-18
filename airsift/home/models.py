@@ -15,7 +15,7 @@ class HomePage(TweakedSeoMixin, Page):
         return HomePage.objects.child_of(Page.get_first_root_node()).first()
 
     # Editor
-    parent_page_types = []
+    parent_page_types = ['wagtailcore.page'] # Only the Root page is this
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
 
@@ -37,6 +37,7 @@ class InfoPage(TweakedSeoMixin, Page):
     body = RichTextField(blank=False, null=False)
 
     # Editor
+    parent_page_types = ['home.HomePage']
     show_in_menus_default = True
     promote_panels = SeoMixin.seo_panels
 
