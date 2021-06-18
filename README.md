@@ -59,35 +59,19 @@ python manage.py migrate
 
 # Load a slice of real data into the system
 # (this might take a few minutes)
-python manage.py sync_data --max 100
+python manage.py sync_data --max 50
 
 # If you, for some reason, want to run the system with ALL available data, run this command instead:
 # python manage.py sync_data --all
 
-# Create an admin user
-# enter your username, email and password for your local app
-python manage.py createsuperuser
+# Set up the pages
+python manage.py setup_pages
 
 # Start the app up
 python manage.py runserver 0.0.0.0:8000
 ```
 
-At http://localhost:8000, you will now hopefully see "Welcome to your new Wagtail site!". It looks ugly. Don't worry! One last step: CMS setup. See below.
-
-#### 3. CMS setup
-- Go to http://localhost:8000/cms and log in with the credentials you entered in the `createsuperuser` phase above
-- Go to http://localhost:8000/cms/pages/ and click `Add a child page`
-  - Call it `airsift`, then click `publish`
-- Go to http://localhost:8000/cms/sites/1/
-  - Click `choose a different root page`
-  - Select the page you just created
-  - Click `save`
-- Create required pages underneath `airsift`:
-  - Create three `InteractiveMapPage` with the following slugs: `dustboxes`, `observations` and `analysis`
-  - Create a `DataStoryIndex` with the slug `datastories`
-  - Create an `InfoPage` with the slug `about`
-
-You should now be able to load http://localhost:8000
+You should now be able to see the site running at http://localhost:8000
 
 ### Deploy an update to airsift.citizensense.net
 
@@ -108,6 +92,12 @@ You should now be able to load http://localhost:8000
 - Ad-hoc django-admin commands: `docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py [...]`
 
 ### How to deploy the app to a new server
+
+When you run the app for the first time, you will need to configure the pages:
+
+```bash
+python manage.py setup_pages
+```
 
 #### Configure the app on a server for the first time
 
