@@ -9,7 +9,7 @@ Version 3 of the Airsift citizen-data air-quality platform. Part of the [AirKit]
      :target: https://github.com/ambv/black
      :alt: Black code style
 
-### Local deployment and development
+### Instructions for running the app on your system
 
 Developing this app requires the following tools:
 
@@ -21,6 +21,12 @@ Developing this app requires the following tools:
 
 First, copy `.env.template` to `.env` in the root.
 
+#### 1. Run the javascript app
+
+```bash
+cp .env.template .env
+```
+
 Then run the following commands in a terminal window:
 
 ```shell
@@ -31,14 +37,15 @@ yarn
 yarn watch
 ```
 
+When you make changes to the Javascript files and CSS, changes will reload in the browser automagically.
+
+#### 2. Run the django app
+
 Now open another terminal window and let's set up the database and app:
 
-```
-# Copy the .env template into place and update the variables
-cp .env.template .env
-
+```bash
 # Provision a postgres database in the background for the app to work with.
-docker-compose -f docker-compose.yml up -d
+docker-compose up -d
 
 # Optional: prepare a python environment with the right packages
 python3.8 -m venv .venv
@@ -50,48 +57,39 @@ pip install -r requirements/local.txt
 # Configure the app's database
 python manage.py migrate
 
-# Load some real data into the system
-python manage.py sync_data --all
+# Load a slice of real data into the system
+# (this might take a few minutes)
+python manage.py sync_data --max 100
+
+# If you, for some reason, want to run the system with ALL available data, run this command instead:
+# python manage.py sync_data --all
 
 # Create an admin user
+# enter your username, email and password for your local app
 python manage.py createsuperuser
 
 # Start the app up
 python manage.py runserver 0.0.0.0:8000
 ```
 
-In a separate shell window, to hot reload CSS and JS assets, run `yarn watch`.
+At http://localhost:8000, you will now hopefully see "Welcome to your new Wagtail site!". It looks ugly. Don't worry! One last step: CMS setup. See below.
 
-Ensure you commit CSS and JS assets by running `yarn build` before pushing to origin.
+#### 3. CMS setup
+- Go to http://localhost:8000/cms and log in with the credentials you entered in the `createsuperuser` phase above
+- Go to http://localhost:8000/cms/pages/ and click `Add a child page`
+  - Call it `airsift`, then click `publish`
+- Go to http://localhost:8000/cms/sites/1/
+  - Click `choose a different root page`
+  - Select the page you just created
+  - Click `save`
+- Create required pages underneath `airsift`:
+  - Create three `InteractiveMapPage` with the following slugs: `dustboxes`, `observations` and `analysis`
+  - Create a `DataStoryIndex` with the slug `datastories`
+  - Create an `InfoPage` with the slug `about`
 
-### CMS setup
-When you first set up the application locally or in production, there will be mostly nothing to see.
+You should now be able to load http://localhost:8000
 
-- Create a `HomePage` page at the root.
-- Configure a `Site` in the Wagtail CMS, and select the `HomePage` you just created as the root page
-- Create three `InteractiveMapPage` with the following slugs: `dustboxes`, `observations` and `analysis`
-- Create a `DataStoryIndex` with the slug `datastories`
-- Create an `InfoPage` with the slug `about`
-
-### Server admin
-
-If not already deployed to server, see below section.
-
-- To run python commands first enter the environment:
-
-```
-source python/bin/activate
-```
-
-- To pull in the latest code and migrate the app:
-
-```
-git pull origin main
-source python/bin/activate
-python manage.py migrate
-```
-
-### Deployment info
+### Deploy an update to airsift.citizensense.net
 
 - Pushing new commits to `main` branch will trigger a new deployment
   - This is managed by a [Github action in this repo](./.github/workflows/deploy.yml)
@@ -104,7 +102,7 @@ python manage.py migrate
   - Configure the server (VPS) at Vultr.com: https://my.vultr.com/subs/?id=b2a8d3fa-326d-43bf-aaab-41e0a168be68
 - Server code is located at /var/www/airsift3
 
-#### Manage the app on the server
+#### Server scripts
 
 - View logs: `docker-compose -f /var/www/airsift3/production.yml logs`
 - Ad-hoc django-admin commands: `docker-compose -f /var/www/airsift3/production.yml run --entrypoint python  -- django manage.py [...]`
