@@ -8,7 +8,7 @@ from django.contrib.gis.geos import Point
 
 from airsift.data.models import Dustbox, DustboxReading
 
-BASE_URL = settings.CITIZENSENSE_DATA_API
+DATA_API_URL = settings.CITIZENSENSE_DATA_API
 
 class Command(BaseCommand):
     help = 'Sync data from the citizensense api'
@@ -66,7 +66,7 @@ class Command(BaseCommand):
     def sync_boxes(self):
         print('Sync streams...')
 
-        streams = requests.get(BASE_URL + '/streams', params={
+        streams = requests.get(DATA_API_URL + '/streams', params={
             'limit': 'off'
         }).json().get('data', [])
 
@@ -132,7 +132,7 @@ class Command(BaseCommand):
     def sync_stream_reading_page(self, stream, page, visited):
         print(f'Page {page}...')
 
-        readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
+        readings_data = requests.get(DATA_API_URL + '/collections/stream/' + str(stream.id), params={
             'page': page,
             'limit': self.pagesize,
         }).json().get('data', [])
@@ -145,7 +145,7 @@ class Command(BaseCommand):
         return self.sync_stream_readings(stream, readings_data, visited=visited)
 
     def sync_all_stream_readings(self, stream):
-        readings_data = requests.get(BASE_URL + '/collections/stream/' + str(stream.id), params={
+        readings_data = requests.get(DATA_API_URL + '/collections/stream/' + str(stream.id), params={
             'limit': 'off'
         }).json().get('data', [])
 

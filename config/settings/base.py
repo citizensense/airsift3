@@ -48,7 +48,9 @@ POSTGRES_HOST = env.str("POSTGRES_HOST", default="localhost")
 POSTGRES_DB = env.str("POSTGRES_DB", default="postgres")
 POSTGRES_PORT = env.int("POSTGRES_PORT", default=5432)
 DATABASE_OBJ = env.db("DATABASE_URL", default=f"postgis://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
-BASE_URL = env.str('BASE_URL')
+
+# Site URL for admin email links - required by wagtail (https://github.com/wagtail/wagtail/issues/3248)
+BASE_URL = env.str('BASE_URL', default='localhost')
 
 DATABASES = {
     "default": DATABASE_OBJ
