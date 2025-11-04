@@ -158,7 +158,7 @@ router.register(r'dustboxes', DustboxesViewSet, basename='dustboxes')
 
 dustbox_router = routers.NestedSimpleRouter(router, r'dustboxes', lookup='dustbox')
 dustbox_router.register(r'readings', DustboxesReadingsViewSet, basename='readings')
-dustbox_router.register(r'aggregates', DustboxesReadingAggregatesViewSet, basename='readings')
+dustbox_router.register(r'aggregates', DustboxesReadingAggregatesViewSet, basename='aggregates')
 
 urls = [
     *router.urls,

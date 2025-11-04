@@ -5,7 +5,6 @@ import django.db.models.deletion
 import django.forms.widgets
 import wagtail.core.blocks
 import wagtail.core.fields
-import wagtailseo.blocks
 
 
 class Migration(migrations.Migration):
@@ -74,7 +73,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='struct_org_hours',
-            field=wagtail.core.fields.StreamField([('hours', wagtail.core.blocks.StructBlock([('days', wagtailseo.blocks.MultiSelectBlock(choices=[('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')], help_text='For late night hours past 23:59, define each day in a separate block.', required=True, verbose_name='Days', widget=django.forms.widgets.CheckboxSelectMultiple)), ('start_time', wagtail.core.blocks.TimeBlock(verbose_name='Opening time')), ('end_time', wagtail.core.blocks.TimeBlock(verbose_name='Closing time'))]))], blank=True, verbose_name='Hours of operation'),
+            field=wagtail.core.fields.StreamField([('hours', wagtail.core.blocks.StructBlock([('days', wagtail.core.blocks.MultipleChoiceBlock(choices=[('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')], help_text='For late night hours past 23:59, define each day in a separate block.', required=True, verbose_name='Days')), ('start_time', wagtail.core.blocks.TimeBlock(verbose_name='Opening time')), ('end_time', wagtail.core.blocks.TimeBlock(verbose_name='Closing time'))]))], blank=True, verbose_name='Hours of operation'),
         ),
         migrations.AddField(
             model_name='homepage',

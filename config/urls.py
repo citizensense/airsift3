@@ -4,7 +4,7 @@ from airsift import dustboxes
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path as url
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
@@ -15,6 +15,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 from .api import api_router
 from .views import capture_login, capture_logout
+from .media_serve import serve_media
 
 urlpatterns = [
     # API urls
@@ -39,7 +40,16 @@ urlpatterns = [
     # Content serve URLS
     path('documents/', include(wagtaildocs_urls)),
     path('', include(wagtail_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+# Serve media files in production (when DEBUG=False, static() doesn't work)
+if not settings.DEBUG:
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', serve_media, name='media'),
+    ]
+else:
+    # In development, use Django's static file serving
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:

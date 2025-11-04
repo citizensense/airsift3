@@ -15,9 +15,11 @@ Developing this app requires the following tools:
 
 - Git version control system
 - Yarn package manager
-- Docker (or your own Postgres server and configuration details in `.env`)
+- Docker (for running PostGIS database)
 - Python 3.8 (recommended: install using pyenv)
 - Pip package manager
+
+**Note**: The `docker-compose.yml` file only runs a PostGIS database for local development. Django runs directly on your local machine.
 
 First, copy `.env.template` to `.env` in the root.
 
@@ -67,7 +69,7 @@ python manage.py sync_data --max 50
 # Set up the pages
 python manage.py setup_pages
 
-# Start the app up
+# Start the Django development server
 python manage.py runserver 0.0.0.0:8000
 ```
 
@@ -86,6 +88,63 @@ You should now be able to see the site running at http://localhost:8000
   - Configure the server (VPS) at Vultr.com: https://my.vultr.com/subs/?id=b2a8d3fa-326d-43bf-aaab-41e0a168be68
 - Server code is located at /var/www/airsift3
 
+<<<<<<< HEAD
+- Create a `HomePage` page at the root.
+- Configure a `Site` in the Wagtail CMS, and select the `HomePage` you just created as the root page
+- Create three `InteractiveMapPage` with the following slugs: `dustboxes`, `observations` and `analysis`
+- Create a `DataStoryIndex` with the slug `datastories`
+- Create an `InfoPage` with the slug `about`
+
+### Render Deployment
+
+This application is deployed to Render using a simple Docker-based setup.
+
+#### Prerequisites
+- GitHub repository connected to Render
+- Render account
+
+#### Setup Steps
+
+1. **Create PostgreSQL Database**:
+   - In Render dashboard, create new PostgreSQL instance
+   - Ensure PostGIS extension is enabled (Render PostgreSQL includes this)
+   - Note the internal database URL
+
+2. **Create Web Service**:
+   - Create new Web Service in Render
+   - Connect to your GitHub repository
+   - Select branch: `main` (or your deployment branch)
+   - Environment: Docker
+   - Build command: (leave empty, uses Dockerfile)
+   - Start command: `./start.sh`
+
+3. **Configure Environment Variables**:
+   Required variables:
+   - `DATABASE_URL` - From Render PostgreSQL (internal URL)
+   - `DJANGO_SECRET_KEY` - Generate secure random key
+   - `DJANGO_SETTINGS_MODULE` - Set to `config.settings.production`
+   - `DJANGO_ALLOWED_HOSTS` - Your Render domain
+   - `DJANGO_ADMIN_URL` - Custom admin URL path
+   - `USE_SSL` - Set to `True`
+   - Email settings (MAILGUN_API_KEY, MAILGUN_SENDER_DOMAIN, MAILGUN_API_URL)
+
+4. **Add Persistent Disk for Media Files**:
+   - In Web Service settings, add persistent disk
+   - Mount path: `/app/airsift/media`
+   - Size: 1GB (or as needed)
+   - To restore media files: Upload and untar your backup in the mounted directory
+
+5. **Deploy**:
+   - Render will automatically build and deploy on git push
+   - Migrations run automatically on startup via `start.sh`
+
+#### Notes
+- Static files are served via WhiteNoise (already configured)
+- Media files are stored on Render persistent disk
+- For better scalability, consider migrating media files to S3/cloud storage
+- Database backups managed through Render PostgreSQL dashboard
+- A regular cron job or scheduled task should run `manage.py sync_data` if needed
+=======
 #### Server scripts
 
 - View logs: `docker-compose -f /var/www/airsift3/production.yml logs`

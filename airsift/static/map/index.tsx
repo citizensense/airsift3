@@ -18,8 +18,8 @@ export default () => {
       <Provider>
         <Root
           userId={userId}
-          mapboxApiAccessToken={'pk.eyJ1IjoiY2l0aXplbnNlbnNlMSIsImEiOiJja2l5cnN2YjYxZm9mMnRtZTNqNTByNWd1In0.v61_Jv9DgHoDsePAr-PA-w'}
-          mapboxStyleConfig={'mapbox://styles/citizensense1/ckiyrorg9704219qokjh01owg'}
+          mapboxApiAccessToken={'pk.eyJ1IjoiYWlyc2lmdCIsImEiOiJja2l1ZGo0aGMweGszMndtbTI4eW52YmZ1In0.eotYFVZuDGtZr_QxrRuySg'}
+          mapboxStyleConfig={'mapbox://styles/airsift/ckiuctolj2ra219ozb0124rk4'}
         />
       </Provider>,
     root)

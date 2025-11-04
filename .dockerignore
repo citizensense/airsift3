@@ -1,9 +1,44 @@
-.*
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv
+
+# Node
+node_modules/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# OS files
+.DS_Store
+
+# Tests & coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Documentation
+docs/
+
+# Logs
+*.log
+
+# Local development only
+docker-compose.yml
+.env
+
+# Keep these config files
 !.coveragerc
-!.env
 !.pylintrc
 !.babelrc
-node_modules
-Dockerfile
-/local.yml
-/production.yml

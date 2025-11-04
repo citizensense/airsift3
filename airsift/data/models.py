@@ -75,7 +75,7 @@ class Dustbox(models.Model):
         height = width
 
         params = {
-            "access_token": "pk.eyJ1IjoiY2l0aXplbnNlbnNlMSIsImEiOiJja2l5cnFyeDQxaGVyMzBuejEyYXhmbnJmIn0.QeGvd-nnWt8ZVUZ1mMpJ9Q"
+            "access_token": "pk.eyJ1IjoiYWlyc2lmdCIsImEiOiJja2l1ZGo0aGMweGszMndtbTI4eW52YmZ1In0.eotYFVZuDGtZr_QxrRuySg"
         }
 
         # Construct URL
